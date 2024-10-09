@@ -21,8 +21,7 @@ namespace Domain.Entities.Cars
 
         private readonly IList<Service> _serviceHistory;
 
-        //Customer customer,
-        private Car(int id, int customerId,  string maker, string model, string plateNumber, string vin, int mileage)
+        public Car(int id, int customerId, /*Customer customer,*/ string maker, string model, string plateNumber, string vin, int mileage)
         {
             Id = id;
             CustomerId = customerId;
@@ -35,11 +34,10 @@ namespace Domain.Entities.Cars
             _serviceHistory = new List<Service>();
         }
 
-        //, Customer customer
-        public static Car Create(int id, int customerId, string maker, string model, string plateNumber, string vin, int mileage)
+        /*public static Car Create(int id, int customerId,*//* Customer customer,*//* string maker, string model, string plateNumber, string vin, int mileage)
         {
-            return new Car(id, customerId, maker, model, plateNumber, vin, mileage);
-        }
+            return new Car(id, customerId, *//*customer,*//* maker, model, plateNumber, vin, mileage);
+        }*/
 
 
         public ICollection<Service> GetServicesHistory()
@@ -49,6 +47,16 @@ namespace Domain.Entities.Cars
         public void AddService(Service service)
         {
             _serviceHistory.Add(service);
+        }
+
+        public void ChangeMileage(int newMileage)
+        {
+            if (newMileage < Mileage)
+            {
+                throw new Exception("mileage can not be smaller than actual mielage");
+            }
+
+            Mileage = newMileage;
         }
     }
 }

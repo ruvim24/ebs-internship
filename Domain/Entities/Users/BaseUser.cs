@@ -1,25 +1,21 @@
-﻿using System.Numerics;
+﻿using Domain.Entities.ObjectValues;
+using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 
 namespace Domain.Entities.Users
 {
-    public abstract class BaseUser
+    public abstract partial class BaseUser
     {
-        private int Id { get; set; }
-        private string Name { get; set; }
-        private string Surename { get; set; }
-        private string Adress { get; set; }
-        private string Email { get; set; }
-        //public string Password { get; set; }
-        private string PhoneNumber { get; set; }
+        public Guid Id { get; private set; }
+        public FullName FullName { get; private set; }
+        public Contacts Contacts { get; private set; }
 
-        protected BaseUser(int userId, string name, string surename, string adress, string email, string phoneNumber)
+        protected BaseUser(FullName fullName, Contacts contacts)
         {
-            Id = userId;
-            Name = name;
-            Surename = surename;
-            Adress = adress;
-            Email = email;
-            PhoneNumber = phoneNumber;
+            Id = Guid.NewGuid();
+            FullName = fullName;
+            Contacts = contacts;
         }
     }
 }

@@ -1,0 +1,5 @@
+C:\Users\ruvim.stratila\source\repos\AutoService\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ruvim.stratila\source\repos\AutoService\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+C:\Users\ruvim.stratila\source\repos\AutoService\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+C:\Users\ruvim.stratila\source\repos\AutoService\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+C:\Users\ruvim.stratila\source\repos\AutoService\Domain\obj\Debug\net8.0\Domain.sourcelink.json
