@@ -40,6 +40,7 @@ namespace Domain.Entities.Cars
             return new Car(customerId, customer, maker, model, plateNumber, vin, mileage);
         }
 
+
         public IReadOnlyCollection<Service> GetServicesHistory => (IReadOnlyCollection<Service>)_serviceHistory;
         public void AddService(Service service) => _serviceHistory.Add(service);
        

@@ -1,8 +1,5 @@
-﻿using Domain.Entities.Cars;
-using Domain.Entities.Enums;
+﻿using Domain.Entities.Appointments;
 using Domain.Entities.ObjectValues;
-using Domain.Entities.ServicesEntities;
-using Domain.Entities.Appointments;
 
 namespace Domain.Entities.Users
 {
