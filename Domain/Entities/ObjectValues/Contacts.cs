@@ -9,26 +9,14 @@ namespace Domain.Entities.ObjectValues
     public class Contacts
     {
         public string Email { get; private set; }
-        public string PhoneNumber { get; private set; }
-        public string  Adress { get; private set; }
+        public PhoneNumber PhoneNumber { get; private set; }
+        public Address  Adress { get; private set; }
 
-        public Contacts(string email, string phoneNumber, string adress) 
+        public Contacts(string email, PhoneNumber phoneNumber, string street, string city, string postalCode) 
         {
             Email = email;
             PhoneNumber = phoneNumber;
-            Adress = adress;
-        }
-        public void ChangeEmail(string email)
-        {
-            Email = email;
-        }
-        public void ChangePhoneNumber(string phoneNumber)
-        {
-            PhoneNumber = phoneNumber;
-        }
-        public void ChangAdress(string adress)
-        {
-            Adress = adress;
+            Adress = new Address(street, city, postalCode);
         }
 
     }

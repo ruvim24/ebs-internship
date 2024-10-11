@@ -11,15 +11,15 @@ using Domain.Entities.ObjectValues;
 using Domain.Entities.Enums;
 using System.Runtime.InteropServices;
 
-
-
 namespace Domain.Entities.Appointments
 {
     public sealed class Appointment
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
-        public Period Period { get; set; }
+        public DateTime StartTime { get; set; }
+        public AppointmentStatus Status { get; set; } = AppointmentStatus.Scheduled; // la crearea apointmentului sa fie din start pe scheduled
+
         public Service Service { get; set; }
 
         public int MasterId { get; set; }
@@ -32,11 +32,11 @@ namespace Domain.Entities.Appointments
         public Car Car { get; set; }
 
 
-        private Appointment(int id, DateTime createdAt, Period period, Service service, int masterId, Master master, int customerId, Customer customer, int carId, Car car)
+        private Appointment(int id, DateTime createdAt, DateTime startTime, Service service, int masterId, Master master, int customerId, Customer customer, int carId, Car car)
         {
             Id = id;
             CreatedAt = createdAt;
-            Period = period;
+            StartTime = startTime;
             Service = service;
             MasterId = masterId;
             Master = master;
@@ -44,29 +44,9 @@ namespace Domain.Entities.Appointments
             CarId = carId;
             Car = car;
         }
-
-        //mai multi constructori pentru fiecare scenariu
-        /*
-         1. avem toate obiectele deja create
-         2. avem doar customer -> avem si Car(from customer)
-         */
-        public static Appointment Create(int id, DateTime createdAt, Period period, Service service, int masterId, Master master, int customerId, Customer customer) 
+        public void ChangeStatus(AppointmentStatus status)
         {
-            
-            return new Appointment(id, createdAt, period, service, masterId, master, customerId, customer, customer.Id, customer.Car);
-
+            Status = status;
         }
-
-
-        /*public static Appointment Create(int id,
-            DateTime createdAt,
-            DateTime startTime,
-            DateTime endTime,
-            Service service,
-
-            )
-        {
-
-        }*/
     }
 }

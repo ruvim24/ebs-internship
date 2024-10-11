@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities.Enums
+namespace Domain.Repositories
 {
-    public enum Status
-    { 
-        Schedled,
-        Completed,
-        Canceled
+    public interface IServiceRepository
+    {
     }
 }

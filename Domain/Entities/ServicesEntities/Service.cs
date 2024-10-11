@@ -15,12 +15,13 @@ namespace Domain.Entities.ServicesEntities
         public string Description { get; private set; }
         public ServiceType ServiceType { get; private set; }
         public decimal Price { get; private set; }
-        public int Duration { get; set; }
-        public Status Status { get; set; }
+        public int Duration { get; private set; }
 
-        private readonly IList<Master> _mastersAllowed;
+        //public IReadOnlyCollection<Master> GetMastersAllowed => (IReadOnlyCollection<Master>)_mastersAllowed;
+        //public void AddMastersAllowed(Master master) =. _mastersAllowed.Add(master);
 
-        private Service(int serivceId, string serviceName, string description, ServiceType serviceType, decimal price, int duration, Status status, IList<Master> mastersAllowed)
+
+        private Service(int serivceId, string serviceName, string description, ServiceType serviceType, decimal price, int duration, IList<Master> mastersAllowed)
         {
             Id = serivceId;  
             Name = serviceName;
@@ -28,23 +29,14 @@ namespace Domain.Entities.ServicesEntities
             ServiceType = serviceType;
             Price = price;
             Duration = duration;
-            Status = status;
-            _mastersAllowed = mastersAllowed;
         }
 
-        public static Service Create(int serivceId, string serviceName, string description, ServiceType serviceType, decimal price, int duration, Status status, IList<Master> mastersAllowed)
-        {
-            return new Service(serivceId, serviceName, description, serviceType, price, duration, status, mastersAllowed);
+        public static Service Create(int serivceId, string serviceName, string description, ServiceType serviceType, decimal price, int duration, IList<Master> mastersAllowed)
+        { 
+
+            return new Service(serivceId, serviceName, description, serviceType, price, duration, mastersAllowed);
         }
 
-        public IReadOnlyCollection<Master> GetMastersAllowed()
-        {
-            return _mastersAllowed.AsReadOnly();
-        }
-        public void AddMastersAllowed(Master master)
-        {
-            _mastersAllowed.Add(master);
-        }
 
     }
 }

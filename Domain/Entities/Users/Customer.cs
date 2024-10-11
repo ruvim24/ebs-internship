@@ -1,47 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.Entities.Appointments;
-using Domain.Entities.Cars;
+﻿using Domain.Entities.Cars;
+using Domain.Entities.Enums;
 using Domain.Entities.ObjectValues;
+using Domain.Entities.ServicesEntities;
+using Domain.Entities.Appointments;
 
 namespace Domain.Entities.Users
 {
     public sealed class Customer : BaseUser
     {
-        public Car Car{ get; private set; }
-
         private ICollection<Appointment> _appoitmentsHistory;
         public IReadOnlyCollection<Appointment> GetAppointmentsHistory => (IReadOnlyCollection<Appointment>)_appoitmentsHistory;
 
-
-
-
-        private Customer(FullName fullName,Contacts contacts, Car car) : base(fullName, contacts)
+        public Customer(FullName fullName, Contacts contacts) : base(fullName, contacts)
         {
-            Car = car;
             _appoitmentsHistory = new List<Appointment>();
         }
 
-        /*public static Customer Create(
-            FullName fullName,
-            Contacts contacts,
-            Car car)
+        public Customer Create(FullName fullName, Contacts contacts)
         {
-
-            //crearea Car intati si apoi acest obiect va fi argument pentur crearea Customer
-
-            Car car = new Car(carId, customerId, carMaker, carModel, plateNumber, vin, mileage);
-
-            return new Customer(customerId, name, surename, adress, email, phoneNumber, car);
-        }*/
-
-
-        public void AddAppointment(Appointment appointment) 
-        { 
-
+            // validation latter
+            return new Customer(fullName, contacts);
+        }
+        public void AddAppointment(Appointment appointment)
+        {
             //validation
             _appoitmentsHistory.Add(appointment);
         }
