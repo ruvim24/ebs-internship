@@ -8,8 +8,9 @@ namespace Domain.Entities.ObjectValues
 {
         public class TimeSlot
         {
-            public DateTime StartTime { get; set; }
-            public DateTime EndTime { get; set; }
+            public DateTime StartTime { get; private set; }
+            public DateTime EndTime { get; private set; }
+            public TimeSpan Duration => EndTime - StartTime;
             public TimeSlot(DateTime startTime, DateTime endTime)
             {
                 StartTime = startTime;
@@ -18,7 +19,7 @@ namespace Domain.Entities.ObjectValues
 
             public bool IsAvailable(TimeSpan duration)
             {
-                return (EndTime - StartTime) >= duration;
+                return Duration >= duration;
             }
         }
 }

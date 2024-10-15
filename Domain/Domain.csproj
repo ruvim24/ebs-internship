@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="DomainServices\" />
+    <Folder Include="Repositories\NewFolder\" />
   </ItemGroup>
 
 </Project>

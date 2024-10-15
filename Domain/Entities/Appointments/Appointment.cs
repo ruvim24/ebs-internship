@@ -39,11 +39,18 @@ namespace Domain.Entities.Appointments
             Car =   appointmentParam.car;
         }
 
-        public Appointment Create(AppointmentParam appointmentParam)
+        public Appointment? Create(AppointmentParam appointmentParam)
         {
-            //logic for avalability of time in Master, if avalable: resrve, if not remove appointment
+            var timeSlot = CalcultateTime(appointmentParam.startTime, appointmentParam.service.Duration);
 
-            return new Appointment(appointmentParam);
+            if (appointmentParam.master.ReserveAppointment(timeSlot))
+            {
+                var newAppointment =  new Appointment(appointmentParam);
+                newAppointment.Master.AddAppointment(newAppointment);
+                newAppointment.Customer.AddAppointment(newAppointment);
+                return newAppointment;
+            }
+            return null;
         }
         public void ChangeStatus(AppointmentStatus status)
         {

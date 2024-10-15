@@ -15,12 +15,14 @@ namespace Domain.Entities.Users.Customer
 
         public Customer Create(FullName fullName, Contacts contacts)
         {
-            // validation latter
             return new Customer(fullName, contacts);
         }
         public void AddAppointment(Appointment appointment)
         {
-            //validation
+            if(appointment == null)
+            {
+                throw new ArgumentNullException("appointment is null");
+            }
             _appoitmentsHistory.Add(appointment);
         }
 

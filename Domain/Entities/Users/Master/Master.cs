@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Appointments;
 using Domain.Entities.ObjectValues;
+using System.Runtime.Serialization;
 
 namespace Domain.Entities.Users.Master
 {
@@ -30,6 +31,10 @@ namespace Domain.Entities.Users.Master
         public void AddAppointment(Appointment appointment)
         {
             // ? validation
+            if (appointment == null)
+            {
+                throw new ArgumentNullException("appointment is null");
+            }
             _appointmentsHistory.Add(appointment);
         }
 
@@ -38,38 +43,54 @@ namespace Domain.Entities.Users.Master
             Schedule.Add(timeSlot);
         }
 
-        /*public bool ReserveTime(Appointment appointment)
+        public bool ReserveAppointment(TimeSlot timeSlot)
         {
             foreach (var slot in Schedule)
             {
-                //verificarea daca timpul de start nu este in afara graficului si sfarsit la fel, si deasemeanea daca durata serviciului se incadreaza
-                if (appointment.TimeSlot.StartTime < slot.StartTime
-                    && appointment.TimeSlot.EndTime > slot.EndTime
-                    && slot.IsAvailable(appointment.Service.Duration))
+                
+                if (timeSlot.StartTime >= slot.StartTime && timeSlot.EndTime <= slot.EndTime)//verificare daca este respectata limita tipului
                 {
+                    if (timeSlot.StartTime == slot.StartTime && slot.IsAvailable(timeSlot.Duration))
+                    {
+                        var reservedSlot = new TimeSlot(timeSlot.StartTime, timeSlot.EndTime);
+                        var remaningSlot = new TimeSlot(timeSlot.EndTime, slot.EndTime);
+                        Schedule.Remove(slot); //removing initial slot
+                        Schedule.Add(remaningSlot); //adding remaning slot
+                        ReservedTime.Add(reservedSlot);
+                        return true;
 
-                }
-                if (appointment.StartTime >= slot.StartTime && appointment.StartTime < slot.EndTime && slot.IsAvailable(appointment.Service.Duration))
-                {
-                    // Gestionarea sloturilor
-                    if (appointment.StartTime == slot.StartTime && appointment.StartTime + appointment.Service.Duration < slot.EndTime)
-                    {
-                        Schedule.Add(new TimeSlot(appointment.StartTime + appointment.Service.Duration, slot.EndTime));
+
                     }
-                    else if (appointment.StartTime > slot.StartTime && appointment.StartTime + appointment.Service.Duration == slot.EndTime)
+                    else if (timeSlot.EndTime == slot.EndTime && slot.IsAvailable(timeSlot.Duration)) 
                     {
-                        // Nu se face nimic
+                        var reservedSlot = new TimeSlot(timeSlot.StartTime, timeSlot.EndTime);
+                        var remainingSlot = new TimeSlot(slot.StartTime, timeSlot.StartTime);
+                        Schedule.Remove(slot);
+                        Schedule.Add(remainingSlot);
+                        ReservedTime.Add(reservedSlot);
+
+                        return true;
                     }
                     else
                     {
-                        Schedule.Add(new TimeSlot(slot.StartTime, appointment.StartTime));
-                        Schedule.Add(new TimeSlot(appointment.StartTime + appointment.Service.Duration, slot.EndTime));
+                        var preReserved = new TimeSlot(slot.StartTime, timeSlot.StartTime);
+                        var reservedSlot = timeSlot; 
+                        var afterReserved = new TimeSlot(timeSlot.EndTime, slot.EndTime);
+
+                        Schedule.Remove(slot);
+                        Schedule.Add(preReserved);
+                        Schedule.Add(afterReserved);
+                        ReservedTime.Add(afterReserved);
+
+                        return true;
+
+                        //cream 3 new sloturi
+                        // 2 - ramase neocupate si 1 rezervat
                     }
-                    Schedule.Remove(slot);
-                    return true;
                 }
+
             }
             return false;
-        }*/
+        }
     }
 }
