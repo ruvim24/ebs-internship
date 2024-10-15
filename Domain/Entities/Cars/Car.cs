@@ -1,11 +1,5 @@
 ﻿using Domain.Entities.ServicesEntities;
 using Domain.Entities.Users.Customer;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Entities.Cars
 {
@@ -39,7 +33,6 @@ namespace Domain.Entities.Cars
         {
             return new Car(carParam);
         }
-
 
         public IReadOnlyCollection<Service> GetServicesHistory => (IReadOnlyCollection<Service>)_serviceHistory;
         public void AddService(Service service) => _serviceHistory.Add(service);

@@ -22,7 +22,7 @@ namespace Domain.Entities.Appointments
         public int CustomerId { get; set; }
         public Customer Customer { get; set; }
 
-        public int CarId { get; set; }
+        public Guid CarId { get; set; }
         public Car Car { get; set; }
 
 
@@ -48,8 +48,10 @@ namespace Domain.Entities.Appointments
                 var newAppointment =  new Appointment(appointmentParam);
                 newAppointment.Master.AddAppointment(newAppointment);
                 newAppointment.Customer.AddAppointment(newAppointment);
+
                 return newAppointment;
             }
+
             return null;
         }
         public void ChangeStatus(AppointmentStatus status)

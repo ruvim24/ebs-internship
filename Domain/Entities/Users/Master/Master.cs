@@ -1,6 +1,5 @@
 ﻿using Domain.Entities.Appointments;
 using Domain.Entities.ObjectValues;
-using System.Runtime.Serialization;
 
 namespace Domain.Entities.Users.Master
 {
@@ -9,7 +8,6 @@ namespace Domain.Entities.Users.Master
         public MasterType MasterType { get; private set; }
         public ICollection<TimeSlot> Schedule { get; private set; }
         public ICollection<TimeSlot> ReservedTime { get; private set; }
-
         private ICollection<Appointment> _appointmentsHistory;
 
 
@@ -20,17 +18,13 @@ namespace Domain.Entities.Users.Master
         }
 
         public Master Create(FullName fullName, Contacts contacts, MasterType masterType)
-
-
-            
         {
-            //latter validation
             return new Master(fullName, contacts, masterType);
         }
 
         public void AddAppointment(Appointment appointment)
         {
-            // ? validation
+            //validation
             if (appointment == null)
             {
                 throw new ArgumentNullException("appointment is null");
@@ -47,24 +41,24 @@ namespace Domain.Entities.Users.Master
         {
             foreach (var slot in Schedule)
             {
-                
-                if (timeSlot.StartTime >= slot.StartTime && timeSlot.EndTime <= slot.EndTime)//verificare daca este respectata limita tipului
+                if (timeSlot.StartTime >= slot.StartTime && timeSlot.EndTime <= slot.EndTime) //verificaton if the time is in the time limit
                 {
                     if (timeSlot.StartTime == slot.StartTime && slot.IsAvailable(timeSlot.Duration))
                     {
                         var reservedSlot = new TimeSlot(timeSlot.StartTime, timeSlot.EndTime);
                         var remaningSlot = new TimeSlot(timeSlot.EndTime, slot.EndTime);
+
                         Schedule.Remove(slot); //removing initial slot
                         Schedule.Add(remaningSlot); //adding remaning slot
                         ReservedTime.Add(reservedSlot);
+
                         return true;
-
-
                     }
                     else if (timeSlot.EndTime == slot.EndTime && slot.IsAvailable(timeSlot.Duration)) 
                     {
                         var reservedSlot = new TimeSlot(timeSlot.StartTime, timeSlot.EndTime);
                         var remainingSlot = new TimeSlot(slot.StartTime, timeSlot.StartTime);
+
                         Schedule.Remove(slot);
                         Schedule.Add(remainingSlot);
                         ReservedTime.Add(reservedSlot);
@@ -73,8 +67,8 @@ namespace Domain.Entities.Users.Master
                     }
                     else
                     {
+                        var reservedSlot = timeSlot;
                         var preReserved = new TimeSlot(slot.StartTime, timeSlot.StartTime);
-                        var reservedSlot = timeSlot; 
                         var afterReserved = new TimeSlot(timeSlot.EndTime, slot.EndTime);
 
                         Schedule.Remove(slot);
@@ -83,13 +77,10 @@ namespace Domain.Entities.Users.Master
                         ReservedTime.Add(afterReserved);
 
                         return true;
-
-                        //cream 3 new sloturi
-                        // 2 - ramase neocupate si 1 rezervat
                     }
                 }
-
             }
+
             return false;
         }
     }

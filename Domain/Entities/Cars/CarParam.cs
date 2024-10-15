@@ -7,5 +7,11 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities.Cars
 {
-    public record CarParam(Guid customerId, Customer customer, string maker, string model, string plateNumber, string vin, int mileage);
+    public record CarParam(Guid customerId,
+        Customer customer, 
+        string maker, 
+        string model, 
+        string plateNumber, 
+        string vin, 
+        int mileage);
 }

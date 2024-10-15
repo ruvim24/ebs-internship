@@ -1,8 +1,4 @@
-﻿using Domain.Repositories;
-using System.Collections;
-using System.Runtime.InteropServices;
-
-namespace Domain.Repositories
+﻿namespace Domain.Repositories
 {
     public interface IRepository<T> where T : class
     {
