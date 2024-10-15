@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities.Enums
+namespace Domain.Entities.Users.Master
 {
-    public enum ServiceType
+    public enum MasterType
     {
-        Consultation,
-        Maintenance,
-        Reparation
+        Mechanic,
+        Electrician,
+        EngineTechnician
     }
 }

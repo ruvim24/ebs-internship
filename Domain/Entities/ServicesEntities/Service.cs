@@ -1,5 +1,4 @@
-﻿using Domain.Entities.Enums;
-using Domain.Entities.Users;
+﻿using Domain.Entities.Users.Master;
 using System;
 using System.Collections.Generic;
 using System.Linq;

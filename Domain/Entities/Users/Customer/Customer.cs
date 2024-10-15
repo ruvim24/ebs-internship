@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Appointments;
 using Domain.Entities.ObjectValues;
 
-namespace Domain.Entities.Users
+namespace Domain.Entities.Users.Customer
 {
     public sealed class Customer : BaseUser
     {

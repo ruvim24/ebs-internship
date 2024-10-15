@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities.ObjectValues
 {
-    public class TimeSlot
-    {
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public TimeSlot(DateTime startTime, DateTime endTime)
+        public class TimeSlot
         {
-            StartTime = startTime;
-            EndTime = endTime;
-        }
+            public DateTime StartTime { get; set; }
+            public DateTime EndTime { get; set; }
+            public TimeSlot(DateTime startTime, DateTime endTime)
+            {
+                StartTime = startTime;
+                EndTime = endTime;
+            }
 
-        public bool IsAvailable(TimeSpan duration)
-        {
-            return (EndTime - StartTime) >= duration;
+            public bool IsAvailable(TimeSpan duration)
+            {
+                return (EndTime - StartTime) >= duration;
+            }
         }
-    }
 }

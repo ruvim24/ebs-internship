@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities.Enums
+namespace Domain.Entities.Users.Users
 {
-    public enum MasterType
+    public enum RoleType
     {
-        Mechanic, 
-        Electrician,
-        EngineTechnician
+        Customer,
+        Master,
+        Admin
     }
 }

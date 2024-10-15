@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities.Enums
+namespace Domain.Entities.Appointments
 {
     public enum AppointmentStatus
     {
-        Scheduled, 
+        Scheduled,
         Completed,
         Canceled,
         Expired

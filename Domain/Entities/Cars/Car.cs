@@ -1,5 +1,5 @@
 ﻿using Domain.Entities.ServicesEntities;
-using Domain.Entities.Users;
+using Domain.Entities.Users.Customer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,22 +22,22 @@ namespace Domain.Entities.Cars
 
         private ICollection<Service> _serviceHistory;
 
-        public Car( Guid customerId, Customer customer, string maker, string model, string plateNumber, string vin, int mileage)
+        public Car(CarParam carParam)
         {
             Id = Guid.NewGuid();
-            CustomerId = customerId;
-            Customer = customer;
-            Maker = maker;
-            Model = model;
-            PlateNumber = plateNumber;
-            VIN = vin;
-            Mileage = mileage;
+            CustomerId = carParam.customerId;
+            Customer = carParam.customer;
+            Maker = carParam.maker;
+            Model = carParam.model;
+            PlateNumber = carParam.plateNumber;
+            VIN = carParam.vin;
+            Mileage = carParam.mileage;
             _serviceHistory = new List<Service>();
         }
 
-        public static Car Create( Guid customerId, Customer customer, string maker, string model, string plateNumber, string vin, int mileage)
+        public static Car Create(CarParam carParam)
         {
-            return new Car(customerId, customer, maker, model, plateNumber, vin, mileage);
+            return new Car(carParam);
         }
 
 

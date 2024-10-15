@@ -1,18 +1,19 @@
 ﻿using Domain.Entities.Cars;
-using Domain.Entities.Enums;
+using Domain.Entities.ObjectValues;
 using Domain.Entities.ServicesEntities;
-using Domain.Entities.Users;
+using Domain.Entities.Users.Customer;
+using Domain.Entities.Users.Master;
 
 namespace Domain.Entities.Appointments
 {
     public sealed class Appointment
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now; 
-        public DateTime StartTime{ get; set; }
-        public DateTime EndTime => StartTime + Service.Duration;
-        public AppointmentStatus Status { get; set; } = AppointmentStatus.Scheduled; // la crearea apointmentului sa fie din start pe scheduled
 
+        public TimeSlot TimeSlot { get; set; }
+
+        public AppointmentStatus Status { get; set; } = AppointmentStatus.Scheduled;
         public Service Service { get; set; }
 
         public int MasterId { get; set; }
@@ -25,21 +26,35 @@ namespace Domain.Entities.Appointments
         public Car Car { get; set; }
 
 
-        private Appointment(int id, DateTime createdAt, DateTime startTime, Service service, int masterId, Master master, int customerId, Customer customer, int carId, Car car)
+        private Appointment(AppointmentParam appointmentParam)
         {
-            Id = id;
-            CreatedAt = createdAt;
-            StartTime = startTime;
-            Service = service;
-            MasterId = masterId;
-            Master = master;
-            CustomerId = customerId;
-            CarId = carId;
-            Car = car;
+            Id = Guid.NewGuid();
+            CreatedAt = appointmentParam.createdAt;
+            TimeSlot = CalcultateTime(appointmentParam.startTime, Service.Duration);
+            Service = appointmentParam.service;
+            MasterId = appointmentParam.masterId;
+            Master = appointmentParam.master;
+            CustomerId = appointmentParam.customerId;
+            CarId = appointmentParam.carId;
+            Car =   appointmentParam.car;
+        }
+
+        public Appointment Create(AppointmentParam appointmentParam)
+        {
+            //logic for avalability of time in Master, if avalable: resrve, if not remove appointment
+
+            return new Appointment(appointmentParam);
         }
         public void ChangeStatus(AppointmentStatus status)
         {
             Status = status;
+        }
+
+        public TimeSlot CalcultateTime(DateTime startTime , TimeSpan duration)
+        {
+            var end = startTime + duration;
+            return new TimeSlot(startTime, end);
+
         }
     }
 }

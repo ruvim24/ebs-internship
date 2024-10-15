@@ -1,6 +1,4 @@
-﻿using Domain.Entities.Enums;
-
-namespace Domain.Entities.Users
+﻿namespace Domain.Entities.Users.Users
 {
     public class UserRole
     {
