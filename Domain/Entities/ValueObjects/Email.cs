@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Domain.Entities.ObjectValues
+namespace Domain.Entities.ValueObjects
 {
     public class Email
     {

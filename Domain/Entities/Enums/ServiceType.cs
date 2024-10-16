@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities.Users.Users
+namespace Domain.Entities.Enums
 {
-    public enum RoleType
+    public enum ServiceType
     {
-        Customer,
-        Master,
-        Admin
+        Consultation,
+        Maintenance,
+        Reparation
     }
 }

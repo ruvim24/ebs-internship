@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.DomainEvents
+namespace Domain.Entities.Enums
 {
-    internal class AppointmentCreated
+    public enum RoleType
     {
+        Customer,
+        Master,
+        Admin
     }
 }
