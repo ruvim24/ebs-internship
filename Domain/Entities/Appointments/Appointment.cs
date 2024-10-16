@@ -2,28 +2,28 @@
 using Domain.Entities.ObjectValues;
 using Domain.Entities.ServicesEntities;
 using Domain.Entities.Users.Customer;
-using Domain.Entities.Users.Master;
+using Domain.Entities.Users.Masters;
 
-namespace Domain.Entities.Appointments
+namespace Domain.Entities.Appointments 
 {
     public sealed class Appointment
     {
         public Guid Id { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now; 
+        public DateTime CreatedAt { get; private set; } = DateTime.Now; 
 
-        public TimeSlot TimeSlot { get; set; }
+        public TimeSlot TimeSlot { get; private set; }
 
-        public AppointmentStatus Status { get; set; } = AppointmentStatus.Scheduled;
-        public Service Service { get; set; }
+        public AppointmentStatus Status { get; private set; } = AppointmentStatus.Scheduled;
+        public Service Service { get; private set; }
 
-        public int MasterId { get; set; }
-        public Master Master { get; set; }
+        public int MasterId { get; private set; }
+        public Master Master { get; private set; }
 
-        public int CustomerId { get; set; }
-        public Customer Customer { get; set; }
+        public int CustomerId { get; private set; }
+        public Customer Customer { get; private set; }
 
-        public Guid CarId { get; set; }
-        public Car Car { get; set; }
+        public Guid CarId { get; private set; }
+        public Car Car { get; private set; }
 
 
         private Appointment(AppointmentParam appointmentParam)

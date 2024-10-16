@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Appointments;
 using Domain.Entities.ObjectValues;
 
-namespace Domain.Entities.Users.Master
+namespace Domain.Entities.Users.Masters
 {
     public sealed class Master : BaseUser
     {

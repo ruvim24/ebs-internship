@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Cars;
 using Domain.Entities.ServicesEntities;
 using Domain.Entities.Users.Customer;
-using Domain.Entities.Users.Master;
+using Domain.Entities.Users.Masters;
 
 namespace Domain.Entities.Appointments
 {

@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities.Users.Master
+namespace Domain.DomainEvents
 {
-    public enum MasterType
+    internal class AppointmentCreated
     {
-        Mechanic,
-        Electrician,
-        EngineTechnician
     }
 }
