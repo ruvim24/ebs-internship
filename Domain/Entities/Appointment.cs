@@ -7,23 +7,36 @@ namespace Domain.Domain.Entitites
     {
         public int Id { get; private set; } 
         public int CarId { get; private set; }
+        public Car Car { get; private set; }
         public int ServiceId { get; private set; }
+        public Service Service { get; private set; }
         public int SlotId  { get; private set; }
+        public Slot Slot { get; private set; }
         public AppointmentStatus Status { get; private set; }
 
 
 
-        private Appointment(int carId, int serviceId, int slotId)
+
+
+
+
+
+
+
+        private Appointment(Car car, Service service, Slot slot)
         {
-            CarId = carId;
-            ServiceId = serviceId;
-            SlotId = slotId;
+            CarId = car.Id;
+            Car = car;
+            ServiceId = service.Id;
+            Service = service;
+            SlotId = slot.Id;
+            Slot = slot;
             Status = AppointmentStatus.Scheduled;
              
         }
-        public static Appointment Create(int carId, int serviceId, int slotId)
+        public static Appointment Create(Car car, Service service, Slot slot)
         {
-            return new Appointment(carId, serviceId, slotId);
+            return new Appointment(car, service, slot);
         }
 
 

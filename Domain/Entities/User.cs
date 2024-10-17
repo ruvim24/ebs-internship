@@ -12,10 +12,11 @@ namespace Domain.Domain.Entitites
         public string Password { get; private set; }
         public Role Role { get; private set; }
         public int? ServiceId { get; private set; }
+        public Service? Service { get; private set; }
 
 
 
-        private User(string fullName, Email email, PhoneNumber phoneNumber, string password, Role role, int? serviceId)
+        private User(string fullName, Email email, PhoneNumber phoneNumber, string password, Role role, int? serviceId, Service? service)
         {
             FullName = fullName;
             Email = email;
@@ -25,9 +26,9 @@ namespace Domain.Domain.Entitites
             ServiceId = serviceId;
         }
 
-        public User Create(string fullName, Email email, PhoneNumber phoneNumber, string password, Role role, int? serviceId)
+        public User Create(string fullName, Email email, PhoneNumber phoneNumber, string password, Role role, int? serviceId, Service? service)
         {
-            return new User(fullName, email, phoneNumber, password, role, serviceId);
+            return new User(fullName, email, phoneNumber, password, role, serviceId, service);
         }
     }
 }

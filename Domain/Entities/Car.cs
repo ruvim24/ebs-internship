@@ -6,24 +6,26 @@ namespace Domain.Domain.Entitites
     {
         public int Id { get; private set; } 
         public int CustomerId { get; private set; }
+        public User Customer { get; private set; }
         public string Maker { get; private set; }
         public string Model { get; private set; }
         public string PlateNumber { get; private set; }
         public string VIN { get; private set; }
 
 
-        private Car(int customerId, string maker, string model, string plateNumber, string vin)
+        private Car(User customer,  string maker, string model, string plateNumber, string vin)
         {
-            CustomerId = customerId;
+            CustomerId = customer.Id;
+            Customer = customer;
             Maker = maker;
             Model = model;
             PlateNumber = plateNumber;
             VIN = vin;
         }
 
-        public static Car Create(int customerId, string maker, string model, string plateNumber, string vin)
+        public static Car Create(User customer, string maker, string model, string plateNumber, string vin)
         {
-            return new Car(customerId, maker, model, plateNumber, vin); 
+            return new Car(customer, maker, model, plateNumber, vin); 
         }
     }
 }

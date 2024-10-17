@@ -5,9 +5,6 @@
         DayOfWeek DayOfWeek { get; set; }
         TimeOnly StartTime { get; set; }
         TimeOnly EndTime { get; set; }
-
-
-        public List<DaySchedule> WeekSchedule;
     }
 
 

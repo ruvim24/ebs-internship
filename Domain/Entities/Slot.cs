@@ -3,6 +3,8 @@
     public class Slot
     {
         public int Id { get; private set; }
+        public int MasterId { get; private set; }
+        public User Master { get; private set; }
         public DateTime StartTime { get; private set; }
         public DateTime EndTime { get; private set; }
         public bool Availability {  get; private set; }
