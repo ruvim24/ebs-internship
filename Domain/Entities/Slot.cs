@@ -2,9 +2,24 @@
 {
     public class Slot
     {
-        public int Id { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public bool Availability {  get; set; } 
+        public int Id { get; private set; }
+        public DateTime StartTime { get; private set; }
+        public DateTime EndTime { get; private set; }
+        public bool Availability {  get; private set; }
+
+        private Slot(DateTime startTime, DateTime endTime)
+        {
+             StartTime = startTime;
+            EndTime = endTime;
+            Availability = true;
+        }
+
+        public static Slot Create(DateTime startTime, DateTime endTime)
+        {
+            return new Slot(startTime, endTime);
+        }
+
+        public bool IsAvailable() { return Availability; }
+        public void SetNotAvailabile() { Availability = false; }
     }
 }
