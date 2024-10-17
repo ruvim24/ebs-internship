@@ -1,4 +1,5 @@
 ﻿using Domain.Domain.Entitites;
+using Domain.Entities.ValueObjects.Schedule;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Configuration;
 
@@ -11,6 +12,7 @@ namespace Persistence.DBContext
         DbSet<Service> Services { get; set; }
         DbSet<Car> Cars { get; set; }
         DbSet<Appointment> Appointments { get; set; }
+        DbSet<WeekSchedule> WeekSchedules { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions options) : base(options)

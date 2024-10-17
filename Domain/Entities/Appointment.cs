@@ -1,4 +1,6 @@
-﻿using Domain.Entities.Enums;
+﻿
+
+using Domain.Entities.Enums;
 using System.Xml.Serialization;
 
 namespace Domain.Domain.Entitites
@@ -13,14 +15,6 @@ namespace Domain.Domain.Entitites
         public int SlotId  { get; private set; }
         public Slot Slot { get; private set; }
         public AppointmentStatus Status { get; private set; }
-
-
-
-
-
-
-
-
 
 
         private Appointment(Car car, Service service, Slot slot)

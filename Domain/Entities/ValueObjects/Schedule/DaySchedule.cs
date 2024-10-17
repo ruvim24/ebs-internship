@@ -2,9 +2,16 @@
 {
     public class DaySchedule
     {
-        DayOfWeek DayOfWeek { get; set; }
-        TimeOnly StartTime { get; set; }
-        TimeOnly EndTime { get; set; }
+        public DayOfWeek DayOfWeek { get; set; }
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
+
+        public DaySchedule(DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime)
+        {
+            DayOfWeek = dayOfWeek;
+            StartTime = startTime;
+            EndTime = endTime;
+        }
     }
 
 
