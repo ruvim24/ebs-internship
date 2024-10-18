@@ -17,9 +17,12 @@ namespace Persistence.Configuration
         {
             builder.HasKey(x => x.Id);
 
-            builder.HasMany<DaySchedule>()
-                .WithOne()
-                .HasForeignKey(x => x.Id);
+
+            builder.HasMany(ws => ws.DaySchedules) 
+           .WithOne(ds => ds.WeekSchedule) 
+           .HasForeignKey(ds => ds.WeekScheduleId) 
+           .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }
