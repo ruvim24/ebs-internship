@@ -14,6 +14,7 @@ namespace Domain.Domain.Entitites
         public TimeSpan Duration { get; private set; }
 
 
+        private Service() { }
         private Service(User master, string name, string description, ServiceType serviceType, decimal price, TimeSpan duration)
         {
             MasterId = master.Id;

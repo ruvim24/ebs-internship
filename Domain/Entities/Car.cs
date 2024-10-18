@@ -12,7 +12,7 @@ namespace Domain.Domain.Entitites
         public string PlateNumber { get; private set; }
         public string VIN { get; private set; }
 
-
+        private Car() { }
         private Car(User customer,  string maker, string model, string plateNumber, string vin)
         {
             CustomerId = customer.Id;

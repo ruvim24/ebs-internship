@@ -16,7 +16,7 @@ namespace Domain.Domain.Entitites
         public Slot Slot { get; private set; }
         public AppointmentStatus Status { get; private set; }
 
-
+        private Appointment() { }
         private Appointment(Car car, Service service, Slot slot)
         {
             CarId = car.Id;
@@ -39,6 +39,7 @@ namespace Domain.Domain.Entitites
             if (Status == AppointmentStatus.Scheduled)
             {
                 Status = AppointmentStatus.Completed;
+                //rasing a domain event??
             }
         }
         public void Cancel()
@@ -46,6 +47,7 @@ namespace Domain.Domain.Entitites
             if (Status == AppointmentStatus.Scheduled)
             {
                 Status = AppointmentStatus.Canceled;
+                //rasing a domain event??
             }
         }
     }

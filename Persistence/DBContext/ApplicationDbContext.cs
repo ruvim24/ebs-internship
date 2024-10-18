@@ -2,6 +2,7 @@
 using Domain.Entities.ValueObjects.Schedule;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Configuration;
+using System.Reflection;
 
 namespace Persistence.DBContext
 {
@@ -21,11 +22,19 @@ namespace Persistence.DBContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetAssembly(typeof(ApplicationDbContext)));
+
+            /*modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new SlotConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new CarConfiguration());
             modelBuilder.ApplyConfiguration(new AppointmentConfiguration());
+            modelBuilder.ApplyConfiguration(new DayScheduleConfiguration());
+            modelBuilder.ApplyConfiguration(new  WeekScheduleConfiguration());*/
+
+
+            /*modelBuilder.Entity<DaySchedule>()
+                .HasNoKey();*/
         }
     }
 }

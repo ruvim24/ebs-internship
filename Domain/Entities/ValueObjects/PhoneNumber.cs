@@ -4,7 +4,7 @@ namespace Domain.Entities.ValueObjects
 {
     public class PhoneNumber
     {
-        private readonly string _value;
+        public readonly string Value;
 
         public PhoneNumber(string value)
         {
@@ -12,10 +12,10 @@ namespace Domain.Entities.ValueObjects
             {
                 throw new ArgumentException("Numărul de telefon invalid.");
             }
-            _value = value;
+            Value = value;
         }
 
-        public override string ToString() => _value;
+        public override string ToString() => Value;
 
         private bool IsValidPhoneNumber(string phoneNumber)
         {

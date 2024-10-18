@@ -2,14 +2,16 @@
 {
     public class WeekSchedule
     {
-        private static WeekSchedule _instance;
-        public static WeekSchedule Instance => _instance ?? (_instance = new WeekSchedule());
-
-
+        public int Id { get; private set; }
         public List<DaySchedule> DaySchedules { get; private set; }
 
-        private WeekSchedule() { }
+        private WeekSchedule() { } 
 
+        public WeekSchedule Create()
+        {
+            DaySchedules = new List<DaySchedule>();
+            return this;
+        }
         public void AddDaySchedule(DaySchedule daySchedule)
         {
             if (!DaySchedules.Contains(daySchedule))

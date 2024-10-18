@@ -15,7 +15,7 @@ namespace Domain.Domain.Entitites
         public Service? Service { get; private set; }
 
 
-
+        private User() { }
         private User(string fullName, Email email, PhoneNumber phoneNumber, string password, Role role, int? serviceId, Service? service)
         {
             FullName = fullName;

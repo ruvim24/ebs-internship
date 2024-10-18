@@ -1,4 +1,5 @@
 ﻿using Domain.Domain.Entitites;
+using Domain.Entities.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,12 +19,19 @@ namespace Persistence.Configuration
                 .IsRequired() 
                 .HasMaxLength(30);
 
-            builder.Property(u => u.Email)
+            /*builder.Property(u => u.Email)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(50);*/
 
-            builder.Property(u => u.PhoneNumber)
-                .IsRequired(false);
+            builder.OwnsOne(x => x.Email, email => 
+              email.Property(c => c.Value).IsRequired().HasMaxLength(50));
+              
+
+            /*builder.Property(u => u.PhoneNumber)
+                .IsRequired(false);*/
+
+            builder.OwnsOne(x => x.PhoneNumber, phoneBuilder =>
+             phoneBuilder.Property(c => c.Value).IsRequired().HasMaxLength(50));
 
             builder.Property(u => u.Role)
                 .IsRequired(); 
@@ -33,6 +41,8 @@ namespace Persistence.Configuration
                 .WithOne(x => x.Master)
                 .HasForeignKey<User>(x => x.ServiceId)
                 .IsRequired(false);
+
+
         }
     }
 }

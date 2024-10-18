@@ -9,6 +9,7 @@
         public DateTime EndTime { get; private set; }
         public bool Availability {  get; private set; }
 
+        private Slot() { }
         private Slot(DateTime startTime, DateTime endTime)
         {
              StartTime = startTime;
