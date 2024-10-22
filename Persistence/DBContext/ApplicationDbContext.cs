@@ -1,5 +1,5 @@
 ﻿using Domain.Domain.Entitites;
-using Domain.Entities.ValueObjects.Schedule;
+using Domain.Entities.Schedule;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Configuration;
 using System.Reflection;

@@ -1,4 +1,4 @@
-﻿using Domain.Entities.ValueObjects.Schedule;
+﻿using Domain.Entities.Schedule;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;

@@ -1,0 +1,19 @@
+﻿
+
+namespace Domain.Entities.Schedule
+{
+    public class DaySchedule
+    {
+        public int Id { get; private set; }
+        public DayOfWeek DayOfWeek { get; set; }
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
+
+        public DaySchedule(DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime)
+        {
+            DayOfWeek = dayOfWeek;
+            StartTime = startTime;
+            EndTime = endTime;
+        }
+    }
+}
