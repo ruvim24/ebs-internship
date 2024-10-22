@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Domain\\Domain.csproj": {}
+    "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Domain\\Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Domain\\Domain.csproj": {
+    "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Domain\\Domain.csproj",
+        "projectUniqueName": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Domain\\Domain.csproj",
+        "projectPath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\ruvim.stratila\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Domain\\obj\\",
+        "outputPath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ruvim.stratila\\AppData\\Roaming\\NuGet\\NuGet.Config",

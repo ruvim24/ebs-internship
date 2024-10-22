@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "+iex9FOBih8=",
+  "dgSpecHash": "eKfMRxCIYjM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\AutoService\\AutoService.csproj",
+  "projectFilePath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\AutoService\\AutoService.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ruvim.stratila\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\ruvim.stratila\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
@@ -49,12 +49,5 @@
     "C:\\Users\\ruvim.stratila\\.nuget\\packages\\system.text.encoding.codepages\\6.0.0\\system.text.encoding.codepages.6.0.0.nupkg.sha512",
     "C:\\Users\\ruvim.stratila\\.nuget\\packages\\system.threading.channels\\6.0.0\\system.threading.channels.6.0.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\AutoService\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
-    }
-  ]
+  "logs": []
 }

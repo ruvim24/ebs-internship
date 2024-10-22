@@ -1,6 +1,4 @@
-﻿
-
-using Domain.Entities.Enums;
+﻿using Domain.Entities.Enums;
 using System.Xml.Serialization;
 
 namespace Domain.Domain.Entitites

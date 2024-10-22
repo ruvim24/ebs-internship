@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\AutoService\\AutoService.csproj": {}
+    "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\AutoService\\AutoService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\AutoService\\AutoService.csproj": {
+    "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\AutoService\\AutoService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\AutoService\\AutoService.csproj",
+        "projectUniqueName": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\AutoService\\AutoService.csproj",
         "projectName": "AutoService",
-        "projectPath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\AutoService\\AutoService.csproj",
+        "projectPath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\AutoService\\AutoService.csproj",
         "packagesPath": "C:\\Users\\ruvim.stratila\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\AutoService\\obj\\",
+        "outputPath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\AutoService\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ruvim.stratila\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -29,8 +29,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Persistence\\Persistence.csproj": {
-                "projectPath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Persistence\\Persistence.csproj"
+              "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Persistence\\Persistence.csproj": {
+                "projectPath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Persistence\\Persistence.csproj"
               }
             }
           }
@@ -84,14 +84,14 @@
         }
       }
     },
-    "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Domain\\Domain.csproj": {
+    "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Domain\\Domain.csproj",
+        "projectUniqueName": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Domain\\Domain.csproj",
+        "projectPath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\ruvim.stratila\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Domain\\obj\\",
+        "outputPath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ruvim.stratila\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -145,14 +145,14 @@
         }
       }
     },
-    "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Persistence\\Persistence.csproj": {
+    "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Persistence\\Persistence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Persistence\\Persistence.csproj",
+        "projectUniqueName": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Persistence\\Persistence.csproj",
         "projectName": "Persistence",
-        "projectPath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Persistence\\Persistence.csproj",
+        "projectPath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Persistence\\Persistence.csproj",
         "packagesPath": "C:\\Users\\ruvim.stratila\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Persistence\\obj\\",
+        "outputPath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Persistence\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ruvim.stratila\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -170,8 +170,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Domain\\Domain.csproj"
+              "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship-new\\Domain\\Domain.csproj"
               }
             }
           }
