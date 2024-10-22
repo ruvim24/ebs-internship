@@ -2,7 +2,7 @@ using Domain.Entities.Schedule;
 
 namespace Domain.IRepositories;
 
-public interface IDayRepository
+public interface IDayScheduleRepository
 {
     Task AddAsync(DaySchedule entity);
     Task<DaySchedule> GetByIdAsync(int id);

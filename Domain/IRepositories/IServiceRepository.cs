@@ -14,4 +14,5 @@ public interface IServiceRepository
     // aditional
     Task<IEnumerable<Service>> GetServicesByMasterAsync(User user /* int MasterId?? */);
     Task<IEnumerable<Service>> GetByTypeAsync(ServiceType type);
+
 }

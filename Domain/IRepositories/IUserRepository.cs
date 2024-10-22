@@ -13,4 +13,5 @@ public interface IUserRepository
     
     //aditional
     Task<IEnumerable<User>> GetByRoleAsync(Role role);
+    
 }

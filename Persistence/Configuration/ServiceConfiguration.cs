@@ -25,6 +25,7 @@ namespace Persistence.Configuration
                 .IsRequired(); 
 
             builder.Property(s => s.Duration)
+                .HasConversion<int>()
                 .IsRequired();
 
             // one-to-one with Master
