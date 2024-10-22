@@ -8,6 +8,8 @@ namespace Persistence.Configuration
     {
         public void Configure(EntityTypeBuilder<Slot> builder)
         {
+            builder.ToTable("Slot");
+            
             builder.HasKey(x => x.Id);
 
             builder.Property(s => s.StartTime)

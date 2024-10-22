@@ -9,6 +9,7 @@ namespace Persistence.Configuration
     {
         public void Configure(EntityTypeBuilder<Car> builder)
         {
+            builder.ToTable("Car");
             builder.HasKey(x => x.Id);
 
             builder.Property(c => c.Maker)

@@ -9,7 +9,8 @@ namespace Persistence.Configuration
     {
         public void Configure(EntityTypeBuilder<Service> builder)
         {
-
+            builder.ToTable("Service");
+            
             builder.HasKey(x => x.Id);
 
             builder.Property(s => s.Name)
@@ -28,7 +29,7 @@ namespace Persistence.Configuration
 
             // one-to-one with Master
             builder.HasOne(x => x.Master)
-                .WithOne(x => x.Service)
+                .WithOne()
                 .HasForeignKey<Service>(x => x.MasterId);
         }
     }
