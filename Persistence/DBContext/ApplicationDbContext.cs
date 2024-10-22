@@ -1,22 +1,22 @@
-﻿using Domain.Domain.Entitites;
-using Domain.Entities.ValueObjects.Schedule;
+﻿using System.Reflection;
+using Domain.Domain.Entitites;
 using Microsoft.EntityFrameworkCore;
-using Persistence.Configuration;
-using System.Reflection;
 
 namespace Persistence.DBContext
 {
     public class ApplicationDbContext : DbContext
     {
-        DbSet<User> Users { get; set; }
-        DbSet<Slot> Slots { get; set; }
-        DbSet<Service> Services { get; set; }
-        DbSet<Car> Cars { get; set; }
-        DbSet<Appointment> Appointments { get; set; }
-        DbSet<WeekSchedule> WeekSchedules { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Slot> Slots { get; set; }
+        public DbSet<Service> Services { get; set; }
+        public DbSet<Car> Cars { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
 
-
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+        public ApplicationDbContext()
+        {
+            
+        }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
@@ -29,12 +29,8 @@ namespace Persistence.DBContext
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new CarConfiguration());
             modelBuilder.ApplyConfiguration(new AppointmentConfiguration());
-            modelBuilder.ApplyConfiguration(new DayScheduleConfiguration());
-            modelBuilder.ApplyConfiguration(new  WeekScheduleConfiguration());*/
+            modelBuilder.ApplyConfiguration(new DayScheduleConfiguration());*/
 
-
-            /*modelBuilder.Entity<DaySchedule>()
-                .HasNoKey();*/
         }
     }
 }

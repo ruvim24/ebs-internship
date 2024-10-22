@@ -13,12 +13,8 @@ namespace Persistence.Configuration
     {
         public void Configure(EntityTypeBuilder<DaySchedule> builder)
         {
-
-            builder.HasOne(ds => ds.WeekSchedule) 
-          .WithMany(ws => ws.DaySchedules) 
-          .HasForeignKey(ds => ds.WeekScheduleId) 
-          .OnDelete(DeleteBehavior.Cascade);
-
+            builder.ToTable("DaySchedule");
+            builder.HasKey(x => x.Id);
         }
     }
 }

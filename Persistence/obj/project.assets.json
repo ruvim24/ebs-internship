@@ -2170,11 +2170,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Persistence\\Persistence.csproj",
+      "projectUniqueName": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship\\Persistence\\Persistence.csproj",
       "projectName": "Persistence",
-      "projectPath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Persistence\\Persistence.csproj",
+      "projectPath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship\\Persistence\\Persistence.csproj",
       "packagesPath": "C:\\Users\\ruvim.stratila\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Persistence\\obj\\",
+      "outputPath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship\\Persistence\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ruvim.stratila\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -2192,8 +2192,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Domain\\Domain.csproj": {
-              "projectPath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Domain\\Domain.csproj"
+            "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship\\Domain\\Domain.csproj"
             }
           }
         }
@@ -2250,7 +2250,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

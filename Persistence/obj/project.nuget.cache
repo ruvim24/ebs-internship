@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XcsW01Bl8gg=",
+  "dgSpecHash": "zn2Dx1tCNw0=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ruvim.stratila\\source\\repos\\AutoService\\Persistence\\Persistence.csproj",
+  "projectFilePath": "C:\\Users\\ruvim.stratila\\RiderProjects\\ebs-internship\\Persistence\\Persistence.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ruvim.stratila\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\ruvim.stratila\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
