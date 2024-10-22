@@ -11,11 +11,11 @@ namespace Domain.Domain.Entitites
         public string Description { get; private set; }
         public ServiceType ServiceType { get; private set; }
         public decimal Price { get; private set; }
-        public TimeSpan Duration { get; private set; }
+        public int Duration { get; private set; }
 
 
         private Service() { }
-        private Service(User master, string name, string description, ServiceType serviceType, decimal price, TimeSpan duration)
+        private Service(User master, string name, string description, ServiceType serviceType, decimal price, int duration)
         {
             MasterId = master.Id;
             Master = master;
@@ -26,7 +26,7 @@ namespace Domain.Domain.Entitites
             Duration = duration;
         }
 
-        public static Service Create(User master, string name, string description, ServiceType serviceType, decimal price, TimeSpan duration)
+        public static Service Create(User master, string name, string description, ServiceType serviceType, decimal price, int duration)
         {
             return new Service(master, name, description, serviceType, price, duration);
         }
