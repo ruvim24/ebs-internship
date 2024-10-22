@@ -1,6 +1,4 @@
-﻿
-
-namespace Domain.Entities.Schedule
+﻿namespace Domain.Entities.Schedule
 {
     public class DaySchedule
     {
