@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Domain.Domain.Entitites;
+using Domain.Entities.Schedule;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.DBContext
@@ -11,7 +12,8 @@ namespace Persistence.DBContext
         public DbSet<Service> Services { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
-
+        
+        public DbSet<DaySchedule> DaySchedules { get; set; }
         public ApplicationDbContext()
         {
             
