@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Enums;
 using Domain.Entities.ValueObjects;
+using FluentResults;
 
 namespace Domain.Domain.Entitites
 {
@@ -22,9 +23,23 @@ namespace Domain.Domain.Entitites
             Role = role;
         }
 
-        public User Create(string fullName, Email email, PhoneNumber phoneNumber, string password, Role role)
-        {
-            return new User(fullName, email, phoneNumber, password, role);
-        }
+            public Result<User> Create(string fullName, Email email, PhoneNumber phoneNumber, string password, Role role)
+            {
+                var errors = new List<string>();
+
+                if (string.IsNullOrWhiteSpace(fullName))
+                    errors.Add("Full name is required.");
+
+                if (string.IsNullOrWhiteSpace(password))
+                    errors.Add("Password is required.");
+
+                if (role == null)
+                    errors.Add("Role is required.");
+                
+                if (errors.Any())
+                    return Result.Fail(string.Join(", ", errors));
+
+                return Result.Ok(new User(fullName, email, phoneNumber, password, role));
+            }
     }
 }

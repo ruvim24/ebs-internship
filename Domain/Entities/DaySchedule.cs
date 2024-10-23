@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities.Schedule
+﻿using FluentResults;
+
+namespace Domain.Entities.Schedule
 {
     public class DaySchedule
     {
@@ -7,11 +9,19 @@
         public TimeOnly StartTime { get; set; }
         public TimeOnly EndTime { get; set; }
 
-        public DaySchedule(DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime)
+        private DaySchedule(DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime)
         {
             DayOfWeek = dayOfWeek;
             StartTime = startTime;
             EndTime = endTime;
+        }
+
+        public static Result<DaySchedule> Create(DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime)
+        {
+            if (startTime >= endTime)
+                return Result.Fail<DaySchedule>("Start time must be earlier than end time.");
+
+            return Result.Ok(new DaySchedule(dayOfWeek, startTime, endTime));
         }
     }
 }

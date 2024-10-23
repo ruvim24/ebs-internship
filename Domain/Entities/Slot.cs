@@ -1,4 +1,6 @@
-﻿namespace Domain.Domain.Entitites
+﻿using FluentResults;
+
+namespace Domain.Domain.Entitites
 {
     public class Slot
     {
@@ -17,12 +19,26 @@
             Availability = true;
         }
 
-        public static Slot Create(DateTime startTime, DateTime endTime)
+        public static Result<Slot> Create(DateTime startTime, DateTime endTime)
         {
-            return new Slot(startTime, endTime);
+            var errors = new List<string>();
+
+            if (startTime < DateTime.Now)
+                errors.Add("Start time cannot be in the past.");
+
+            if (endTime < DateTime.Now)
+                errors.Add("End time cannot be in the past.");
+
+            if (endTime <= startTime)
+                errors.Add("End time must be after start time.");
+
+            if (errors.Any())
+                return Result.Fail(string.Join(", ", errors));
+
+            return Result.Ok(new Slot(startTime, endTime));
         }
 
         public bool IsAvailable() { return Availability; }
-        public void SetNotAvailabile() { Availability = false; }
+        public void SetNotAvailable() { Availability = false; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Enums;
 using System.Xml.Serialization;
+using FluentResults;
 
 namespace Domain.Domain.Entitites
 {
@@ -30,9 +31,9 @@ namespace Domain.Domain.Entitites
             UpdatedAt = DateTime.Now;
              
         }
-        public static Appointment Create(Car car, Service service, Slot slot)
+        public static Result<Appointment> Create(Car car, Service service, Slot slot)
         {
-            return new Appointment(car, service, slot);
+            return Result.Ok(new Appointment(car, service, slot));
         }
 
 

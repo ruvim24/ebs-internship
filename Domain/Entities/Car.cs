@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using FluentResults;
 
 namespace Domain.Domain.Entitites
 {
@@ -23,9 +24,26 @@ namespace Domain.Domain.Entitites
             VIN = vin;
         }
 
-        public static Car Create(User customer, string maker, string model, string plateNumber, string vin)
+        public static Result<Car> Create(User customer, string maker, string model, string plateNumber, string vin)
         {
-            return new Car(customer, maker, model, plateNumber, vin); 
+            var errors = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(maker))
+                errors.Add("Maker is required.");
+
+            if (string.IsNullOrWhiteSpace(model))
+                errors.Add("Model is required.");
+
+            if (string.IsNullOrWhiteSpace(plateNumber))
+                errors.Add("PlateNumber is required.");
+
+            if (string.IsNullOrWhiteSpace(vin))
+                errors.Add("VIN is required.");
+
+            if (errors.Any())
+                return Result.Fail(string.Join(", ", errors));
+            
+            return Result.Ok(new Car(customer, maker, model, plateNumber, vin)); 
         }
     }
 }

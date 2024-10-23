@@ -34,7 +34,7 @@ public class AppointmentService
         if (slot.IsAvailable())
         {
             var appointment = Appointment.Create(car, service, slot);
-           await _appointmentRepository.AddAsync(appointment);
+           await _appointmentRepository.AddAsync(appointment.Value);
         }
     }
     

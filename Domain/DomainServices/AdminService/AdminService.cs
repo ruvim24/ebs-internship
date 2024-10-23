@@ -4,7 +4,7 @@ using Domain.IRepositories;
 
 namespace Domain.Services;
 
-public class AdminService
+public class AdminService : IAdminService
 {
    
     private IUserRepository _userRepository;

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Enums;
+using FluentResults;
 
 namespace Domain.Domain.Entitites
 {
@@ -26,9 +27,29 @@ namespace Domain.Domain.Entitites
             Duration = duration;
         }
 
-        public static Service Create(User master, string name, string description, ServiceType serviceType, decimal price, int duration)
+        public static Result<Service> Create(User master, string name, string description, ServiceType serviceType, decimal price, int duration)
         {
-            return new Service(master, name, description, serviceType, price, duration);
+            var errors = new List<string>();
+
+            if (master == null)
+                errors.Add("Master user is required.");
+
+            if (string.IsNullOrWhiteSpace(name))
+                errors.Add("Name is required.");
+
+            if (string.IsNullOrWhiteSpace(description))
+                errors.Add("Description is required.");
+
+            if (price <= 0)
+                errors.Add("Price must be greater than zero.");
+
+            if (duration <= 0)
+                errors.Add("Duration must be greater than zero.");
+
+            if (errors.Any())
+                return Result.Fail(string.Join(", ", errors));
+
+            return Result.Ok(new Service(master, name, description, serviceType, price, duration));
         }
     }
 }
