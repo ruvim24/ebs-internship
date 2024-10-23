@@ -33,6 +33,9 @@ namespace Persistence.Migrations
                     b.Property<int>("CarId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("ServiceId")
                         .HasColumnType("integer");
 
@@ -41,6 +44,9 @@ namespace Persistence.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -51,7 +57,7 @@ namespace Persistence.Migrations
                     b.HasIndex("SlotId")
                         .IsUnique();
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("Domain.Domain.Entitites.Car", b =>
@@ -103,8 +109,8 @@ namespace Persistence.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("interval");
+                    b.Property<int>("Duration")
+                        .HasColumnType("integer");
 
                     b.Property<int>("MasterId")
                         .HasColumnType("integer");
@@ -265,7 +271,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Domain.Entitites.User", b =>
                 {
-                    b.OwnsOne("Domain.Domain.Entitites.User.Email#Domain.Entities.ValueObjects.Email", "Email", b1 =>
+                    b.OwnsOne("Domain.Entities.ValueObjects.Email", "Email", b1 =>
                         {
                             b1.Property<int>("UserId")
                                 .HasColumnType("integer");
@@ -277,13 +283,13 @@ namespace Persistence.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("User", (string)null);
+                            b1.ToTable("User");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
                         });
 
-                    b.OwnsOne("Domain.Domain.Entitites.User.PhoneNumber#Domain.Entities.ValueObjects.PhoneNumber", "PhoneNumber", b1 =>
+                    b.OwnsOne("Domain.Entities.ValueObjects.PhoneNumber", "PhoneNumber", b1 =>
                         {
                             b1.Property<int>("UserId")
                                 .HasColumnType("integer");
@@ -295,7 +301,7 @@ namespace Persistence.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("User", (string)null);
+                            b1.ToTable("User");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
