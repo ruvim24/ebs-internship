@@ -19,7 +19,7 @@ public class SlotRepository : ISlotRepository
          await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task<Slot> GetByIdAsync(int id)
+    public async Task<Slot?> GetByIdAsync(int id)
     {
         return await _applicationDb.Slots.FirstOrDefaultAsync(x => x.Id == id);
     }

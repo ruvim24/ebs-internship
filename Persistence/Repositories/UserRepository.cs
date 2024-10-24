@@ -20,7 +20,7 @@ public class UserRepository : IUserRepository
         await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task<User> GetByIdAsync(int id)
+    public async Task<User?> GetByIdAsync(int id)
     {
         return await _applicationDb.Users.FirstOrDefaultAsync(a => a.Id == id);
     }
@@ -33,7 +33,7 @@ public class UserRepository : IUserRepository
     public async Task UpdateAsync(User entity)
     {
         _applicationDb.Users.Update(entity);
-        _applicationDb.SaveChangesAsync();
+        await _applicationDb.SaveChangesAsync();
     }
 
     public async Task DeleteByIdAsync(int id)

@@ -32,9 +32,6 @@ namespace Domain.Domain.Entitites
 
                 if (string.IsNullOrWhiteSpace(password))
                     errors.Add("Password is required.");
-
-                if (role == null)
-                    errors.Add("Role is required.");
                 
                 if (errors.Any())
                     return Result.Fail(string.Join(", ", errors));

@@ -31,9 +31,6 @@ namespace Domain.Domain.Entitites
         {
             var errors = new List<string>();
 
-            if (master == null)
-                errors.Add("Master user is required.");
-
             if (string.IsNullOrWhiteSpace(name))
                 errors.Add("Name is required.");
 
