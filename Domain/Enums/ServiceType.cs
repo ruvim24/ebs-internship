@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities.Enums
+namespace Domain.Enums
 {
     public enum ServiceType
     {

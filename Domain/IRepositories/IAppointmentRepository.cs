@@ -1,5 +1,5 @@
-using Domain.Domain.Entitites;
-using Domain.Entities.Enums;
+using Domain.Entities;
+using Domain.Enums;
 
 namespace Domain.IRepositories;
 

@@ -1,6 +1,6 @@
 ﻿using FluentResults;
 
-namespace Domain.Domain.Entitites
+namespace Domain.Entities
 {
     public class Slot
     {

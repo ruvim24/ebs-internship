@@ -1,4 +1,4 @@
-using Domain.Entities.Enums;
+using Domain.Enums;
 using Domain.Entities;
 namespace Application.DTOs.Service;
 

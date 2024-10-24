@@ -7,9 +7,6 @@ public class CreateServiceDtoValidator : AbstractValidator<CreateServiceDto>
 {
     public CreateServiceDtoValidator()
     {
-        RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("Id must be greater than 0");
-        
         RuleFor(x => x.MasterId)
             .GreaterThan(0).WithMessage("MasterId must be greater than 0");
         

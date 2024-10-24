@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Domain.Domain.Entitites;
+using Domain.Entities;
 using Domain.Entities.Schedule;
 using Microsoft.EntityFrameworkCore;
 

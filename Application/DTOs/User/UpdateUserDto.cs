@@ -1,4 +1,4 @@
-using Domain.Entities.Enums;
+using Domain.Enums;
 using Domain.Entities.ValueObjects;
 
 namespace Application.DTOs.User;

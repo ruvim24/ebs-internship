@@ -1,20 +1,19 @@
-﻿using Domain.Entities.Enums;
-using Domain.Entities.ValueObjects;
+﻿using Domain.Enums;
 using FluentResults;
 
-namespace Domain.Domain.Entitites
+namespace Domain.Entities
 {
     public class User
     {
         public int Id { get; private set; }
         public string FullName { get; private set; }
-        public Email Email { get; private set; }
-        public PhoneNumber PhoneNumber { get; private set; }
+        public /*Email*/ string Email { get; private set; }
+        public /*PhoneNumber*/ string PhoneNumber { get; private set; }
         public string Password { get; private set; }
         public Role Role { get; private set; }
         
         private User() { }
-        private User(string fullName, Email email, PhoneNumber phoneNumber, string password, Role role)
+        private User(string fullName, string email, string phoneNumber, string password, Role role)
         {
             FullName = fullName;
             Email = email;
@@ -23,7 +22,7 @@ namespace Domain.Domain.Entitites
             Role = role;
         }
 
-            public Result<User> Create(string fullName, Email email, PhoneNumber phoneNumber, string password, Role role)
+            public Result<User> Create(string fullName, string email, string phoneNumber, string password, Role role)
             {
                 var errors = new List<string>();
 

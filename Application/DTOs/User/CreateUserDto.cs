@@ -1,5 +1,4 @@
-using Domain.Entities.Enums;
-using Domain.Entities.ValueObjects;
+
 
 namespace Application.DTOs.User;
 
@@ -11,5 +10,5 @@ public class CreateUserDto
     public string Password { get; set; }
     
     //va fi automat pe rolul de customer??
-    public Role Role  => Role.Customer;
+    //public Role Role  => Role.Customer;
 }

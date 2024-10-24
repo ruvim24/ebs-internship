@@ -1,4 +1,4 @@
-using Domain.Entities.Enums;
+using Domain.Enums;
 
 namespace Application.DTOs.Appointment;
 

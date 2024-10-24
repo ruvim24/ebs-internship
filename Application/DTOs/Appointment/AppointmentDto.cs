@@ -1,5 +1,5 @@
-using Domain.Entities.Enums;
-using Domain.Domain.Entitites;
+using Domain.Enums;
+using Domain.Entities;
 
 namespace Application.DTOs.Appointment;
 

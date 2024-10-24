@@ -1,5 +1,5 @@
 using Application.DTOs.User;
-using Domain.Entities.Enums;
+using Domain.Enums;
 using FluentValidation;
 
 namespace Application.Validators.User;

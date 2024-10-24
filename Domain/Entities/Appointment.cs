@@ -1,8 +1,8 @@
-﻿using Domain.Entities.Enums;
+﻿using Domain.Enums;
 using System.Xml.Serialization;
 using FluentResults;
 
-namespace Domain.Domain.Entitites
+namespace Domain.Entities
 {
     public class Appointment
     {

@@ -1,8 +1,9 @@
-using Domain.Domain.Entitites;
-using Domain.Entities.Enums;
+using Domain.Entities;
+using Domain.Enums;
 using Domain.IRepositories;
+using Domain.Services;
 
-namespace Domain.Services;
+namespace Domain.DomainServices;
 
 public class AdminService : IAdminService
 {

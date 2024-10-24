@@ -1,4 +1,4 @@
-using Domain.Domain.Entitites;
+using Domain.Entities;
 using Domain.IRepositories;
 
 namespace Domain.Services;

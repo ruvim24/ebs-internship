@@ -1,7 +1,7 @@
-﻿using Domain.Entities.Enums;
+﻿using Domain.Enums;
 using FluentResults;
 
-namespace Domain.Domain.Entitites
+namespace Domain.Entities
 {
     public class Service
     {

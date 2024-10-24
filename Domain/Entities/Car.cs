@@ -1,7 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-using FluentResults;
+﻿using FluentResults;
 
-namespace Domain.Domain.Entitites
+namespace Domain.Entities
 {
     public class Car
     {
