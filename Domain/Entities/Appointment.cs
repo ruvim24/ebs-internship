@@ -18,22 +18,19 @@ namespace Domain.Entities
         public DateTime UpdatedAt { get; private set; }
 
         private Appointment() { }
-        private Appointment(Car car, Service service, Slot slot)
+        private Appointment(int carId, int serviceId, int slotId)
         {
-            CarId = car.Id;
-            Car = car;
-            ServiceId = service.Id;
-            Service = service;
-            SlotId = slot.Id;
-            Slot = slot;
+            CarId = carId;
+            ServiceId = serviceId;
+            SlotId = slotId;
             Status = AppointmentStatus.Scheduled;
             CreatedAt = DateTime.Now;
             UpdatedAt = DateTime.Now;
              
         }
-        public static Result<Appointment> Create(Car car, Service service, Slot slot)
+        public static Result<Appointment> Create(int carId, int serviceId, int slotId)
         {
-            return Result.Ok(new Appointment(car, service, slot));
+            return Result.Ok(new Appointment(carId, serviceId, slotId));
         }
 
 

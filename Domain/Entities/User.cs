@@ -22,7 +22,7 @@ namespace Domain.Entities
             Role = role;
         }
 
-            public Result<User> Create(string fullName, string email, string phoneNumber, string password, Role role)
+            public static Result<User> Create(string fullName, string email, string phoneNumber, string password, Role role)
             {
                 var errors = new List<string>();
 

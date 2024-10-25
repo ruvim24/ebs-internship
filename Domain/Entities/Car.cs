@@ -13,17 +13,16 @@ namespace Domain.Entities
         public string VIN { get; private set; }
 
         private Car() { }
-        private Car(User customer,  string maker, string model, string plateNumber, string vin)
+        private Car(int customerId,  string maker, string model, string plateNumber, string vin)
         {
-            CustomerId = customer.Id;
-            Customer = customer;
+            CustomerId = customerId;
             Maker = maker;
             Model = model;
             PlateNumber = plateNumber;
             VIN = vin;
         }
 
-        public static Result<Car> Create(User customer, string maker, string model, string plateNumber, string vin)
+        public static Result<Car> Create(int customerId, string maker, string model, string plateNumber, string vin)
         {
             var errors = new List<string>();
 
@@ -42,7 +41,7 @@ namespace Domain.Entities
             if (errors.Any())
                 return Result.Fail(string.Join(", ", errors));
             
-            return Result.Ok(new Car(customer, maker, model, plateNumber, vin)); 
+            return Result.Ok(new Car(customerId, maker, model, plateNumber, vin)); 
         }
     }
 }

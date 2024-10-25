@@ -16,10 +16,9 @@ namespace Domain.Entities
 
 
         private Service() { }
-        private Service(User master, string name, string description, ServiceType serviceType, decimal price, int duration)
+        private Service(int masterId, string name, string description, ServiceType serviceType, decimal price, int duration)
         {
-            MasterId = master.Id;
-            Master = master;
+            MasterId = masterId;
             Name = name;
             Description = description;
             ServiceType = serviceType;
@@ -27,7 +26,7 @@ namespace Domain.Entities
             Duration = duration;
         }
 
-        public static Result<Service> Create(User master, string name, string description, ServiceType serviceType, decimal price, int duration)
+        public static Result<Service> Create(int masterId, string name, string description, ServiceType serviceType, decimal price, int duration)
         {
             var errors = new List<string>();
 
@@ -46,7 +45,7 @@ namespace Domain.Entities
             if (errors.Any())
                 return Result.Fail(string.Join(", ", errors));
 
-            return Result.Ok(new Service(master, name, description, serviceType, price, duration));
+            return Result.Ok(new Service(masterId, name, description, serviceType, price, duration));
         }
     }
 }

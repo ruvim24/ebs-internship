@@ -1,6 +1,6 @@
 ﻿using FluentResults;
 
-namespace Domain.Entities.Schedule
+namespace Domain.Entities
 {
     public class DaySchedule
     {
