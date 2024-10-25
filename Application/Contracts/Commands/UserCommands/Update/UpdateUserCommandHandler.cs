@@ -1,12 +1,12 @@
-using Application.DTOs.User;
+using Application.DTOs.UserDtos;
+using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
 using FluentValidation;
 using MapsterMapper;
 using MediatR;
-using Domain.Entities;
 
-namespace Application.Contracts.Commands.User.Update;
+namespace Application.Contracts.Commands.UserCommands.Update;
 
 public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Result>
 {
@@ -22,10 +22,17 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
     }
     public async Task<Result> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        var exists = _userRepository.GetByIdAsync(request.model.Id);
+        var validationResult = _validator.Validate(request.Model);
+        if (!validationResult.IsValid)
+        {
+            var errors = string.Join(',', validationResult.Errors.Select(x => x.ErrorMessage));
+            return Result.Fail(errors);
+        }
+        
+        var exists = _userRepository.GetByIdAsync(request.Model.Id);
         if (exists.Result == null)
         {
-            return Result.Fail("User not found");
+            return Result.Fail("User.NotFound");
         }
         var user = _mapper.Map<User>(request);
         await _userRepository.UpdateAsync(user);
