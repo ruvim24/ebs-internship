@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using Domain.Entities;
-using Domain.Entities.Schedule;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.DBContext

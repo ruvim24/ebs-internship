@@ -2,7 +2,7 @@ using Application.DTOs.Appointment;
 using Domain.Enums;
 using FluentValidation;
 
-namespace Application.Validators.Appointment;
+namespace Application.Validators.AppointmentValidators;
 
 public class UpdateAppointmentDtoValidator : AbstractValidator<UpdateAppointmentDto>
 {

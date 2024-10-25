@@ -1,9 +1,10 @@
 using Domain.Entities;
 using Domain.IRepositories;
+using FluentResults;
 
-namespace Domain.Services;
+namespace Domain.DomainServices.AppointmentService;
 
-public class AppointmentService
+public class AppointmentService : IAppointmentService
 {
     private IUserRepository _userRepository;
     private IAppointmentRepository _appointmentRepository;
@@ -25,17 +26,19 @@ public class AppointmentService
         _serviceRepository = serviceRepository;
     }
 
-    public async void Create(int carId, int serviceId, int slotId)
+    public async Task<Result<Appointment>> Create(int carId, int serviceId, int slotId)
     {
         var car = await  _carRepository.GetByIdAsync(carId);
         var service = await _serviceRepository.GetByIdAsync(serviceId);
         var slot = await _slotRepository.GetByIdAsync(slotId);
 
-        if (slot.IsAvailable())
+        if (car != null && service != null && slot != null && slot.IsAvailable())
         {
-            var appointment = Appointment.Create(car, service, slot);
-           await _appointmentRepository.AddAsync(appointment.Value);
+            var appointment = Appointment.Create(carId, serviceId, slotId);
+            await _appointmentRepository.AddAsync(appointment.Value);
+            return appointment.Value;
         }
+        return Result.Fail("Invalid arguments");
     }
     
     

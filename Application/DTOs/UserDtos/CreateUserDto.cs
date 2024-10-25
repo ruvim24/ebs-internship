@@ -1,6 +1,6 @@
 
 
-namespace Application.DTOs.User;
+namespace Application.DTOs.UserDtos;
 
 public class CreateUserDto
 {

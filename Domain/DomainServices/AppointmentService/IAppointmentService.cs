@@ -1,6 +1,9 @@
-namespace Domain.Services;
+using Domain.Entities;
+using FluentResults;
+
+namespace Domain.DomainServices.AppointmentService;
 
 public interface IAppointmentService
 {
-    void Create(int carId, int serviceId, int slotId);
+    Task<Result<Appointment>> Create(int carId, int serviceId, int slotId);
 }
