@@ -25,7 +25,7 @@ public class UserRepository : IUserRepository
         return await _applicationDb.Users.FirstOrDefaultAsync(a => a.Id == id);
     }
 
-    public async Task<IEnumerable<User>> GetAllAsync()
+    public async Task<IEnumerable<User>?> GetAllAsync()
     {
         return await _applicationDb.Users.ToListAsync();
     }
@@ -42,7 +42,7 @@ public class UserRepository : IUserRepository
         await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<User>> GetByRoleAsync(Role role)
+    public async Task<IEnumerable<User>?> GetByRoleAsync(Role role)
     {
         return await _applicationDb.Users.Where(a => a.Role == role).ToListAsync();
     }

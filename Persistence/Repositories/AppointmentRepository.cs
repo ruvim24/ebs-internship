@@ -19,7 +19,7 @@ public class AppointmentRepository : IAppointmentRepository
         await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task<Appointment> GetByIdAsync(int id)   
+    public async Task<Appointment?> GetByIdAsync(int id)   
     {
         return await _applicationDb.Appointments.FirstOrDefaultAsync(a => a.Id == id);
     }
@@ -42,7 +42,7 @@ public class AppointmentRepository : IAppointmentRepository
         await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Appointment>> GetByCarAsync(Car car)
+    public async Task<IEnumerable<Appointment?>> GetByCarAsync(Car car)
     {
         return await _applicationDb.Appointments.Where(a => a.Car == car).ToListAsync();
     }

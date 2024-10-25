@@ -20,12 +20,12 @@ public class ServiceRepository : IServiceRepository
          await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task<Service> GetByIdAsync(int id)
+    public async Task<Service?> GetByIdAsync(int id)
     {
         return await _applicationDb.Services.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<IEnumerable<Service>> GetAllAsync()
+    public async Task<IEnumerable<Service>?> GetAllAsync()
     {
         return await _applicationDb.Services.ToListAsync();
     }
@@ -41,12 +41,12 @@ public class ServiceRepository : IServiceRepository
         _applicationDb.Services.Remove(await _applicationDb.Services.FirstOrDefaultAsync(x => x.Id == id));
     }
 
-    public async Task<IEnumerable<Service>> GetServicesByMasterAsync(User user)
+    public async Task<Service?> GetServicesByMasterAsync(int masterId)
     {
-        return await _applicationDb.Services.Where(x => x.Master == user).ToListAsync();
+        return await _applicationDb.Services.FirstOrDefaultAsync(x => x.MasterId == masterId);
     }
 
-    public async Task<IEnumerable<Service>> GetByTypeAsync(ServiceType type)
+    public async Task<IEnumerable<Service>?> GetByTypeAsync(ServiceType type)
     {
         return await _applicationDb.Services.Where(x => x.ServiceType == type).ToListAsync();
     }

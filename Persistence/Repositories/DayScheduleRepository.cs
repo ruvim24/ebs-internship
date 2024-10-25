@@ -1,4 +1,4 @@
-using Domain.Entities.Schedule;
+using Domain.Entities;
 using Domain.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using Persistence.DBContext;
@@ -19,7 +19,7 @@ public class DayScheduleRepository : IDayScheduleRepository
         await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task<DaySchedule> GetByIdAsync(int id)
+    public async Task<DaySchedule?> GetByIdAsync(int id)
     {
         return await _applicationDb.DaySchedules.FirstOrDefaultAsync(x => x.Id == id);
     }
@@ -40,8 +40,8 @@ public class DayScheduleRepository : IDayScheduleRepository
         _applicationDb.Remove(await _applicationDb.DaySchedules.FirstOrDefaultAsync(x => x.Id == id));
     }
 
-    public async Task<IEnumerable<DaySchedule>> GetByDayOfWeekAsync(DayOfWeek dayOfWeek)
+    public async Task<IEnumerable<DaySchedule?>> GetByDayOfWeekAsync(DayOfWeek dayOfWeek)
     {
-         return _applicationDb.DaySchedules.Where(x => x.DayOfWeek == dayOfWeek);
+         return  _applicationDb.DaySchedules.Where(x => x.DayOfWeek == dayOfWeek);
     }
 }
