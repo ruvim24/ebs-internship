@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Application.Contracts.Queries.ServiceQueries.GetByMaster;
 
-public class GetServiceByMasterCommandHandler : IRequestHandler<GetServiceByMasterCommand, Result<IEnumerable<ServiceDto>>>
+public class GetServiceByMasterCommandHandler : IRequestHandler<GetServiceByMasterQuery, Result<IEnumerable<ServiceDto>>>
 {
     private readonly IServiceRepository _serviceRepository;
     private readonly IMapper _mapper;
@@ -19,7 +19,7 @@ public class GetServiceByMasterCommandHandler : IRequestHandler<GetServiceByMast
         _mapper = mapper;
     }
 
-    public async Task<Result<IEnumerable<ServiceDto>>> Handle(GetServiceByMasterCommand request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<ServiceDto>>> Handle(GetServiceByMasterQuery request, CancellationToken cancellationToken)
     {
         if (request.MasterId < 0) return Result.Fail("Invalid Master Id");
         var service = await _serviceRepository.GetServicesByMasterAsync(request.MasterId);
