@@ -1,4 +1,4 @@
-using Application.DTOs.User;
+using Application.DTOs.UserDtos;
 using Domain.Entities;
 using Mapster;
 

@@ -4,9 +4,9 @@ using Mapster;
 
 namespace Application.Profiles;
 
-public class CarMapper
+public class CarMapper : IRegister
 {
-    public static void Configure()
+    public void Register(TypeAdapterConfig config)
     {
         TypeAdapterConfig<Car, CarDto>.NewConfig();
         

@@ -4,9 +4,9 @@ using Mapster;
 
 namespace Application.Profiles;
 
-public class AppointmentMapper
+public class AppointmentMapper : IRegister
 {
-    public static void Configure()
+    public void Register(TypeAdapterConfig config)
     {
         TypeAdapterConfig<Appointment, AppointmentDto>.NewConfig();
 

@@ -5,9 +5,9 @@ using Mapster;
 
 namespace Application.Profiles;
 
-public class SlotMapper
+public class SlotMapper : IRegister
 {
-    public static void Configure()
+    public void Register(TypeAdapterConfig config)
     {
         TypeAdapterConfig<Slot, SlotDto>.NewConfig();
             

@@ -4,9 +4,9 @@ using Mapster;
 
 namespace Application.Profiles;
 
-public class ServiceMapper
+public class ServiceMapper : IRegister
 {
-    public static void Configure()
+    public void Register(TypeAdapterConfig config)
     {
         TypeAdapterConfig<Service, ServiceDto>.NewConfig();
 

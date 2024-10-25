@@ -1,12 +1,12 @@
 using Application.DTOs.DaySchedule;
-using Domain.Entities.Schedule;
+using Domain.Entities;
 using Mapster;
 
 namespace Application.Profiles;
 
-public class DayScheduleMapper
+public class DayScheduleMapper : IRegister
 {
-    public static void Configure()
+    public void Register(TypeAdapterConfig config)
     {
         TypeAdapterConfig<DaySchedule, DayScheduleDto>.NewConfig();
 
@@ -14,6 +14,5 @@ public class DayScheduleMapper
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.StartTime, src => src.StartTime)
             .Map(dest => dest.EndTime, src => src.EndTime);
-
     }
 }
