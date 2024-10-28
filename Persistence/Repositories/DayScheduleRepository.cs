@@ -24,7 +24,7 @@ public class DayScheduleRepository : IDayScheduleRepository
         return await _applicationDb.DaySchedules.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<IEnumerable<DaySchedule>> GetAllAsync()
+    public async Task<IEnumerable<DaySchedule>?> GetAllAsync()
     {
         return await _applicationDb.DaySchedules.ToListAsync();
     }
@@ -40,8 +40,8 @@ public class DayScheduleRepository : IDayScheduleRepository
         _applicationDb.Remove(await _applicationDb.DaySchedules.FirstOrDefaultAsync(x => x.Id == id));
     }
 
-    public async Task<IEnumerable<DaySchedule?>> GetByDayOfWeekAsync(DayOfWeek dayOfWeek)
+    public async Task<DaySchedule?> GetByDayOfWeekAsync(DayOfWeek dayOfWeek)
     {
-         return  _applicationDb.DaySchedules.Where(x => x.DayOfWeek == dayOfWeek);
+         return  await _applicationDb.DaySchedules.FirstOrDefaultAsync(x => x.DayOfWeek == dayOfWeek);
     }
 }

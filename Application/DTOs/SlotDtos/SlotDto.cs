@@ -1,4 +1,4 @@
-namespace Application.DTOs.Slot;
+namespace Application.DTOs.SlotDtos;
 
 public class SlotDto
 {

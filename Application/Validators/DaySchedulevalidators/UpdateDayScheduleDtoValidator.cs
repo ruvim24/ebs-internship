@@ -1,7 +1,7 @@
 using Application.DTOs.DaySchedule;
 using FluentValidation;
 
-namespace Application.Validators.DaySchedule;
+namespace Application.Validators.DaySchedulevalidators;
 
 public class UpdateDayScheduleDtoValidator : AbstractValidator<UpdateDayScheduleDto>
 {

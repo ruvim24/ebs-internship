@@ -12,15 +12,21 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.10.0" />
-    <PackageReference Include="Mapster" Version="7.4.1-pre01" />
+    <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
-    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="MediatR" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\Queries\CarQueries\GetByCustomer\" />
-    <Folder Include="Contracts\Queries\CarQueries\GetByVin\" />
-    <Folder Include="Contracts\Queries\CarQueries\GetAll\" />
+    <Folder Include="Contracts\Queries\AppointmentQueries\GetAll\" />
+    <Folder Include="Contracts\Queries\AppointmentQueries\GetByCustomer\" />
+    <Folder Include="Contracts\Queries\AppointmentQueries\GetByMaster\" />
+    <Folder Include="Contracts\Queries\AppointmentQueries\GetByStatus\" />
+    <Folder Include="Contracts\Queries\AppointmentQueries\Get\" />
+    <Folder Include="Contracts\Queries\SlotQueries\GetByMasterAvailabilityDate\" />
+    <Folder Include="Contracts\Queries\SlotQueries\GetByMasterAvailable\" />
+    <Folder Include="Contracts\Queries\SlotQueries\GetByMasterId\" />
+    <Folder Include="Contracts\Queries\SlotQueries\GetByMasterReservedSlots\" />
   </ItemGroup>
 
 </Project>

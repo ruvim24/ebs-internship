@@ -1,7 +1,7 @@
 using Application.DTOs.Car;
 using FluentValidation;
 
-namespace Application.Validators.Car;
+namespace Application.Validators.CarValidatoros;
 
 public class UpdateCarDtoValidator : AbstractValidator<UpdateCarDto>
 {

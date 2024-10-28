@@ -1,4 +1,4 @@
-namespace Application.DTOs.Car;
+namespace Application.DTOs.CarDtos;
 
 public class CreateCarDto
 {

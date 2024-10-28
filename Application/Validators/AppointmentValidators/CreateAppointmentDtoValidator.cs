@@ -1,4 +1,5 @@
 using Application.DTOs.Appointment;
+using Application.DTOs.AppointmentDtos;
 using FluentValidation;
 
 namespace Application.Validators.AppointmentValidators;

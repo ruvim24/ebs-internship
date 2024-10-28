@@ -24,7 +24,7 @@ public class CarRepository : ICarRepository
         return await _applicationDb.Cars.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<IEnumerable<Car>> GetAllAsync()
+    public async Task<IEnumerable<Car>?> GetAllAsync()
     {
         return await _applicationDb.Cars.ToListAsync();
     }
@@ -40,9 +40,9 @@ public class CarRepository : ICarRepository
         _applicationDb.Cars.Remove(await _applicationDb.Cars.FirstOrDefaultAsync(x => x.Id == id));
     }
 
-    public async Task<Car?> GetCarByCustomerAsync(User user)
+    public async Task<Car?> GetCarByCustomerIdAsync(int customerId)
     {
-        return await _applicationDb.Cars.FirstOrDefaultAsync(x => x.Customer == user);
+        return await _applicationDb.Cars.FirstOrDefaultAsync(x => x.CustomerId == customerId);
     }
 
     public async Task<Car?> GetCarByVINAsync(string vin)

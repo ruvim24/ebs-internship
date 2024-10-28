@@ -1,7 +1,6 @@
 using Domain.Enums;
-using Domain.Entities;
 
-namespace Application.DTOs.Appointment;
+namespace Application.DTOs.AppointmentDtos;
 
 public class AppointmentDto
 {

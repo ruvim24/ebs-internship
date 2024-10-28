@@ -1,4 +1,4 @@
-using Application.DTOs.Slot;
+using Application.DTOs.SlotDtos;
 using Domain.Entities;
 using FluentResults;
 using Mapster;

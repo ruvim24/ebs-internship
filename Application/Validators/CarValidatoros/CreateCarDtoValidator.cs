@@ -1,7 +1,8 @@
 using Application.DTOs.Car;
+using Application.DTOs.CarDtos;
 using FluentValidation;
 
-namespace Application.Validators.Car;
+namespace Application.Validators.CarValidatoros;
 
 public class CreateCarDtoValidator : AbstractValidator<CreateCarDto>
 {

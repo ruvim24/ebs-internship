@@ -1,8 +1,7 @@
 using Application.DTOs.UserDtos;
-using Domain.Enums;
 using FluentValidation;
 
-namespace Application.Validators.User;
+namespace Application.Validators.UserValidators;
 
 public class UpdateUserDtoValidator : AbstractValidator<UpdateUserDto>
 {

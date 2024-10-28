@@ -1,7 +1,7 @@
 using Application.DTOs.Service;
 using FluentValidation;
 
-namespace Application.Validators.Service;
+namespace Application.Validators.ServiceValidators;
 
 public class CreateServiceDtoValidator : AbstractValidator<CreateServiceDto>
 {
