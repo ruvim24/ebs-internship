@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Application.Contracts.Queries.AppointmentQueries.GetByCarId;
 
-public record GetAppointmentByCarIdsQuery(int CarId) : IRequest<Result<IEnumerable<AppointmentDto>>>;
+public record GetAppointmentByCarIdQuery(int CarId) : IRequest<Result<IEnumerable<AppointmentDto>>>;

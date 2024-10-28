@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Contracts.Queries.AppointmentQueries.GetByCarId;
 
-public class GetAppointmentsByCarIdQueryHandler : IRequestHandler<GetAppointmentByCarIdsQuery, Result<IEnumerable<AppointmentDto>>>
+public class GetAppointmentsByCarIdQueryHandler : IRequestHandler<GetAppointmentByCarIdQuery, Result<IEnumerable<AppointmentDto>>>
 {
     private readonly IAppointmentRepository _appointmentRepository;
     private readonly IMapper _mapper;
@@ -16,7 +16,7 @@ public class GetAppointmentsByCarIdQueryHandler : IRequestHandler<GetAppointment
         _appointmentRepository = appointmentRepository;
         _mapper = mapper;
     }
-    public async Task<Result<IEnumerable<AppointmentDto>>> Handle(GetAppointmentByCarIdsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<AppointmentDto>>> Handle(GetAppointmentByCarIdQuery request, CancellationToken cancellationToken)
     {
         var result = await _appointmentRepository.GetByCarIdAsync(request.CarId);
         if(result == null) return Result.Fail("Not Appointments Found");

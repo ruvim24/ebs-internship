@@ -23,9 +23,4 @@
     <ProjectReference Include="..\Persistence\Persistence.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\AdminController\" />
-    <Folder Include="Controllers\AppointmentController\" />
-  </ItemGroup>
-
 </Project>

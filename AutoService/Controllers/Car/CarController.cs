@@ -9,7 +9,7 @@ using Application.DTOs.CarDtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AutoService.Controllers.CarController;
+namespace AutoService.Controllers.Car;
 
 [ApiController]
 [Route("api/[controller]")]
