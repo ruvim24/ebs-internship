@@ -11,6 +11,6 @@ public interface ISlotRepository
     Task DeleteByIdAsync(int id);
 
     //aditional
-    Task<IEnumerable<Slot>> GetMasterAvaialableSlotsAsync(User master /*int MasterId??*/);
+    Task<IEnumerable<Slot>?> GetMasterAvaialableSlotsAsync(int masterId);
     Task<IEnumerable<Slot>> GetAvailableSlotsAsync();
 }

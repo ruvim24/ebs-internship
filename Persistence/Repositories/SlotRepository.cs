@@ -41,9 +41,9 @@ public class SlotRepository : ISlotRepository
         await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Slot>> GetMasterAvaialableSlotsAsync(User master)
+    public async Task<IEnumerable<Slot>?> GetMasterAvaialableSlotsAsync(int masterId)
     {
-        return await _applicationDb.Slots.Where(x => x.Master == master).ToListAsync();
+        return await _applicationDb.Slots.Where(x => x.MasterId == masterId).ToListAsync();
     }
 
     public async Task<IEnumerable<Slot>> GetAvailableSlotsAsync()

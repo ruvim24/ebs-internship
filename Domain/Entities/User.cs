@@ -7,8 +7,8 @@ namespace Domain.Entities
     {
         public int Id { get; private set; }
         public string FullName { get; private set; }
-        public /*Email*/ string Email { get; private set; }
-        public /*PhoneNumber*/ string PhoneNumber { get; private set; }
+        public string Email { get; private set; }
+        public string PhoneNumber { get; private set; }
         public string Password { get; private set; }
         public Role Role { get; private set; }
         
