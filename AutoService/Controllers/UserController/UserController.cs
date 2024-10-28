@@ -39,7 +39,7 @@ namespace AutoService.Controllers.UserController
             return Ok(result.Value);
         }
 
-        [HttpGet]
+        [HttpGet("role/{roleId:int}")]
         public async Task<IActionResult> GetUserByRole([FromBody] Role role)
         {
             var users = await _mediator.Send(new GetUsersByRoleCommand(role));
