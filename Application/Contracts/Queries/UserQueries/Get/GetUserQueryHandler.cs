@@ -1,5 +1,4 @@
 using Application.DTOs.UserDtos;
-using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;

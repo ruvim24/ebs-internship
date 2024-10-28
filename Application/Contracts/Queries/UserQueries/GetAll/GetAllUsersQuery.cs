@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Application.Contracts.Queries.UserQueries.GetAll;
 
-public record GetAllUsersCommand() : IRequest<Result<IEnumerable<UserDto>>>;
+public record GetAllUsersQuery() : IRequest<Result<IEnumerable<UserDto>>>;

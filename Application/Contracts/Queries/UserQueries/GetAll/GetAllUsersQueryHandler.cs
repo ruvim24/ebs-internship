@@ -1,5 +1,4 @@
 using Application.DTOs.UserDtos;
-using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
@@ -7,7 +6,7 @@ using MediatR;
 
 namespace Application.Contracts.Queries.UserQueries.GetAll;
 
-public class GetAllUsersCommandHandler : IRequestHandler<GetAllUsersCommand, Result<IEnumerable<UserDto>>>
+public class GetAllUsersCommandHandler : IRequestHandler<GetAllUsersQuery, Result<IEnumerable<UserDto>>>
 {
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
@@ -17,7 +16,7 @@ public class GetAllUsersCommandHandler : IRequestHandler<GetAllUsersCommand, Res
         _userRepository = userRepository;
         _mapper = mapper;
     }
-    public async Task<Result<IEnumerable<UserDto>>> Handle(GetAllUsersCommand request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<UserDto>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
     {
         var allUsers = await _userRepository.GetAllAsync();
         if (allUsers == null || !allUsers.Any()) {return Result.Fail("No users found");}
