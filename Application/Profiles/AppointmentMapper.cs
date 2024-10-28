@@ -23,7 +23,7 @@ public class AppointmentMapper : IRegister
             .Map(dest => dest.CarId, src => src.CarId)
             .Map(dest => dest.ServiceId, src => src.ServiceId)
             .Map(dest => dest.SlotId, src => src.SlotId)
-            .ConstructUsing(scr =>
+            .ConstructUsing(scr =>  
                 Appointment.Create(scr.CarId, scr.ServiceId, scr.SlotId).Value);
 
         TypeAdapterConfig<UpdateAppointmentDto, Appointment>.NewConfig()
