@@ -1,7 +1,9 @@
 using Application.DTOs.Appointment;
+using Application.DTOs.AppointmentDtos;
 using Domain.DomainServices.AppointmentService;
 using Domain.IRepositories;
 using FluentResults;
+using FluentValidation;
 using MapsterMapper;
 using MediatR;
 
@@ -12,7 +14,7 @@ public class CancelAppointmentCommandHandler : IRequestHandler<CancelAppointment
     private readonly IAppointmentRepository _appointmentRepository;
     private readonly IMapper _mapper;
 
-    public CancelAppointmentCommandHandler(IAppointmentRepository appointmentRepository,  IMapper mapper)
+    public CancelAppointmentCommandHandler(IAppointmentRepository appointmentRepository, IMapper mapper)
     {
         _appointmentRepository = appointmentRepository;
         _mapper = mapper;

@@ -11,10 +11,10 @@ namespace Application.Contracts.Commands.DayScheduleCommands.Update;
 public class UpdateDayScheduleCommandHandler : IRequestHandler<UpdateDayScheduleCommand, Result<DayScheduleDto>>
 {
     private readonly IDayScheduleRepository _dayScheduleRepository;
-    private readonly IValidator<UpdateDayScheduleCommand> _validator;
+    private readonly IValidator<UpdateDayScheduleDto> _validator;
     private readonly IMapper _mapper;
 
-    public UpdateDayScheduleCommandHandler(IDayScheduleRepository dayScheduleRepository, IValidator<UpdateDayScheduleCommand> validator, IMapper mapper)
+    public UpdateDayScheduleCommandHandler(IDayScheduleRepository dayScheduleRepository, IValidator<UpdateDayScheduleDto> validator, IMapper mapper)
     {
         _dayScheduleRepository = dayScheduleRepository;
         _validator = validator;
@@ -22,7 +22,7 @@ public class UpdateDayScheduleCommandHandler : IRequestHandler<UpdateDaySchedule
     }
     public async Task<Result<DayScheduleDto>> Handle(UpdateDayScheduleCommand request, CancellationToken cancellationToken)
     {
-        var validationResult = _validator.Validate(request);
+        var validationResult = _validator.Validate(request.Model);
         if (!validationResult.IsValid)
         {
             var errors = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));

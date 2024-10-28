@@ -1,4 +1,5 @@
 using Application.DTOs.Appointment;
+using Application.DTOs.AppointmentDtos;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;

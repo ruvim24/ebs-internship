@@ -11,10 +11,10 @@ namespace Application.Contracts.Commands.ServiceCommands.Create;
 public class CreateServiceCommandHandler : IRequestHandler<CreateServiceCommand, Result<ServiceDto>>
 {
     private readonly IServiceRepository _serviceRepository;
-    private readonly IValidator<CreateServiceCommand> _validator;
+    private readonly IValidator<CreateServiceDto> _validator;
     private readonly IMapper _mapper;
 
-    public CreateServiceCommandHandler(IServiceRepository serviceRepository, IValidator<CreateServiceCommand> validator, IMapper mapper)
+    public CreateServiceCommandHandler(IServiceRepository serviceRepository, IValidator<CreateServiceDto> validator, IMapper mapper)
     {
         _serviceRepository = serviceRepository;
         _validator = validator;
@@ -22,7 +22,7 @@ public class CreateServiceCommandHandler : IRequestHandler<CreateServiceCommand,
     }
     public async Task<Result<ServiceDto>> Handle(CreateServiceCommand request, CancellationToken cancellationToken)
     {
-        var validationResult = _validator.Validate(request);
+        var validationResult = _validator.Validate(request.Model);
         if (!validationResult.IsValid)
         {
             var errors = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
