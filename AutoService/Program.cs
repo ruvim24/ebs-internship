@@ -1,19 +1,6 @@
-using Application.Contracts.Commands.AppointmentCommands.Create;
 using Application.Contracts.Commands.CarCommands.Create;
-using Application.Contracts.Commands.CarCommands.Update;
-using Application.Contracts.Commands.DayScheduleCommands.Update;
-using Application.Contracts.Commands.ServiceCommands.Create;
-using Application.Contracts.Commands.UserCommands.Create;
-using Application.DTOs.Appointment;
-using Application.DTOs.Car;
-using Application.DTOs.CarDtos;
-using Application.DTOs.DaySchedule;
-using Application.DTOs.Service;
-using Application.DTOs.UserDtos;
-using Application.Validators.AppointmentValidators;
-using Application.Validators.CarValidatoros;
-using Application.Validators.DaySchedulevalidators;
-using Application.Validators.ServiceValidators;
+using Application.Jobs.Extension;
+using Application.Profiles;
 using Application.Validators.UserValidators;
 using Domain.DomainServices.AppointmentService;
 using Domain.IRepositories;
@@ -44,16 +31,18 @@ builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
 //---MediatR
 builder.Services.AddMediatR(typeof(CreateCarCommandHandler).Assembly);
+TypeAdapterConfig.GlobalSettings.Scan(typeof(AppointmentMapper).Assembly);
 
-//---Validators
-
-builder.Services.AddFluentValidation(fv => 
-{
-    fv.RegisterValidatorsFromAssemblyContaining<CreateCarDtoValidator>();
-});
+//---FluentValidation
+builder.Services.AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
 
 //---Mapper-ul
 builder.Services.AddMapster();
+
+//---BackroundJobs
+builder.Services.AddQuartzServices();
 
 builder.Services.AddControllers();
 

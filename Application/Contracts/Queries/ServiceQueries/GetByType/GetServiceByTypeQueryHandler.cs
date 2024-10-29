@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.Contracts.Queries.ServiceQueries.GetByType;
 
-public class GetServiceByTypeCommandHandler : IRequestHandler<GetServiceByTypeCommand, Result<IEnumerable<ServiceDto>>>
+public class GetServiceByTypeCommandHandler : IRequestHandler<GetServiceByTypeQuery, Result<IEnumerable<ServiceDto>>>
 {
     private readonly IServiceRepository _serviceRepository;
     private readonly IMapper _mapper;
@@ -18,7 +18,7 @@ public class GetServiceByTypeCommandHandler : IRequestHandler<GetServiceByTypeCo
         _mapper = mapper;
     }
 
-    public async Task<Result<IEnumerable<ServiceDto>>> Handle(GetServiceByTypeCommand request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<ServiceDto>>> Handle(GetServiceByTypeQuery request, CancellationToken cancellationToken)
     {
         var services = await _serviceRepository.GetByTypeAsync(request.Type);
         if(services == null || !services.Any()) return Result.Fail($"No service found for type {request.Type}");

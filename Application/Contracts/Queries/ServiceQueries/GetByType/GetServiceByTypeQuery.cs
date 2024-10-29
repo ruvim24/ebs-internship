@@ -6,4 +6,4 @@ using MediatR;
 
 namespace Application.Contracts.Queries.ServiceQueries.GetByType;
 
-public record GetServiceByTypeCommand(ServiceType Type) : IRequest<Result<IEnumerable<ServiceDto>>>;
+public record GetServiceByTypeQuery(ServiceType Type) : IRequest<Result<IEnumerable<ServiceDto>>>;
