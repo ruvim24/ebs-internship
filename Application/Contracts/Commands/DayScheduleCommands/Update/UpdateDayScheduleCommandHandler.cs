@@ -34,7 +34,7 @@ public class UpdateDayScheduleCommandHandler : IRequestHandler<UpdateDaySchedule
         {
             return Result.Fail("DaySchedule.NotFound");
         }
-        var daySchedule = _mapper.Map<DaySchedule>(request);
+        var daySchedule = _mapper.Map<DaySchedule>(request.Model);
         await _dayScheduleRepository.UpdateAsync(daySchedule);
         return Result.Ok(_mapper.Map<DayScheduleDto>(daySchedule));
     }

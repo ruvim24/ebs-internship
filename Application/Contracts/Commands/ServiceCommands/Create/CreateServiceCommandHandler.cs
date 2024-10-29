@@ -29,9 +29,9 @@ public class CreateServiceCommandHandler : IRequestHandler<CreateServiceCommand,
             return Result.Fail(errors);
         }
         
-        var service = _mapper.Map<Service>(request);
+        var service = _mapper.Map<Service>(request.Model);
         var serviceCreate = Service.Create(service.MasterId, service.Name, service.Description, service.ServiceType, service.Price, service.Duration);
         await _serviceRepository.AddAsync(serviceCreate.Value);
-        return Result.Ok(_mapper.Map<ServiceDto>(serviceCreate));
+        return Result.Ok(_mapper.Map<ServiceDto>(serviceCreate.Value));
     }
 }

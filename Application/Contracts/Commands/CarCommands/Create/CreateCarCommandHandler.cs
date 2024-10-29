@@ -34,6 +34,6 @@ public class CreateCarCommandHandler : IRequestHandler<CreateCarCommand, Result<
         var createCar = Car.Create(car.CustomerId, car.Maker, car.Model, car.PlateNumber, car.VIN);
         if(createCar.IsFailed) return Result.Fail(createCar.Errors);
         await _carRepository.AddAsync(createCar.Value);
-        return Result.Ok(_mapper.Map<CarDto>(car));
+        return Result.Ok(_mapper.Map<CarDto>(createCar.Value));
     }
 }

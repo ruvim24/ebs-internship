@@ -28,7 +28,7 @@ public class UpdateCarCommandHandler : IRequestHandler<UpdateCarCommand, Result<
             var errors = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
             return Result.Fail(errors);
         }
-        var car = _mapper.Map<Car>(request);
+        var car = _mapper.Map<Car>(request.Model);
         await _carRepository.UpdateAsync(car);
         return Result.Ok(_mapper.Map<CarDto>(car));
     }

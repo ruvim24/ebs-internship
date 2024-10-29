@@ -34,7 +34,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
         {
             return Result.Fail("User.NotFound");
         }
-        var user = _mapper.Map<User>(request);
+        var user = _mapper.Map<User>(request.Model);
         await _userRepository.UpdateAsync(user);
         return Result.Ok();
     }

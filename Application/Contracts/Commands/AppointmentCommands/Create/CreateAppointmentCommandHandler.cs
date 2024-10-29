@@ -29,8 +29,8 @@ public class CreateAppointmentCommandHandler : IRequestHandler<CreateAppointment
             var errors = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
             return Result.Fail(errors);
         }
-        var appointment = _mapper.Map<Appointment>(request);
+        var appointment = _mapper.Map<Appointment>(request.Model);
         var createAppointment = await _appointmentService.Create(appointment.CarId, appointment.ServiceId, appointment.SlotId);
-        return Result.Ok(_mapper.Map<AppointmentDto>(createAppointment));
+        return Result.Ok(_mapper.Map<AppointmentDto>(createAppointment.Value));
     }
 }

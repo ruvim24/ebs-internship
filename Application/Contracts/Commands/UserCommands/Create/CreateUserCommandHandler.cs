@@ -35,7 +35,6 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
         var user = _mapper.Map<User>(request.Model);
         var userCreate = User.Create(user.FullName, user.Email, user.PhoneNumber, user.Password, Role.Customer);
         await _userRepository.AddAsync(userCreate.Value);
-        var mappedUser = _mapper.Map<UserDto>(userCreate);
-        return Result.Ok(mappedUser);
+        return Result.Ok(_mapper.Map<UserDto>(userCreate.Value));
     }
 }
