@@ -14,7 +14,7 @@ namespace Domain.Entities
         private Slot() { }
         private Slot(DateTime startTime, DateTime endTime)
         {
-             StartTime = startTime;
+            StartTime = startTime;
             EndTime = endTime;
             Availability = true;
         }

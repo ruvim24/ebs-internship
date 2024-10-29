@@ -52,5 +52,13 @@ namespace Domain.Entities
                 //rasing a domain event??
             }
         }
+
+        public void SetExpired()
+        {
+            if (Status == AppointmentStatus.Scheduled && Slot.EndTime < DateTime.Now)
+            {
+                Status = AppointmentStatus.Expired;
+            }
+        }
     }
 }
