@@ -20,6 +20,8 @@ public class ServiceMapper : IRegister
             .Map(dest => dest.MasterId, src => src.MasterId)
             .Map(dest => dest.Name, src => src.Name)
             .Map(dest => dest.Description, src => src.Description)
-            .Map(dest => dest.Price, src => src.Price);
+            .Map(dest => dest.Price, src => src.Price)
+            .ConstructUsing(src =>
+                Service.Create(src.MasterId, src.Name, src.Description,src.ServiceType, src.Price, src.Duration).Value);
     }
 }

@@ -17,9 +17,8 @@ public class CarMapper : IRegister
             .Map(dest => dest.Maker, src => src.Maker)
             .Map(dest => dest.Model, src => src.Model)
             .Map(dest => dest.PlateNumber, src => src.PlateNumber)
-            .Map(dest => dest.VIN, src => src.VIN)
-            .ConstructUsing(src => Car.Create(src.CustomerId, src.Maker, src.Model, src.PlateNumber, src.VIN).Value);
-
+            .Map(dest => dest.VIN, src => src.VIN);
+        
         TypeAdapterConfig<CreateCarDto, Car>.NewConfig()
             .Map(dest => dest.CustomerId, src => src.CustomerId)
             .Map(dest => dest.PlateNumber, src => src.PlateNumber)
