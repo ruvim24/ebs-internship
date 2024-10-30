@@ -1,4 +1,4 @@
-using Application.DTOs.Appointment;
+using Application.DTOs.AppointmentDtos;
 using Domain.Enums;
 using FluentValidation;
 

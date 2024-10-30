@@ -1,9 +1,10 @@
 using Application.Contracts.Commands.ServiceCommands.Create;
+using Application.Contracts.Commands.ServiceCommands.Update;
 using Application.Contracts.Queries.ServiceQueries.Get;
 using Application.Contracts.Queries.ServiceQueries.GetAll;
 using Application.Contracts.Queries.ServiceQueries.GetByMaster;
 using Application.Contracts.Queries.ServiceQueries.GetByType;
-using Application.DTOs.Service;
+using Application.DTOs.ServiceDtos;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,8 @@ public class ServiceController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(CreateServiceDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Get([FromRoute] int id)
     {
         var result = await _mediator.Send(new GetServiceQuery(id));
@@ -46,14 +49,24 @@ public class ServiceController : ControllerBase
     }
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> GetServicesByType([FromBody] ServiceType serviceType) // [FromQuery] ???
+    public async Task<IActionResult> GetServicesByType([FromQuery] ServiceType serviceType)
     {
         var result = await _mediator.Send(new GetServiceByTypeQuery(serviceType));
         if (result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
     }
 
+    [HttpPut("[action]")]
+    public async Task<IActionResult> Update([FromBody] UpdateServiceDto updateServiceDto)
+    {
+        var result = await _mediator.Send(new UpdateServiceCommand(updateServiceDto));
+        if (result.IsFailed) return BadRequest(result.Errors);
+        return Ok(result.Value);
+    }
+    
     [HttpPost("[action]")]
+    [ProducesResponseType(typeof(CreateServiceDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create([FromBody] CreateServiceDto createService)
     {
         var result = await _mediator.Send(new CreateServiceCommand(createService));

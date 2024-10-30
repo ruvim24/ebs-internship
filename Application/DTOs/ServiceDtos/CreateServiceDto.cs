@@ -1,6 +1,6 @@
 using Domain.Enums;
 
-namespace Application.DTOs.Service;
+namespace Application.DTOs.ServiceDtos;
 
 public class CreateServiceDto
 {

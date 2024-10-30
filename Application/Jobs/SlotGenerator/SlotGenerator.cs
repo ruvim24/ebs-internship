@@ -1,3 +1,5 @@
+using Application.DTOs.ServiceDtos;
+using Domain.Entities;
 using Domain.Enums;
 using Domain.IRepositories;
 using FluentResults;
@@ -31,8 +33,33 @@ public class SlotGenerator : IJob
         {
             foreach (var day in daySchedules)
             {
-                
+                var startTime = day.StartTime;
+                var endTime = day.StartTime.Add(TimeSpan.FromMinutes(service.Duration));
+
+                while (endTime < day.EndTime)
+                {
+                    var slot = Slot.Create(service.MasterId, startTime, endTime);
+                }
+                startTime = endTime;
+                endTime = startTime.Add(TimeSpan.FromMinutes(service.Duration));
             }
         }
     }
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+

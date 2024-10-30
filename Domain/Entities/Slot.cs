@@ -12,14 +12,14 @@ namespace Domain.Entities
         public bool Availability {  get; private set; }
 
         private Slot() { }
-        private Slot(DateTime startTime, DateTime endTime)
+        private Slot(int masterId, DateTime startTime, DateTime endTime)
         {
             StartTime = startTime;
             EndTime = endTime;
             Availability = true;
         }
 
-        public static Result<Slot> Create(DateTime startTime, DateTime endTime)
+        public static Result<Slot> Create(int masterId, DateTime startTime, DateTime endTime)
         {
             var errors = new List<string>();
 
@@ -35,7 +35,7 @@ namespace Domain.Entities
             if (errors.Any())
                 return Result.Fail(string.Join(", ", errors));
 
-            return Result.Ok(new Slot(startTime, endTime));
+            return Result.Ok(new Slot(masterId, startTime, endTime));
         }
 
         public bool IsAvailable() { return Availability; }

@@ -5,12 +5,10 @@ using Application.Contracts.Queries.UserQueries.GetAll;
 using Application.Contracts.Queries.UserQueries.GetByRole;
 using Application.DTOs.UserDtos;
 using Domain.Enums;
-using Domain.IRepositories;
-using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AutoService.Controllers.UserController
+namespace AutoService.Controllers.User
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -40,7 +38,7 @@ namespace AutoService.Controllers.UserController
         }
 
         [HttpGet("/role")]
-        public async Task<IActionResult> GetUserByRole([FromBody] Role role)
+        public async Task<IActionResult> GetUserByRole([FromQuery] Role role)
         {
             var users = await _mediator.Send(new GetUsersByRoleCommand(role));
             if(users.IsFailed) return BadRequest(users.Errors);

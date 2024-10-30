@@ -1,6 +1,6 @@
 using Domain.Enums;
-using Domain.Entities;
-namespace Application.DTOs.Service;
+
+namespace Application.DTOs.ServiceDtos;
 
 public class ServiceDto
 {

@@ -1,5 +1,5 @@
 using Application.Contracts.Queries.ServiceQueries.Get;
-using Application.DTOs.Service;
+using Application.DTOs.ServiceDtos;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;

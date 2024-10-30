@@ -1,4 +1,5 @@
 using Application.DTOs.DaySchedule;
+using Application.DTOs.DayScheduleDtos;
 using FluentValidation;
 
 namespace Application.Validators.DaySchedulevalidators;

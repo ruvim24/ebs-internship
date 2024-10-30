@@ -3,6 +3,7 @@ using Application.Contracts.Queries.DayScheduleQueries.Get;
 using Application.Contracts.Queries.DayScheduleQueries.GetAll;
 using Application.Contracts.Queries.DayScheduleQueries.GetByDayOfWeek;
 using Application.DTOs.DaySchedule;
+using Application.DTOs.DayScheduleDtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,7 +37,7 @@ public class DayScheduleController : ControllerBase
     }
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> GetByDay([FromBody] DayOfWeek dayOfWeek)
+    public async Task<IActionResult> GetByDay([FromQuery] DayOfWeek dayOfWeek)
     {
         var result = await _mediator.Send(new GetByDayOfWeekQuery(dayOfWeek));
         if(result.IsFailed) return BadRequest(result.Errors);

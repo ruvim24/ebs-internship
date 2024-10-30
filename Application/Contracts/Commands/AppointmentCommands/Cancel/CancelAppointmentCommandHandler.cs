@@ -1,4 +1,3 @@
-using Application.DTOs.Appointment;
 using Application.DTOs.AppointmentDtos;
 using Domain.DomainServices.AppointmentService;
 using Domain.IRepositories;

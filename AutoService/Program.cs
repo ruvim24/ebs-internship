@@ -9,6 +9,7 @@ using FluentValidation.AspNetCore;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Persistence.DataBaseSeeder;
 using Persistence.DBContext;
 using Persistence.Repositories;
 
@@ -29,6 +30,9 @@ builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 //---Service
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
+//----DataBaseSeeder
+builder.Services.AddTransient<DayScheduleSeeder>();
+
 //---MediatR
 builder.Services.AddMediatR(typeof(CreateCarCommandHandler).Assembly);
 TypeAdapterConfig.GlobalSettings.Scan(typeof(AppointmentMapper).Assembly);
@@ -44,12 +48,21 @@ builder.Services.AddMapster();
 //---BackroundJobs
 builder.Services.AddQuartzServices();
 
+
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// Apelarea metodei de seeding
+using (var scope = app.Services.CreateScope())
+{
+    var dayScheduleSeeder = scope.ServiceProvider.GetRequiredService<DayScheduleSeeder>();
+    await dayScheduleSeeder.SeedAsync(); 
+}
 
 if (app.Environment.IsDevelopment())
 {

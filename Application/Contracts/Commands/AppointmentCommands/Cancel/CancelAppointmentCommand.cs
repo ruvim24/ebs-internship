@@ -1,5 +1,4 @@
 using System.Windows.Input;
-using Application.DTOs.Appointment;
 using Application.DTOs.AppointmentDtos;
 using FluentResults;
 using MediatR;
