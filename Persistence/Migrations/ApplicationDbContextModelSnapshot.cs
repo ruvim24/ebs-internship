@@ -22,7 +22,7 @@ namespace Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Domain.Entitites.Appointment", b =>
+            modelBuilder.Entity("Domain.Entities.Appointment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,7 +60,7 @@ namespace Persistence.Migrations
                     b.ToTable("Appointments");
                 });
 
-            modelBuilder.Entity("Domain.Domain.Entitites.Car", b =>
+            modelBuilder.Entity("Domain.Entities.Car", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -97,7 +97,29 @@ namespace Persistence.Migrations
                     b.ToTable("Car", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Domain.Entitites.Service", b =>
+            modelBuilder.Entity("Domain.Entities.DaySchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DayOfWeek")
+                        .HasColumnType("integer");
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DaySchedule", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Service", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -134,7 +156,7 @@ namespace Persistence.Migrations
                     b.ToTable("Service", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Domain.Entitites.Slot", b =>
+            modelBuilder.Entity("Domain.Entities.Slot", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -161,7 +183,7 @@ namespace Persistence.Migrations
                     b.ToTable("Slot", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Domain.Entitites.User", b =>
+            modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -169,12 +191,22 @@ namespace Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
@@ -187,45 +219,23 @@ namespace Persistence.Migrations
                     b.ToTable("User", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Schedule.DaySchedule", b =>
+            modelBuilder.Entity("Domain.Entities.Appointment", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DayOfWeek")
-                        .HasColumnType("integer");
-
-                    b.Property<TimeOnly>("EndTime")
-                        .HasColumnType("time without time zone");
-
-                    b.Property<TimeOnly>("StartTime")
-                        .HasColumnType("time without time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DaySchedule", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Domain.Entitites.Appointment", b =>
-                {
-                    b.HasOne("Domain.Domain.Entitites.Car", "Car")
+                    b.HasOne("Domain.Entities.Car", "Car")
                         .WithMany()
                         .HasForeignKey("CarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Domain.Entitites.Service", "Service")
+                    b.HasOne("Domain.Entities.Service", "Service")
                         .WithMany()
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Domain.Entitites.Slot", "Slot")
+                    b.HasOne("Domain.Entities.Slot", "Slot")
                         .WithOne()
-                        .HasForeignKey("Domain.Domain.Entitites.Appointment", "SlotId")
+                        .HasForeignKey("Domain.Entities.Appointment", "SlotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -236,82 +246,37 @@ namespace Persistence.Migrations
                     b.Navigation("Slot");
                 });
 
-            modelBuilder.Entity("Domain.Domain.Entitites.Car", b =>
+            modelBuilder.Entity("Domain.Entities.Car", b =>
                 {
-                    b.HasOne("Domain.Domain.Entitites.User", "Customer")
+                    b.HasOne("Domain.Entities.User", "Customer")
                         .WithOne()
-                        .HasForeignKey("Domain.Domain.Entitites.Car", "CustomerId")
+                        .HasForeignKey("Domain.Entities.Car", "CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("Domain.Domain.Entitites.Service", b =>
+            modelBuilder.Entity("Domain.Entities.Service", b =>
                 {
-                    b.HasOne("Domain.Domain.Entitites.User", "Master")
+                    b.HasOne("Domain.Entities.User", "Master")
                         .WithOne()
-                        .HasForeignKey("Domain.Domain.Entitites.Service", "MasterId")
+                        .HasForeignKey("Domain.Entities.Service", "MasterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Master");
                 });
 
-            modelBuilder.Entity("Domain.Domain.Entitites.Slot", b =>
+            modelBuilder.Entity("Domain.Entities.Slot", b =>
                 {
-                    b.HasOne("Domain.Domain.Entitites.User", "Master")
+                    b.HasOne("Domain.Entities.User", "Master")
                         .WithMany()
                         .HasForeignKey("MasterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Master");
-                });
-
-            modelBuilder.Entity("Domain.Domain.Entitites.User", b =>
-                {
-                    b.OwnsOne("Domain.Entities.ValueObjects.Email", "Email", b1 =>
-                        {
-                            b1.Property<int>("UserId")
-                                .HasColumnType("integer");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(50)
-                                .HasColumnType("character varying(50)");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("User");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.OwnsOne("Domain.Entities.ValueObjects.PhoneNumber", "PhoneNumber", b1 =>
-                        {
-                            b1.Property<int>("UserId")
-                                .HasColumnType("integer");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(50)
-                                .HasColumnType("character varying(50)");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("User");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.Navigation("Email")
-                        .IsRequired();
-
-                    b.Navigation("PhoneNumber")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
