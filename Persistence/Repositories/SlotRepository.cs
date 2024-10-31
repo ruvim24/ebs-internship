@@ -5,6 +5,7 @@ using Persistence.DBContext;
 
 namespace Persistence.Repositories;
 
+
 public class SlotRepository : ISlotRepository
 {
     private readonly ApplicationDbContext _applicationDb;
@@ -45,9 +46,29 @@ public class SlotRepository : ISlotRepository
     {
         return await _applicationDb.Slots.Where(x => x.MasterId == masterId).ToListAsync();
     }
-
-    public async Task<IEnumerable<Slot>> GetAvailableSlotsAsync()
+    
+    public Task<List<Slot>> GetUnReservedSlots()
     {
-        return await _applicationDb.Slots.Where(x => x.Availability == true).ToListAsync();
+        var unreservedSlots =  _applicationDb.Slots.Where(x => x.Availability == true && x.EndTime < DateTime.Now);
+        return unreservedSlots.ToListAsync();
+    }
+
+    public async Task DeleteRangeAsync(IEnumerable<Slot> slots)
+    {
+        _applicationDb.Slots.RemoveRange(slots);
+        await _applicationDb.SaveChangesAsync();
+    }
+
+    public async Task<bool> ExistsSlotsForDateAsync(int masterId, DateOnly date)
+    {
+        /*return await _applicationDb.Slots
+            .AnyAsync(x => x.StartTime.Date == date.ToDateTime(new TimeOnly(0,0)) && x.MasterId == masterId);*/
+        
+        
+        // Convertim DateOnly în DateTime la începutul zilei în UTC
+        DateTime dateTimeStartUtc = DateTime.SpecifyKind(date.ToDateTime(new TimeOnly(0, 0)), DateTimeKind.Utc);
+
+        return await _applicationDb.Slots
+            .AnyAsync(x => x.StartTime.ToUniversalTime().Date == dateTimeStartUtc.Date && x.MasterId == masterId);
     }
 }

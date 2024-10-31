@@ -25,7 +25,7 @@ public class ServiceRepository : IServiceRepository
         return await _applicationDb.Services.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<IEnumerable<Service>?> GetAllAsync()
+    public async Task<ICollection<Service>?> GetAllAsync()
     {
         return await _applicationDb.Services.ToListAsync();
     }

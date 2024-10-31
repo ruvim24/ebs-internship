@@ -51,4 +51,13 @@ public class AppointmentRepository : IAppointmentRepository
     {
         return await _applicationDb.Appointments.Where(a => a.Status == status).ToListAsync();
     }
+
+    public  async Task<List<Appointment>> FindAppointmentsToMarkAsExpiredAsync()
+    {
+        var expired  = await _applicationDb.Appointments
+            .Where(x => x.Status == AppointmentStatus.Scheduled && x.Slot.EndTime < DateTime.Now)
+            .ToListAsync();
+        
+        return expired;
+    }
 }
