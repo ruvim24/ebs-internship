@@ -55,10 +55,7 @@ namespace Domain.Entities
 
         public void SetExpired()
         {
-            if (Status == AppointmentStatus.Scheduled && Slot.EndTime < DateTime.Now)
-            {
-                Status = AppointmentStatus.Expired;
-            }
+            Status = AppointmentStatus.Expired;
         }
     }
 }

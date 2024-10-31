@@ -1,4 +1,4 @@
-using Application.Jobs.Cleaner;
+/*using Application.Jobs.Cleaner;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 
@@ -23,4 +23,4 @@ public static class QuartzConfiguration
         });
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
     }
-}
+}*/

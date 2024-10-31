@@ -38,7 +38,6 @@ namespace Domain.Entities
             return Result.Ok(new Slot(masterId, startTime, endTime));
         }
 
-        public bool IsAvailable() { return Availability; }
         public void SetNotAvailable() { Availability = false; }
     }
 }

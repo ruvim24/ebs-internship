@@ -1,3 +1,4 @@
+/*
 using Application.DTOs.ServiceDtos;
 using Domain.Entities;
 using Domain.Enums;
@@ -61,5 +62,6 @@ public class SlotGenerator : IJob
 
 
 }
+*/
 
 

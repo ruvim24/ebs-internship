@@ -1,43 +1,34 @@
+/*using Application.Contracts.Commands.Appointments.Expire;
+using Application.Contracts.Commands.Slots.Cleaner;
 using Domain.Enums;
 using Domain.IRepositories;
+using MediatR;
 using Quartz;
 
 namespace Application.Jobs.Cleaner;
 
 public class SlotAppointmnetCleaner : IJob
 {
-    private readonly ISlotRepository _slotRepository;
-    private readonly IAppointmentRepository _appointmentRepository;
+    private readonly IMediator _mediator;
 
-    public SlotAppointmnetCleaner(ISlotRepository slotRepository, IAppointmentRepository appointmentRepository)
+    public SlotAppointmnetCleaner(IMediator mediator)
     {
-        _slotRepository = slotRepository;
-        _appointmentRepository = appointmentRepository;
+        _mediator = mediator;
     }
     public async Task Execute(IJobExecutionContext context)
     {
-        var slots = await _slotRepository.GetAllAsync();
-        foreach (var slot in slots)
-        {
-            //stergere sloturi care nu au fost rezervate
-            if (slot.IsAvailable() && slot.EndTime < DateTime.Now)
-            {
-                await _slotRepository.DeleteByIdAsync(slot.Id);
-            }
-        }
-        
-        var appointments = await _appointmentRepository.GetAllAsync();
-        appointments = appointments?.ToList();
-        if(appointments == null || !appointments.Any()) return;
-        
-        //setare appointment-uri pe expired la care a expirat data dar sunt pe statutul Scheduled
-        foreach (var appointment in appointments)
-        {
-            if (appointment.Status == AppointmentStatus.Scheduled && appointment.Slot.EndTime < DateTime.Now)
-            {
-                appointment.SetExpired();
-                await _appointmentRepository.UpdateAsync(appointment);
-            }
-        }
+        await _mediator.Send(new SlotCleanerCommand());
+        await _mediator.Send(new MarkAsExpiredAppointmnetsPastDueDateCommand());
     }
 }
+
+
+
+/*var unreservedSlots = await _slotRepository.GetUnReservedSlots();
+await _slotRepository.DeleteRangeAsync(unreservedSlots);
+
+var appointmentsToMarkExpired = await _appointmentRepository.FindAppointmentsToMarkAsExpiredAsync();
+foreach (var appointment in appointmentsToMarkExpired)
+{
+    appointment.SetExpired();
+}#1#*/

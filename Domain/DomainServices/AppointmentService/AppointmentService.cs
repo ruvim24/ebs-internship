@@ -32,7 +32,7 @@ public class AppointmentService : IAppointmentService
         var service = await _serviceRepository.GetByIdAsync(serviceId);
         var slot = await _slotRepository.GetByIdAsync(slotId);
 
-        if (car != null && service != null && slot != null && slot.IsAvailable())
+        if (car != null && service != null && slot != null && slot.Availability == true)
         {
             var appointment = Appointment.Create(carId, serviceId, slotId);
             await _appointmentRepository.AddAsync(appointment.Value);

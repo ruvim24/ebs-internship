@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\Queries\AppointmentQueries\GetByMaster\" />
-    <Folder Include="Contracts\Queries\AppointmentQueries\GetByStatus\" />
+    <Folder Include="Contracts\Queries\Appointments\GetByMaster\" />
+    <Folder Include="Contracts\Queries\Appointments\GetByStatus\" />
   </ItemGroup>
 
 </Project>

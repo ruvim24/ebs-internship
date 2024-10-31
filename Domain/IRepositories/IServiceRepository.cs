@@ -7,7 +7,7 @@ public interface IServiceRepository
 {
     Task AddAsync(Service entity);
     Task<Service?> GetByIdAsync(int id);
-    Task<IEnumerable<Service>?> GetAllAsync();
+    Task<ICollection<Service>?> GetAllAsync();
     Task UpdateAsync(Service entity);
     Task DeleteByIdAsync(int id);
     

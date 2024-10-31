@@ -12,5 +12,11 @@ public interface ISlotRepository
 
     //aditional
     Task<IEnumerable<Slot>?> GetMasterAvaialableSlotsAsync(int masterId);
-    Task<IEnumerable<Slot>> GetAvailableSlotsAsync();
+    //Task<IEnumerable<Slot>> GetAvailableSlotsAsync();
+
+    Task<List<Slot>> GetUnReservedSlots();
+
+    Task DeleteRangeAsync(IEnumerable<Slot> slots);
+
+    public Task<bool> ExistsSlotsForDateAsync(int masterId, DateOnly date);
 }

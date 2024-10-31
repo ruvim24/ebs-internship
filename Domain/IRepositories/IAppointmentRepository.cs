@@ -14,4 +14,6 @@ public interface IAppointmentRepository
     // aditional
     Task<IEnumerable<Appointment>?> GetByCarIdAsync(int carId);
     Task<IEnumerable<Appointment>> GetByStatusAsync(AppointmentStatus status);
+    
+    Task<List<Appointment>> FindAppointmentsToMarkAsExpiredAsync();
 }
