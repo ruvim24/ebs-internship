@@ -4,7 +4,7 @@ using Application.Contracts.Queries.ServiceQueries.Get;
 using Application.Contracts.Queries.ServiceQueries.GetAll;
 using Application.Contracts.Queries.ServiceQueries.GetByMaster;
 using Application.Contracts.Queries.ServiceQueries.GetByType;
-using Application.DTOs.ServiceDtos;
+using Application.DTOs.Services;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

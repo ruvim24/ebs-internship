@@ -1,3 +1,4 @@
+using Application.Contracts.Commands.Slots.Generator;
 using Application.Contracts.Queries.SlotQueries.GetById;
 using Application.Contracts.Queries.SlotQueries.GetMastersAvailableSlots;
 using MediatR;
@@ -30,5 +31,13 @@ public class SlotController : ControllerBase
         var result = await _mediator.Send(new GetMasterAvailableSlotsQuery(masterId));
         if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
+    }
+
+    [HttpPut("[action]")]
+    public async Task<IActionResult> Generate()
+    {
+        var result = await _mediator.Send(new SlotGeneratorCommand());
+        if (result.IsFailed) return BadRequest(result.Errors);
+        return Ok();
     }
 }

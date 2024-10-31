@@ -1,6 +1,7 @@
 using Application.Contracts.Commands.CarCommands.Create;
-using Application.Jobs.Extension;
+//using Application.Jobs.Extension;
 using Application.Profiles;
+using Application.Validators.Users;
 using Application.Validators.UserValidators;
 using Domain.DomainServices.AppointmentService;
 using Domain.IRepositories;
@@ -46,7 +47,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
 builder.Services.AddMapster();
 
 //---BackroundJobs
-builder.Services.AddQuartzServices();
+//builder.Services.AddQuartzServices();
 
 
 

@@ -1,6 +1,6 @@
-using Application.Contracts.Commands.AppointmentCommands.Cancel;
-using Application.Contracts.Commands.AppointmentCommands.Complete;
-using Application.Contracts.Commands.AppointmentCommands.Create;
+using Application.Contracts.Commands.Appointments.Cancel;
+using Application.Contracts.Commands.Appointments.Complete;
+using Application.Contracts.Commands.Appointments.Create;
 using Application.Contracts.Queries.AppointmentQueries.Get;
 using Application.Contracts.Queries.AppointmentQueries.GetAll;
 using Application.Contracts.Queries.AppointmentQueries.GetByCarId;
