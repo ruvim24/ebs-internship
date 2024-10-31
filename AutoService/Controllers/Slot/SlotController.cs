@@ -1,3 +1,4 @@
+using Application.Contracts.Commands.Slots.Create;
 using Application.Contracts.Commands.Slots.Generator;
 using Application.Contracts.Queries.SlotQueries.GetById;
 using Application.Contracts.Queries.SlotQueries.GetMastersAvailableSlots;
@@ -39,5 +40,12 @@ public class SlotController : ControllerBase
         var result = await _mediator.Send(new SlotGeneratorCommand());
         if (result.IsFailed) return BadRequest(result.Errors);
         return Ok();
+    }
+
+    [HttpPost("[action]")]
+    public async Task<IActionResult> Create([FromBody] CreateSlotDto command)
+    {
+        var result = await _mediator.Send(new CreateSlotCommand(command));
+        return Ok(result);
     }
 }

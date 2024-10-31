@@ -73,12 +73,18 @@ public class SlotGeneratorCommandHandler : IRequestHandler<SlotGeneratorCommand,
         while (startDateTime <= endTime)
         {
             // Verifică dacă startDateTime este în trecut
-            if (startDateTime < DateTime.UtcNow) return;
+            if (startDateTime < DateTime.UtcNow)
+            {
+                startDateTime = endDateTime;
+                endDateTime = startDateTime.AddMinutes(duration);
+                continue;
+            }
 
             var slotResult = Slot.Create(masterId, startDateTime, endDateTime);
             if (slotResult.IsFailed)
             {
-                // Manejează eroarea de creare a slotului
+                startDateTime = endDateTime;
+                endDateTime = startDateTime.AddMinutes(duration);
                 continue; // sau gestionează cum consideri necesar
             }
 
