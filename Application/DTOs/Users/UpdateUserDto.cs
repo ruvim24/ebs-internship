@@ -1,6 +1,6 @@
 using Domain.Enums;
 
-namespace Application.DTOs.UserDtos;
+namespace Application.DTOs.Users;
 
 public class UpdateUserDto
 {

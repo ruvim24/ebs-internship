@@ -37,10 +37,7 @@ public class SlotGeneratorCommandHandler : IRequestHandler<SlotGeneratorCommand,
             {
                 var existSlotsForDate =  await _slotRepository.ExistsSlotsForDateAsync(service.MasterId, date);
                 if(existSlotsForDate) continue;
-                
-                //verificare daca exista asa master in useri
-                /*var masterExists = await _userRepository.GetByIdAsync(service.MasterId);
-                if (masterExists == null) continue;*/
+
                 
                 var masterExists = await _userRepository.GetByIdAsync(service.MasterId);
                 if (masterExists == null)

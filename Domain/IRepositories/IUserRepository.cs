@@ -9,7 +9,7 @@ public interface IUserRepository
     Task<User?> GetByIdAsync(int id);
     Task<IEnumerable<User>?> GetAllAsync();
     Task UpdateAsync(User entity);
-    Task DeleteByIdAsync(int id);
+    Task DeleteAsync(User entity);
     
     //aditional
     Task<IEnumerable<User>?> GetByRoleAsync(Role role);

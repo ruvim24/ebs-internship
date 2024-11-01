@@ -1,4 +1,5 @@
 using Application.DTOs.UserDtos;
+using Application.DTOs.Users;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
@@ -8,8 +9,8 @@ using MediatR;
 
 namespace Application.Contracts.Commands.Users.Update;
 
-public record UpdateUserCommand(UpdateUserDto Model) : IRequest<Result>;
-public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Result>
+public record UpdateUserCommand(UpdateUserDto Model) : IRequest<Result<UserDto>>;
+public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Result<UserDto>>
 {
     private IUserRepository _userRepository;
     private IMapper _mapper;
@@ -21,7 +22,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
         _mapper = mapper;
         _validator = validator;
     }
-    public async Task<Result> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+    public async Task<Result<UserDto>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
         var validationResult = _validator.Validate(request.Model);
         if (!validationResult.IsValid)
@@ -30,13 +31,12 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
             return Result.Fail(errors);
         }
         
-        var exists = _userRepository.GetByIdAsync(request.Model.Id);
-        if (exists.Result == null)
-        {
-            return Result.Fail("User.NotFound");
-        }
-        var user = _mapper.Map<User>(request.Model);
+        var user = await _userRepository.GetByIdAsync(request.Model.Id);
+        if (user == null) return Result.Fail($"User with Id {request.Model.Id} not found");
+        _mapper.Map(request.Model, user);
         await _userRepository.UpdateAsync(user);
-        return Result.Ok();
+        
+        return Result.Ok(_mapper.Map<UserDto>(user));
+
     }
 }

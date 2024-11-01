@@ -1,10 +1,12 @@
 using Application.Contracts.Commands.Appointments.Cancel;
 using Application.Contracts.Commands.Appointments.Complete;
 using Application.Contracts.Commands.Appointments.Create;
+using Application.Contracts.Commands.Appointments.Delete;
 using Application.Contracts.Queries.AppointmentQueries.Get;
 using Application.Contracts.Queries.AppointmentQueries.GetAll;
 using Application.Contracts.Queries.AppointmentQueries.GetByCarId;
 using Application.DTOs.AppointmentDtos;
+using Application.DTOs.Appointments;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,10 +31,10 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpGet("{appointmentId:int}")]
-    public async Task<IActionResult> Get([FromRoute] int appointmentId)
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> Get([FromRoute] int id)
     {
-        var result = await _mediator.Send(new GetAppointmentQuery(appointmentId));
+        var result = await _mediator.Send(new GetAppointmentQuery(id));
         if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
     }
@@ -45,7 +47,7 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpGet("carId/{CarId:int}")]
+    [HttpGet("carId/{carId:int}")]
     public async Task<IActionResult> GetByCar([FromRoute] int carId)
     {
         var result = await _mediator.Send(new GetAppointmentByCarIdQuery(carId));
@@ -53,19 +55,27 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
     
-    [HttpPut("cancel/{appointmentId:int}")]
-    public async Task<IActionResult> Cancel([FromRoute] int appointmentId)
+    [HttpPut("cancel/{id:int}")]
+    public async Task<IActionResult> Cancel([FromRoute] int id)
     {
-        var result = await _mediator.Send(new CancelAppointmentCommand(appointmentId));
+        var result = await _mediator.Send(new CancelAppointmentCommand(id));
         if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
     }
     
-    [HttpPut("complete/{appointmentId:int}")]
-    public async Task<IActionResult> Complete([FromRoute] int appointmentId)
+    [HttpPut("complete/{id:int}")]
+    public async Task<IActionResult> Complete([FromRoute] int id)
     {
-        var result = await _mediator.Send(new CompleteAppointmentCommand(appointmentId));
+        var result = await _mediator.Send(new CompleteAppointmentCommand(id));
         if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        var result = await _mediator.Send(new DeleteAppointmentCommand(id));
+        if(result.IsFailed) return BadRequest(result.Errors);
+        return Ok();
     }
 }

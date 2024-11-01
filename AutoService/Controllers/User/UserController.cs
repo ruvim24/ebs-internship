@@ -4,7 +4,6 @@ using Application.Contracts.Commands.Users.Update;
 using Application.Contracts.Queries.UserQueries.Get;
 using Application.Contracts.Queries.UserQueries.GetAll;
 using Application.Contracts.Queries.UserQueries.GetByRole;
-using Application.DTOs.UserDtos;
 using Application.DTOs.Users;
 using Domain.Enums;
 using MediatR;

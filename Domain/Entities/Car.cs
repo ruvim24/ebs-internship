@@ -43,5 +43,10 @@ namespace Domain.Entities
             
             return Result.Ok(new Car(customerId, maker, model, plateNumber, vin)); 
         }
+
+        public void ChangePlateNumber(string newPlateNumber)
+        {
+            PlateNumber = newPlateNumber;
+        }
     }
 }

@@ -1,4 +1,5 @@
 using Application.DTOs.UserDtos;
+using Application.DTOs.Users;
 using FluentValidation;
 
 namespace Application.Validators.UserValidators;

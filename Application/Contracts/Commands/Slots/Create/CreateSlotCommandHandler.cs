@@ -28,7 +28,7 @@ public class CreateSlotCommandHandler : IRequestHandler<CreateSlotCommand, Resul
     public async Task<Result> Handle(CreateSlotCommand request, CancellationToken cancellationToken)
     {
        // if (request.Model.MasterId == 1) return Result.Fail("Id - ul este: 1");
-        var exists = await _slotRepository.GetByIdAsync(request.Model.MasterId);
+        var exists = await _userRepository.GetByIdAsync(request.Model.MasterId);
         if (exists == null) return Result.Fail("Master not found");
         
         var slot = Slot.Create(request.Model.MasterId, request.Model.StartTime, request.Model.EndTime);

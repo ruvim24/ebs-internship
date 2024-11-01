@@ -4,7 +4,7 @@ using FluentResults;
 using MapsterMapper;
 using MediatR;
 
-namespace Application.Contracts.Queries.SlotQueries.GetMastersAvailableSlots;
+namespace Application.Contracts.Queries.Slots.GetMastersAvailableSlots;
 
 public record GetMasterAvailableSlotsQuery(int MasterId) : IRequest<Result<IEnumerable<SlotDto>>>;
 

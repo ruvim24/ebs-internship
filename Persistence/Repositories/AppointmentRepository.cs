@@ -35,10 +35,9 @@ public class AppointmentRepository : IAppointmentRepository
         await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task DeleteByIdAsync(int id)
+    public async Task DeleteAsync(Appointment entity)
     {
-        var appointment = await _applicationDb.Appointments.FirstOrDefaultAsync(a => a.Id == id);
-        _applicationDb.Appointments.Remove(appointment);
+        _applicationDb.Appointments.Remove(entity);
         await _applicationDb.SaveChangesAsync();
     }
 

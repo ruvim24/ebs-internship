@@ -1,4 +1,4 @@
-namespace Application.DTOs.DayScheduleDtos;
+namespace Application.DTOs.DaySchedules;
 
 public class UpdateDayScheduleDto
 {

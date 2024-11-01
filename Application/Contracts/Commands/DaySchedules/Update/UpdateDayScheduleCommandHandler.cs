@@ -1,13 +1,12 @@
 using Application.DTOs.DaySchedule;
-using Application.DTOs.DayScheduleDtos;
-using Domain.Entities;
+using Application.DTOs.DaySchedules;
 using Domain.IRepositories;
 using FluentResults;
 using FluentValidation;
 using MapsterMapper;
 using MediatR;
 
-namespace Application.Contracts.Commands.DayScheduleCommands.Update;
+namespace Application.Contracts.Commands.DaySchedules.Update;
 public record UpdateDayScheduleCommand(UpdateDayScheduleDto Model) : IRequest<Result<DayScheduleDto>>;
 public class UpdateDayScheduleCommandHandler : IRequestHandler<UpdateDayScheduleCommand, Result<DayScheduleDto>>
 {
@@ -30,12 +29,13 @@ public class UpdateDayScheduleCommandHandler : IRequestHandler<UpdateDaySchedule
             return Result.Fail(errors);        
         }
         
-        var exists = await _dayScheduleRepository.GetByIdAsync(request.Model.Id);
-        if (exists == null)
+        var daySchedule = await _dayScheduleRepository.GetByIdAsync(request.Model.Id);
+        if (daySchedule == null)
         {
-            return Result.Fail("DaySchedule.NotFound");
+            return Result.Fail($"DaySchedule with Id: {request.Model.Id} does not exist");
         }
-        var daySchedule = _mapper.Map<DaySchedule>(request.Model);
+        
+        _mapper.Map(request.Model, daySchedule);
         await _dayScheduleRepository.UpdateAsync(daySchedule);
         return Result.Ok(_mapper.Map<DayScheduleDto>(daySchedule));
     }

@@ -1,4 +1,4 @@
-namespace Application.DTOs.AppointmentDtos;
+namespace Application.DTOs.Appointments;
 
 public class CreateAppointmentDto
 {

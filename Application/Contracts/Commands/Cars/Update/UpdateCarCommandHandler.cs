@@ -1,5 +1,6 @@
 using Application.DTOs.Car;
 using Application.DTOs.CarDtos;
+using Application.DTOs.Cars;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
@@ -7,7 +8,7 @@ using FluentValidation;
 using MapsterMapper;
 using MediatR;
 
-namespace Application.Contracts.Commands.CarCommands.Update;
+namespace Application.Contracts.Commands.Cars.Update;
 public record UpdateCarCommand(UpdateCarDto Model) : IRequest<Result<CarDto>>;
 public class UpdateCarCommandHandler : IRequestHandler<UpdateCarCommand, Result<CarDto>>
 {
@@ -29,8 +30,14 @@ public class UpdateCarCommandHandler : IRequestHandler<UpdateCarCommand, Result<
             var errors = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
             return Result.Fail(errors);
         }
-        var car = _mapper.Map<Car>(request.Model);
+        
+        var car  = await _carRepository.GetByIdAsync(request.Model.Id);
+        if(car == null) return Result.Fail($"Car with Id: {request.Model.Id} not found");
+        
+        _mapper.Map(request.Model, car);
+
         await _carRepository.UpdateAsync(car);
+
         return Result.Ok(_mapper.Map<CarDto>(car));
     }
 }

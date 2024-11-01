@@ -8,12 +8,10 @@ public interface ISlotRepository
     Task<Slot?> GetByIdAsync(int id);
     Task<IEnumerable<Slot>> GetAllAsync();
     Task UpdateAsync(Slot entity);
-    Task DeleteByIdAsync(int id);
+    Task DeleteAsync(Slot entity);
 
     //aditional
     Task<IEnumerable<Slot>?> GetMasterAvaialableSlotsAsync(int masterId);
-    //Task<IEnumerable<Slot>> GetAvailableSlotsAsync();
-
     Task<List<Slot>> GetUnReservedSlots();
 
     Task DeleteRangeAsync(IEnumerable<Slot> slots);

@@ -1,4 +1,4 @@
-using Domain.IRepositories;
+/*using Domain.IRepositories;
 using FluentResults;
 using MediatR;
 
@@ -23,4 +23,4 @@ public class SlotAppointmnetCleanerCommandHandler : IRequestHandler<SlotCleanerC
         return Result.Ok();
 
     }
-}
+}*/

@@ -8,7 +8,7 @@ public interface IDayScheduleRepository
     Task<DaySchedule?> GetByIdAsync(int id);
     Task<IEnumerable<DaySchedule>?> GetAllAsync();
     Task UpdateAsync(DaySchedule entity);
-    Task DeleteByIdAsync(int id);
+    Task DeleteAsync(DaySchedule entity);
     
     // aditional
     Task<DaySchedule?> GetByDayOfWeekAsync(DayOfWeek dayOfWeek);

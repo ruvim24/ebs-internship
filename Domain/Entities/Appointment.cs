@@ -24,8 +24,8 @@ namespace Domain.Entities
             ServiceId = serviceId;
             SlotId = slotId;
             Status = AppointmentStatus.Scheduled;
-            CreatedAt = DateTime.Now;
-            UpdatedAt = DateTime.Now;
+            CreatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
              
         }
         public static Result<Appointment> Create(int carId, int serviceId, int slotId)
@@ -39,7 +39,7 @@ namespace Domain.Entities
             if (Status == AppointmentStatus.Scheduled)
             {
                 Status = AppointmentStatus.Completed;
-                UpdatedAt = DateTime.Now;
+                UpdatedAt = DateTime.UtcNow;
                 //rasing a domain event??
             }
         }
@@ -48,7 +48,7 @@ namespace Domain.Entities
             if (Status == AppointmentStatus.Scheduled)
             {
                 Status = AppointmentStatus.Canceled;
-                UpdatedAt = DateTime.Now;
+                UpdatedAt = DateTime.UtcNow;
                 //rasing a domain event??
             }
         }

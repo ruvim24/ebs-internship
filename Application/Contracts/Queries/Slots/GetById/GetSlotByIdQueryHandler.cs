@@ -4,7 +4,7 @@ using FluentResults;
 using MapsterMapper;
 using MediatR;
 
-namespace Application.Contracts.Queries.SlotQueries.GetById;
+namespace Application.Contracts.Queries.Slots.GetById;
 
 public record GetSlotByIdQuery(int Id) : IRequest<Result<SlotDto>>;
 

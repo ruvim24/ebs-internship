@@ -9,7 +9,7 @@ public interface IServiceRepository
     Task<Service?> GetByIdAsync(int id);
     Task<ICollection<Service>?> GetAllAsync();
     Task UpdateAsync(Service entity);
-    Task DeleteByIdAsync(int id);
+    Task DeleteAsync(Service entity);
     
     // aditional
     Task<Service?> GetServicesByMasterAsync(int masterId);

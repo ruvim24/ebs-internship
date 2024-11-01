@@ -1,11 +1,12 @@
-using Application.Contracts.Commands.CarCommands.Create;
-using Application.Contracts.Commands.CarCommands.Update;
+using Application.Contracts.Commands.Cars.Create;
+using Application.Contracts.Commands.Cars.Delete;
+using Application.Contracts.Commands.Cars.Update;
 using Application.Contracts.Queries.CarQueries.Get;
 using Application.Contracts.Queries.CarQueries.GetAll;
 using Application.Contracts.Queries.CarQueries.GetByCustomerId;
-using Application.Contracts.Queries.CarQueries.GetByVin;
 using Application.DTOs.Car;
 using Application.DTOs.CarDtos;
+using Application.DTOs.Cars;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,14 +47,6 @@ public class CarController : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpGet("vin/{vin}")]
-    public async Task<IActionResult> GetCarByVin([FromRoute] string vin)
-    {
-        var result = await _mediator.Send(new GetCarByVinQuery(vin));
-        if(result.IsFailed) return BadRequest(result.Errors);
-        return Ok(result.Value);
-    }
-
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateCarDto createCarDto)
     {
@@ -68,6 +61,14 @@ public class CarController : ControllerBase
         var result = await _mediator.Send(new UpdateCarCommand(updateCarDto));
         if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        var result = await _mediator.Send(new DeleteCarCommand(id));
+        if(result.IsFailed) return BadRequest(result.Errors);
+        return Ok();
     }
    
 }

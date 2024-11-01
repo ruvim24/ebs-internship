@@ -32,11 +32,17 @@ public class AppointmentService : IAppointmentService
         var service = await _serviceRepository.GetByIdAsync(serviceId);
         var slot = await _slotRepository.GetByIdAsync(slotId);
 
-        if (car != null && service != null && slot != null && slot.Availability == true)
+        if (car != null && service != null && slot != null /*&& slot.Availability == true*/)
         {
+            //set slot as unavailable
+            /*slot.SetNotAvailable();
+            await _slotRepository.UpdateAsync(slot);*/
+            
             var appointment = Appointment.Create(carId, serviceId, slotId);
+            if(appointment.IsFailed) return Result.Fail("Failed to create appointment");    
+            
             await _appointmentRepository.AddAsync(appointment.Value);
-            return appointment.Value;
+            return Result.Ok(appointment.Value);
         }
         return Result.Fail("Invalid arguments");
     }

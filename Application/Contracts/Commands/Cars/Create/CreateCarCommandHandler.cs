@@ -7,7 +7,7 @@ using FluentValidation;
 using MapsterMapper;
 using MediatR;
 
-namespace Application.Contracts.Commands.CarCommands.Create;
+namespace Application.Contracts.Commands.Cars.Create;
 public record CreateCarCommand(CreateCarDto Model) : IRequest<Result<CarDto>>;
 public class CreateCarCommandHandler : IRequestHandler<CreateCarCommand, Result<CarDto>>
 {

@@ -8,9 +8,8 @@ public interface ICarRepository
     Task<Car?> GetByIdAsync(int id);
     Task<IEnumerable<Car>?> GetAllAsync();
     Task UpdateAsync(Car entity);
-    Task DeleteByIdAsync(int id);
+    Task DeleteAsync(Car entity);
     
     //aditional
     Task<Car?> GetCarByCustomerIdAsync(int customerId);
-    Task<Car?> GetCarByVINAsync(string vin);
 }

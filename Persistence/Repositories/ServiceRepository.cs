@@ -36,9 +36,10 @@ public class ServiceRepository : IServiceRepository
         await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task DeleteByIdAsync(int id)
+    public async Task DeleteAsync(Service entity)
     {
-        _applicationDb.Services.Remove(await _applicationDb.Services.FirstOrDefaultAsync(x => x.Id == id));
+         _applicationDb.Services.Remove(entity);
+         await _applicationDb.SaveChangesAsync();
     }
 
     public async Task<Service?> GetServicesByMasterAsync(int masterId)

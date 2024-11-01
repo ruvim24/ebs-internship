@@ -1,5 +1,6 @@
 using Application.DTOs.Car;
 using Application.DTOs.CarDtos;
+using Application.DTOs.Cars;
 using FluentValidation;
 
 namespace Application.Validators.CarValidatoros;

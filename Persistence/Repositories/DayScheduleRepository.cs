@@ -35,9 +35,10 @@ public class DayScheduleRepository : IDayScheduleRepository
         await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task DeleteByIdAsync(int id)
+    public async Task DeleteAsync(DaySchedule entity)
     {
-        _applicationDb.Remove(await _applicationDb.DaySchedules.FirstOrDefaultAsync(x => x.Id == id));
+        _applicationDb.Remove(entity);
+        await _applicationDb.SaveChangesAsync(); 
     }
 
     public async Task<DaySchedule?> GetByDayOfWeekAsync(DayOfWeek dayOfWeek)

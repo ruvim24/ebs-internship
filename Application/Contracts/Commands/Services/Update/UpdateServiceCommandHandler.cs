@@ -1,12 +1,11 @@
 using Application.DTOs.Services;
-using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
 using FluentValidation;
 using MapsterMapper;
 using MediatR;
 
-namespace Application.Contracts.Commands.ServiceCommands.Update;
+namespace Application.Contracts.Commands.Services.Update;
 public record UpdateServiceCommand(UpdateServiceDto Model) : IRequest<Result<ServiceDto>>;
 public class UpdateServiceCommandHandler : IRequestHandler<UpdateServiceCommand, Result<ServiceDto>>
 {
@@ -25,7 +24,10 @@ public class UpdateServiceCommandHandler : IRequestHandler<UpdateServiceCommand,
         var validationResult = _validator.Validate(request.Model);
         if(!validationResult.IsValid) return Result.Fail($"Validation failed for{request.Model}");
         
-        var service = _mapper.Map<Service>(request.Model);
+        var service = await _serviceRepository.GetByIdAsync(request.Model.Id);
+        if(service == null) return Result.Fail($"Service with Id: {request.Model.Id} not found");
+        
+        _mapper.Map(request.Model, service);
         await _serviceRepository.UpdateAsync(service);
         return Result.Ok(_mapper.Map<ServiceDto>(service));
     }

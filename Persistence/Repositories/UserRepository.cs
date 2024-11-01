@@ -36,9 +36,9 @@ public class UserRepository : IUserRepository
         await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task DeleteByIdAsync(int id)
+    public async Task DeleteAsync(User entity)
     {
-        _applicationDb.Users.Remove(_applicationDb.Users.FirstOrDefault(a => a.Id == id));
+        _applicationDb.Users.Remove(entity);
         await _applicationDb.SaveChangesAsync();
     }
 

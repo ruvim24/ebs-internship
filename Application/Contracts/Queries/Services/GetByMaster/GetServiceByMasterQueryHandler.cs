@@ -1,12 +1,10 @@
-using Application.Contracts.Queries.ServiceQueries.Get;
 using Application.DTOs.Services;
-using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
 
-namespace Application.Contracts.Queries.ServiceQueries.GetByMaster;
+namespace Application.Contracts.Queries.Services.GetByMaster;
 
 public record GetServiceByMasterQuery(int MasterId) : IRequest<Result<IEnumerable<ServiceDto>>>;
 

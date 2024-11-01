@@ -1,9 +1,9 @@
-using Application.Contracts.Commands.DayScheduleCommands.Update;
+using Application.Contracts.Commands.DaySchedules.Update;
 using Application.Contracts.Queries.DayScheduleQueries.Get;
 using Application.Contracts.Queries.DayScheduleQueries.GetAll;
 using Application.Contracts.Queries.DayScheduleQueries.GetByDayOfWeek;
 using Application.DTOs.DaySchedule;
-using Application.DTOs.DayScheduleDtos;
+using Application.DTOs.DaySchedules;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,7 +36,7 @@ public class DayScheduleController : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpGet("[action]")]
+    [HttpGet("day-of-week")]
     public async Task<IActionResult> GetByDay([FromQuery] DayOfWeek dayOfWeek)
     {
         var result = await _mediator.Send(new GetByDayOfWeekQuery(dayOfWeek));
@@ -44,7 +44,7 @@ public class DayScheduleController : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpPut("[action]")]
+    [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateDayScheduleDto updateDto)
     {
         var result = await _mediator.Send(new UpdateDayScheduleCommand(updateDto));

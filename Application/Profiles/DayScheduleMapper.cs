@@ -1,5 +1,5 @@
 using Application.DTOs.DaySchedule;
-using Application.DTOs.DayScheduleDtos;
+using Application.DTOs.DaySchedules;
 using Domain.Entities;
 using Mapster;
 

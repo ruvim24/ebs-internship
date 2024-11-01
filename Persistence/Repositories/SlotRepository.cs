@@ -36,9 +36,9 @@ public class SlotRepository : ISlotRepository
         await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task DeleteByIdAsync(int id)
+    public async Task DeleteAsync(Slot entity)
     {
-        _applicationDb.Slots.Remove(await _applicationDb.Slots.FirstOrDefaultAsync(x => x.Id == id));
+        _applicationDb.Slots.Remove(entity);
         await _applicationDb.SaveChangesAsync();
     }
 
@@ -61,11 +61,6 @@ public class SlotRepository : ISlotRepository
 
     public async Task<bool> ExistsSlotsForDateAsync(int masterId, DateOnly date)
     {
-        /*return await _applicationDb.Slots
-            .AnyAsync(x => x.StartTime.Date == date.ToDateTime(new TimeOnly(0,0)) && x.MasterId == masterId);*/
-        
-        
-        // Convertim DateOnly în DateTime la începutul zilei în UTC
         DateTime dateTimeStartUtc = DateTime.SpecifyKind(date.ToDateTime(new TimeOnly(0, 0)), DateTimeKind.Utc);
 
         return await _applicationDb.Slots

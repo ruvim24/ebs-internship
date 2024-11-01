@@ -35,18 +35,15 @@ public class CarRepository : ICarRepository
         await _applicationDb.SaveChangesAsync();
     }
 
-    public async Task DeleteByIdAsync(int id)
+    public async Task DeleteAsync(Car entity)
     {
-        _applicationDb.Cars.Remove(await _applicationDb.Cars.FirstOrDefaultAsync(x => x.Id == id));
+        _applicationDb.Cars.Remove(entity);
+        await _applicationDb.SaveChangesAsync();
     }
 
     public async Task<Car?> GetCarByCustomerIdAsync(int customerId)
     {
         return await _applicationDb.Cars.FirstOrDefaultAsync(x => x.CustomerId == customerId);
     }
-
-    public async Task<Car?> GetCarByVINAsync(string vin)
-    {
-        return await _applicationDb.Cars.FirstOrDefaultAsync(x => x.VIN == vin);
-    }
+    
 }

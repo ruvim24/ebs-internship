@@ -14,6 +14,7 @@ namespace Domain.Entities
         private Slot() { }
         private Slot(int masterId, DateTime startTime, DateTime endTime)
         {
+            MasterId = masterId;
             StartTime = startTime;
             EndTime = endTime;
             Availability = true;
