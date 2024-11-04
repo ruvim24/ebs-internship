@@ -34,7 +34,7 @@ public class ServiceController : ControllerBase
     }
     
     [HttpGet("by-masterId/{masterId:int}")]
-    public async Task<IActionResult> GetMasters([FromQuery] int masterId)
+    public async Task<IActionResult> GetMasters(int masterId)
     {
         var result = await _mediator.Send(new GetServiceByMasterQuery(masterId));
         if (result.IsFailed) return BadRequest(result.Errors);

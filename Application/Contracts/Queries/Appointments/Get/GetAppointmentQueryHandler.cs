@@ -1,11 +1,10 @@
 using Application.DTOs.AppointmentDtos;
-using Domain.DomainServices.AppointmentService;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
 
-namespace Application.Contracts.Queries.AppointmentQueries.Get;
+namespace Application.Contracts.Queries.Appointments.Get;
 public record GetAppointmentQuery(int Id) : IRequest<Result<AppointmentDto>>;
 public class GetAppointmentQueryHandler : IRequestHandler<GetAppointmentQuery, Result<AppointmentDto>>
 {
@@ -19,6 +18,7 @@ public class GetAppointmentQueryHandler : IRequestHandler<GetAppointmentQuery, R
     }
     public async Task<Result<AppointmentDto>> Handle(GetAppointmentQuery request, CancellationToken cancellationToken)
     {
+        if(request.Id <= 0) return Result.Fail("Id should be greater than 0");
         var result = await _appointmentRepository.GetByIdAsync(request.Id);
         if(result == null) return Result.Fail("Appointment not found");
         return Result.Ok(_mapper.Map<AppointmentDto>(result));

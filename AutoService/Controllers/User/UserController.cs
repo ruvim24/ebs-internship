@@ -1,9 +1,9 @@
 ﻿using Application.Contracts.Commands.Users.Create;
 using Application.Contracts.Commands.Users.CreateMaster;
 using Application.Contracts.Commands.Users.Update;
-using Application.Contracts.Queries.UserQueries.Get;
 using Application.Contracts.Queries.UserQueries.GetAll;
 using Application.Contracts.Queries.UserQueries.GetByRole;
+using Application.Contracts.Queries.Users.Get;
 using Application.DTOs.Users;
 using Domain.Enums;
 using MediatR;

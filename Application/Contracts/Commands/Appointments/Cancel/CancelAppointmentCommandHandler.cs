@@ -19,7 +19,7 @@ public class CancelAppointmentCommandHandler : IRequestHandler<CancelAppointment
     }
     public async Task<Result<AppointmentDto>> Handle(CancelAppointmentCommand request, CancellationToken cancellationToken)
     {
-        if (request.Id < 0) { return Result.Fail("Invalid Appointment Id"); }
+        if (request.Id <= 0) { return Result.Fail("Id should be greater than 0"); }
         
         var cancelAppointment = await _appointmentRepository.GetByIdAsync(request.Id);
         

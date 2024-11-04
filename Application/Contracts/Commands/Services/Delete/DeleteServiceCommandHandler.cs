@@ -15,6 +15,7 @@ public class DeleteServiceCommandHandler : IRequestHandler<DeleteServiceCommand,
     }
     public async Task<Result> Handle(DeleteServiceCommand request, CancellationToken cancellationToken)
     {
+        if(request.Id <= 0) return Result.Fail("Id should be greater than 0");
         var result = await _serviceRepository.GetByIdAsync(request.Id);
         if(result == null) return Result.Fail("Service not found");
         

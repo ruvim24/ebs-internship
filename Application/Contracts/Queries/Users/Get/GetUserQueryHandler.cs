@@ -4,7 +4,7 @@ using FluentResults;
 using MapsterMapper;
 using MediatR;
 
-namespace Application.Contracts.Queries.UserQueries.Get;
+namespace Application.Contracts.Queries.Users.Get;
 
 public record GetUserQuery(int Id) : IRequest<Result<UserDto>>;
 
@@ -20,7 +20,7 @@ public class GetUserCommandHandler : IRequestHandler<GetUserQuery, Result<UserDt
     }
     public async Task<Result<UserDto>> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
-        if(request.Id <= 0){return Result.Fail("Invalid User Id");}
+        if(request.Id <= 0){return Result.Fail("Id should be greater than 0");}
 
         var user = await _userRepository.GetByIdAsync(request.Id);
         if(user == null){return Result.Fail("User not found");}

@@ -20,6 +20,7 @@ public class GetMasterAvailableSlotsQueryHandler : IRequestHandler<GetMasterAvai
     }   
     public async Task<Result<IEnumerable<SlotDto>>> Handle(GetMasterAvailableSlotsQuery request, CancellationToken cancellationToken)
     {
+        if (request.MasterId <= 0) return Result.Fail("Id should be greater than 0");
         var result = await _slotRepository.GetMasterAvaialableSlotsAsync(request.MasterId); 
         if(result == null) return Result.Fail("No slots available");
         return Result.Ok(_mapper.Map<IEnumerable<SlotDto>>(result));

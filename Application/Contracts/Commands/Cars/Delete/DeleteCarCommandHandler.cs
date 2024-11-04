@@ -16,6 +16,7 @@ public class DeleteCarCommandHandler : IRequestHandler<DeleteCarCommand, Result>
     }
     public async Task<Result> Handle(DeleteCarCommand request, CancellationToken cancellationToken)
     {
+        if(request.Id <= 0) return Result.Fail("Id should be greater than 0");
         var car = await _carRepository.GetByIdAsync(request.Id);
         if(car == null) return Result.Fail($"Car with id:{request.Id} not found");
         await _carRepository.DeleteAsync(car);

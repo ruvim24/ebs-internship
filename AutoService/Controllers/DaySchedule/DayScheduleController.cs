@@ -1,8 +1,7 @@
 using Application.Contracts.Commands.DaySchedules.Update;
-using Application.Contracts.Queries.DayScheduleQueries.Get;
 using Application.Contracts.Queries.DayScheduleQueries.GetAll;
 using Application.Contracts.Queries.DayScheduleQueries.GetByDayOfWeek;
-using Application.DTOs.DaySchedule;
+using Application.Contracts.Queries.DaySchedules.Get;
 using Application.DTOs.DaySchedules;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

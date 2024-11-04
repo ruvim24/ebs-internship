@@ -1,9 +1,13 @@
 //using Application.Jobs.Extension;
 using Application.Contracts.Commands.Cars.Create;
+using Application.Jobs.Cleaner;
+using Application.Jobs.Configuration;
+using Application.Jobs.Generator;
 using Application.Profiles;
 using Application.Validators.Users;
 using Application.Validators.UserValidators;
 using Domain.DomainServices.AppointmentService;
+using Domain.DomainServices.SlotGeneratorService;
 using Domain.IRepositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -30,6 +34,9 @@ builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
 //---Service
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+/*
+builder.Services.AddScoped<ISlotService, SlotService>();
+*/
 
 //----DataBaseSeeder
 builder.Services.AddTransient<DayScheduleSeeder>();
@@ -46,10 +53,12 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
 //---Mapper-ul
 builder.Services.AddMapster();
 
-//---BackroundJobs
-//builder.Services.AddQuartzServices();
+//---Hangfire
+/*
+builder.Services.ConfigureHangfire(builder.Configuration.GetConnectionString("DefaultConnection"));
+*/
 
-
+builder.Services.ConfigureQuartzJobs();
 
 builder.Services.AddControllers();
 
@@ -58,12 +67,18 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Apelarea metodei de seeding
+/*
+app.ConfigureHangfireJobs();
+*/
+
+//Seeding DaySchedule
 using (var scope = app.Services.CreateScope())
 {
     var dayScheduleSeeder = scope.ServiceProvider.GetRequiredService<DayScheduleSeeder>();
     await dayScheduleSeeder.SeedAsync(); 
 }
+
+
 
 if (app.Environment.IsDevelopment())
 {

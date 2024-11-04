@@ -49,7 +49,7 @@ public class SlotRepository : ISlotRepository
     
     public Task<List<Slot>> GetUnReservedSlots()
     {
-        var unreservedSlots =  _applicationDb.Slots.Where(x => x.Availability == true && x.EndTime < DateTime.Now);
+        var unreservedSlots =  _applicationDb.Slots.Where(x => x.Availability == true && x.EndTime < DateTime.UtcNow);
         return unreservedSlots.ToListAsync();
     }
 

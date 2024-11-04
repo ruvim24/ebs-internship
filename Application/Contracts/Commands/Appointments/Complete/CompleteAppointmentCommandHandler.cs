@@ -19,16 +19,11 @@ public class CompleteAppointmentCommandHandler : IRequestHandler<CompleteAppoint
     }
     public async Task<Result<AppointmentDto>> Handle(CompleteAppointmentCommand request, CancellationToken cancellationToken)
     {
-        if (request.Id < 0)
-        {
-            return Result.Fail("Invalid Appointment Id");
-        }
+        if (request.Id <= 0) return Result.Fail("Invalid Appointment Id");
+        
         var completeAppointment = await _appointmentRepository.GetByIdAsync(request.Id);
         
-        if (completeAppointment == null)
-        {
-            return Result.Fail("Appointment not found");
-        }
+        if (completeAppointment == null) return Result.Fail("Appointment not found");
         
         completeAppointment.Complete();
         await _appointmentRepository.UpdateAsync(completeAppointment);

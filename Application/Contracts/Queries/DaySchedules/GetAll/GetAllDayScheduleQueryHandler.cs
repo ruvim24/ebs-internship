@@ -1,4 +1,4 @@
-using Application.DTOs.DaySchedule;
+using Application.DTOs.DaySchedules;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;

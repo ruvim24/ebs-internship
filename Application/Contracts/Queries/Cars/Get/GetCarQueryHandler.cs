@@ -21,7 +21,7 @@ public class GetCarQueryHandler : IRequestHandler<GetCarQuery, Result<CarDto>>
     }
     public async Task<Result<CarDto>> Handle(GetCarQuery request, CancellationToken cancellationToken)
     {
-        if(request.Id < 0) return Result.Fail("Invalid car Id");
+        if(request.Id <= 0) return Result.Fail("Id should be greater than 0");
         var car = await _carRepository.GetByIdAsync(request.Id);
         if (car == null) return Result.Fail("Invalid car Id");
         return Result.Ok(_mapper.Map<CarDto>(car));

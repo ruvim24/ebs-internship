@@ -21,7 +21,7 @@ public class GetSlotByIdQueryHandler : IRequestHandler<GetSlotByIdQuery, Result<
     }
     public async Task<Result<SlotDto>> Handle(GetSlotByIdQuery request, CancellationToken cancellationToken)
     {
-        if(request.Id < 0) return Result.Fail("Id is invalid");
+        if(request.Id <= 0) return Result.Fail("Id should be greater than 0");
         var result = await _slotRepository.GetByIdAsync(request.Id);
         if(result == null) return Result.Fail("Slot not found");
         return Result.Ok(this._mapper.Map<SlotDto>(result));

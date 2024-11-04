@@ -4,7 +4,7 @@ using FluentResults;
 using MapsterMapper;
 using MediatR;
 
-namespace Application.Contracts.Queries.CarQueries.GetByCustomerId;
+namespace Application.Contracts.Queries.Cars.GetByCustomerId;
 
 
 public record GetCarByCustomerIdQuery(int Id) : IRequest<Result<IEnumerable<CarDto>>>;
@@ -20,7 +20,7 @@ public class GetCarByCustomerIdQueryHandler : IRequestHandler<GetCarByCustomerId
     }
     public async Task<Result<IEnumerable<CarDto>>> Handle(GetCarByCustomerIdQuery request, CancellationToken cancellationToken)
     {
-        if(request.Id < 0) return Result.Fail("Invalid Id");
+        if(request.Id <= 0) return Result.Fail("Id should be greater than 0");
         var car = await _carRepository.GetCarByCustomerIdAsync(request.Id);
         if (car == null) return Result.Fail("Invalid Id");
         return Result.Ok(_mapper.Map<IEnumerable<CarDto>>(car));

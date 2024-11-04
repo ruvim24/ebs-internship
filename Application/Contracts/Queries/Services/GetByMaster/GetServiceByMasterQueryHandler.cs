@@ -21,7 +21,7 @@ public class GetServiceByMasterCommandHandler : IRequestHandler<GetServiceByMast
 
     public async Task<Result<IEnumerable<ServiceDto>>> Handle(GetServiceByMasterQuery request, CancellationToken cancellationToken)
     {
-        if (request.MasterId < 0) return Result.Fail("Invalid Master Id");
+        if (request.MasterId <= 0) return Result.Fail("Master Id is should be greater than 0");
         var service = await _serviceRepository.GetServicesByMasterAsync(request.MasterId);
         if (service == null ) return Result.Fail("Service not found");
         return Result.Ok(_mapper.Map<IEnumerable<ServiceDto>>(service));

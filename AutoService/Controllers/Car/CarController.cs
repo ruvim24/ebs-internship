@@ -3,7 +3,7 @@ using Application.Contracts.Commands.Cars.Delete;
 using Application.Contracts.Commands.Cars.Update;
 using Application.Contracts.Queries.CarQueries.Get;
 using Application.Contracts.Queries.CarQueries.GetAll;
-using Application.Contracts.Queries.CarQueries.GetByCustomerId;
+using Application.Contracts.Queries.Cars.GetByCustomerId;
 using Application.DTOs.Car;
 using Application.DTOs.CarDtos;
 using Application.DTOs.Cars;

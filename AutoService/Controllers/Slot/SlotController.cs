@@ -1,3 +1,4 @@
+using Application.Contracts.Commands.Slots.Cleaner;
 using Application.Contracts.Commands.Slots.Create;
 using Application.Contracts.Commands.Slots.Generator;
 using Application.Contracts.Queries.Slots.GetById;
@@ -22,7 +23,7 @@ public class SlotController : ControllerBase
     public async Task<IActionResult> Get([FromRoute] int id)
     {
         var result = await _mediator.Send(new GetSlotByIdQuery(id));
-        if (result.IsSuccess) return BadRequest(result.Errors);
+        if (result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
     }
 
@@ -35,9 +36,9 @@ public class SlotController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    public async Task<IActionResult> Generate()
+    public async Task<IActionResult> Generate([FromQuery] int advanceDays)
     {
-        var result = await _mediator.Send(new SlotGeneratorCommand());
+        var result = await _mediator.Send(new SlotGeneratorCommand(advanceDays));
         if (result.IsFailed) return BadRequest(result.Errors);
         return Ok();
     }
@@ -46,6 +47,15 @@ public class SlotController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateSlotDto command)
     {
         var result = await _mediator.Send(new CreateSlotCommand(command));
+        if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result);
+    }
+
+    [HttpPut("[action]")]
+    public async Task<IActionResult> Clean()
+    {
+        var result = await _mediator.Send(new SlotCleanerCommand());
+        if (result.IsFailed) return BadRequest(result.Errors);
+        return Ok();
     }
 }
