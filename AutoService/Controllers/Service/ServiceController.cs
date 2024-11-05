@@ -4,7 +4,6 @@ using Application.Contracts.Commands.Services.Update;
 using Application.Contracts.Queries.ServiceQueries.Get;
 using Application.Contracts.Queries.ServiceQueries.GetAll;
 using Application.Contracts.Queries.ServiceQueries.GetByType;
-using Application.Contracts.Queries.Services.GetByMaster;
 using Application.DTOs.Services;
 using Domain.Enums;
 using MediatR;
@@ -30,14 +29,6 @@ public class ServiceController : ControllerBase
     {
         var result = await _mediator.Send(new GetServiceQuery(id));
         if(result.IsFailed) return BadRequest(result.Errors);
-        return Ok(result.Value);
-    }
-    
-    [HttpGet("by-masterId/{masterId:int}")]
-    public async Task<IActionResult> GetMasters(int masterId)
-    {
-        var result = await _mediator.Send(new GetServiceByMasterQuery(masterId));
-        if (result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
     }
 

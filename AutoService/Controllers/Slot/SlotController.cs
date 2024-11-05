@@ -1,7 +1,5 @@
 using Application.Contracts.Commands.Slots.Cleaner;
-using Application.Contracts.Commands.Slots.Create;
-using Application.Contracts.Commands.Slots.Generator;
-using Application.Contracts.Queries.Slots.GetById;
+using Application.Contracts.Commands.Slots.Generate;
 using Application.Contracts.Queries.Slots.GetMastersAvailableSlots;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -19,15 +17,7 @@ public class SlotController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get([FromRoute] int id)
-    {
-        var result = await _mediator.Send(new GetSlotByIdQuery(id));
-        if (result.IsFailed) return BadRequest(result.Errors);
-        return Ok(result.Value);
-    }
-
-    [HttpGet("by-masterId/{masterId:int}")]
+    [HttpGet("masters-available/{masterId:int}")]
     public async Task<IActionResult> GetMasterAvailableSlots([FromRoute] int masterId)
     {
         var result = await _mediator.Send(new GetMasterAvailableSlotsQuery(masterId));
@@ -41,14 +31,6 @@ public class SlotController : ControllerBase
         var result = await _mediator.Send(new SlotGeneratorCommand(advanceDays));
         if (result.IsFailed) return BadRequest(result.Errors);
         return Ok();
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateSlotDto command)
-    {
-        var result = await _mediator.Send(new CreateSlotCommand(command));
-        if(result.IsFailed) return BadRequest(result.Errors);
-        return Ok(result);
     }
 
     [HttpPut("[action]")]

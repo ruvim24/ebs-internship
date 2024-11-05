@@ -2,7 +2,7 @@ using Domain.DomainServices.SlotGeneratorService;
 using FluentResults;
 using MediatR;
 
-namespace Application.Contracts.Commands.Slots.Generator;
+namespace Application.Contracts.Commands.Slots.Generate;
 
 
 public record SlotGeneratorCommand(int Days) : IRequest<Result>;

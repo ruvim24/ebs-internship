@@ -9,9 +9,6 @@ public interface IAppointmentRepository
     Task<Appointment?> GetByIdAsync(int id);
     Task<IEnumerable<Appointment>?> GetAllAsync();
     Task UpdateAsync(Appointment entity);
-    Task DeleteAsync(Appointment entity);
-    
-    // aditional
     Task<IEnumerable<Appointment>?> GetByCarIdAsync(int carId);
     Task<IEnumerable<Appointment>> GetByStatusAsync(AppointmentStatus status);
     

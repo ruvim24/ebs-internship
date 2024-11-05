@@ -22,9 +22,4 @@
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Contracts\Queries\Appointments\GetByMaster\" />
-    <Folder Include="Contracts\Queries\Appointments\GetByStatus\" />
-  </ItemGroup>
-
 </Project>

@@ -1,11 +1,9 @@
 using Application.Contracts.Commands.Appointments.Cancel;
 using Application.Contracts.Commands.Appointments.Complete;
 using Application.Contracts.Commands.Appointments.Create;
-using Application.Contracts.Commands.Appointments.Delete;
 using Application.Contracts.Queries.AppointmentQueries.GetAll;
 using Application.Contracts.Queries.Appointments.Get;
 using Application.Contracts.Queries.Appointments.GetByCarId;
-using Application.DTOs.AppointmentDtos;
 using Application.DTOs.Appointments;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -69,13 +67,5 @@ public class AppointmentController : ControllerBase
         var result = await _mediator.Send(new CompleteAppointmentCommand(id));
         if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] int id)
-    {
-        var result = await _mediator.Send(new DeleteAppointmentCommand(id));
-        if(result.IsFailed) return BadRequest(result.Errors);
-        return Ok();
     }
 }
