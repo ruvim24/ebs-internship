@@ -1,18 +1,17 @@
 //using Application.Jobs.Extension;
+
 using Application.Contracts.Commands.Cars.Create;
-using Application.Jobs.Cleaner;
 using Application.Jobs.Configuration;
-using Application.Jobs.Generator;
 using Application.Profiles;
 using Application.Validators.Users;
-using Application.Validators.UserValidators;
 using Domain.DomainServices.AppointmentService;
-using Domain.DomainServices.SlotGeneratorService;
+using Domain.Entities;
 using Domain.IRepositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence.DataBaseSeeder;
 using Persistence.DBContext;
@@ -57,6 +56,21 @@ builder.Services.AddMapster();
 /*
 builder.Services.ConfigureHangfire(builder.Configuration.GetConnectionString("DefaultConnection"));
 */
+
+
+//Identity Configuration
+builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
+    {
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = true;
+        options.Password.RequiredLength = 6;
+        options.Password.RequiredUniqueChars = 1;
+    })
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders(); 
+
 
 builder.Services.ConfigureQuartzJobs();
 

@@ -1,41 +1,32 @@
-﻿using Domain.Enums;
-using FluentResults;
+﻿using FluentResults;
+using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Entities
 {
-    public class User
+    public class User : IdentityUser<int>
     {
-        public int Id { get; private set; }
         public string FullName { get; private set; }
-        public string Email { get; private set; }
-        public string PhoneNumber { get; private set; }
-        public string Password { get; private set; }
-        public Role Role { get; private set; }
         
         private User() { }
-        private User(string fullName, string email, string phoneNumber, string password, Role role)
+        private User(string fullName, string email, string phoneNumber, string userName) 
         {
             FullName = fullName;
             Email = email;
             PhoneNumber = phoneNumber;
-            Password = password;
-            Role = role;
+            UserName = userName;
         }
 
-            public static Result<User> Create(string fullName, string email, string phoneNumber, string password, Role role)
+            public static Result<User> Create(string fullName, string email, string phoneNumber, string userName) 
             {
                 var errors = new List<string>();
 
                 if (string.IsNullOrWhiteSpace(fullName))
                     errors.Add("Full name is required.");
-
-                if (string.IsNullOrWhiteSpace(password))
-                    errors.Add("Password is required.");
                 
                 if (errors.Any())
                     return Result.Fail(string.Join(", ", errors));
 
-                return Result.Ok(new User(fullName, email, phoneNumber, password, role));
+                return Result.Ok(new User(fullName, email, phoneNumber, userName));
             }
     }
 }

@@ -1,15 +1,12 @@
 ﻿using Application.Contracts.Commands.Users.Create;
-using Application.Contracts.Commands.Users.CreateMaster;
 using Application.Contracts.Commands.Users.Update;
 using Application.Contracts.Queries.UserQueries.GetAll;
-using Application.Contracts.Queries.UserQueries.GetByRole;
 using Application.Contracts.Queries.Users.Get;
 using Application.DTOs.Users;
-using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AutoService.Controllers.User
+namespace AutoService.Controllers.Users
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -38,14 +35,6 @@ namespace AutoService.Controllers.User
             return Ok(result.Value);
         }
 
-        [HttpGet("/role")]
-        public async Task<IActionResult> GetUserByRole([FromQuery] Role role)
-        {
-            var users = await _mediator.Send(new GetUsersByRoleCommand(role));
-            if(users.IsFailed) return BadRequest(users.Errors);
-            return Ok(users.Value);
-        }
-
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] UpdateUserDto updateUserDto)
         {
@@ -59,14 +48,6 @@ namespace AutoService.Controllers.User
         {
             var result = await _mediator.Send(new CreateUserCommand(createUserDto));
             if (result.IsFailed) return BadRequest(result.Errors);
-            return Ok(result.Value);
-        }
-
-        [HttpPost("[action]")]
-        public async Task<IActionResult> CreateMaster([FromBody] CreateMasterDto createMasterDto)
-        {
-            var result = await _mediator.Send(new CreateMasterCommand(createMasterDto));
-            if(result.IsFailed) return BadRequest(result.Errors);   
             return Ok(result.Value);
         }
         

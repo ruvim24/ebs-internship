@@ -1,4 +1,3 @@
-using Application.DTOs.UserDtos;
 using Application.DTOs.Users;
 using Domain.Enums;
 using FluentValidation;
@@ -26,9 +25,9 @@ public class CreateUserDtoValidator : AbstractValidator<CreateUserDto>
             .NotEmpty().WithMessage("Password cannot be empty")
             .MinimumLength(10).WithMessage("Password cannot be less than 10 characters");
         
-        RuleFor(x => x.Role)
+        /*RuleFor(x => x.Role)
             .NotEmpty().WithMessage("Role cannot be empty")
-            .Must(role => role == Role.Customer).WithMessage("Role must be Master");
+            .Must(role => role == Role.Customer).WithMessage("Role must be Master");*/
 
     }
 }

@@ -11,7 +11,4 @@ public interface IUserRepository
     Task UpdateAsync(User entity);
     Task DeleteAsync(User entity);
     
-    //aditional
-    Task<IEnumerable<User>?> GetByRoleAsync(Role role);
-    
 }

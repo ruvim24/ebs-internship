@@ -1,4 +1,3 @@
-using Application.DTOs.UserDtos;
 using Application.DTOs.Users;
 using Domain.Entities;
 using Domain.IRepositories;
@@ -34,7 +33,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
         }
             
         var user = _mapper.Map<User>(request.Model);
-        var userCreate = User.Create(user.FullName, user.Email, user.PhoneNumber, user.Password, user.Role);
+        var userCreate = User.Create(user.FullName, user.Email, user.PhoneNumber, user.UserName);
         await _userRepository.AddAsync(userCreate.Value);
         return Result.Ok(_mapper.Map<UserDto>(userCreate.Value));
     }

@@ -1,4 +1,3 @@
-using Application.DTOs.UserDtos;
 using Application.DTOs.Users;
 using Domain.Entities;
 using Domain.Enums;
@@ -15,30 +14,23 @@ public class UserMapper : IRegister
         TypeAdapterConfig<UserDto, User>.NewConfig()
             .Map(dest => dest.FullName, src => src.FullName)
             .Map(dest => dest.Email, src => src.Email)
-            .Map(dest => dest.PhoneNumber, src => src.PhoneNumber)
-            .Map(dest => dest.Password, src => src.Password)
-            .Map(dest => dest.Role, src => src.Role);
+            .Map(dest => dest.PhoneNumber, src => src.PhoneNumber);
 
         TypeAdapterConfig<CreateUserDto, User>.NewConfig()
             .Map(dest => dest.FullName, src => src.FullName)
             .Map(dest => dest.Email, src => src.Email)
             .Map(dest => dest.PhoneNumber, src => src.PhoneNumber)
-            .Map(dest => dest.Password, src => src.Password)
-            .ConstructUsing(src => User.Create(src.FullName,  src.Email,  src.PhoneNumber, src.Password, src.Role).Value);
-        
+            .ConstructUsing(src => User.Create(src.FullName,  src.Email,  src.PhoneNumber, src.Username).Value);
+
         TypeAdapterConfig<UpdateUserDto, User>.NewConfig()
-            .Map(dest => dest.Id, src => src.Id) 
+            .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.Email, src => src.Email)
-            .Map(dest => dest.PhoneNumber, src => src.PhoneNumber)
-            .Map(dest => dest.Password, src => src.Password)
-            .Map(dest => dest.Role, src => src.Role); 
-        
+            .Map(dest => dest.PhoneNumber, src => src.PhoneNumber);
         TypeAdapterConfig<CreateMasterDto, User>.NewConfig()
             .Map(dest => dest.FullName, src => src.FullName)
             .Map(dest => dest.Email, src => src.Email)
             .Map(dest => dest.PhoneNumber, src => src.PhoneNumber)
-            .Map(dest => dest.Password, src => src.Password)
-            .ConstructUsing(src => User.Create(src.FullName,  src.Email,  src.PhoneNumber, src.Password, src.Role).Value);
+            .ConstructUsing(src => User.Create(src.FullName,  src.Email,  src.PhoneNumber, src.Username).Value);
             
     }
 }

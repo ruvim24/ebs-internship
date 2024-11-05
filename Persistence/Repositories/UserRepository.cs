@@ -41,9 +41,4 @@ public class UserRepository : IUserRepository
         _applicationDb.Users.Remove(entity);
         await _applicationDb.SaveChangesAsync();
     }
-
-    public async Task<IEnumerable<User>?> GetByRoleAsync(Role role)
-    {
-        return await _applicationDb.Users.Where(a => a.Role == role).ToListAsync();
-    }
 }

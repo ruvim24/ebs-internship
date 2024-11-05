@@ -25,9 +25,9 @@ public class CreateMasterDtoValidator : AbstractValidator<CreateMasterDto>
             .NotEmpty().WithMessage("Password cannot be empty")
             .MinimumLength(10).WithMessage("Password cannot be less than 10 characters");
         
-        RuleFor(x => x.Role)
+        /*RuleFor(x => x.Role)
             .NotEmpty().WithMessage("Role cannot be empty")
-            .Must(role => role == Role.Master).WithMessage("Role must be Master");
+            .Must(role => role == Role.Master).WithMessage("Role must be Master");*/
     }
     
 }
