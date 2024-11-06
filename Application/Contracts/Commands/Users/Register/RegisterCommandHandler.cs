@@ -44,6 +44,8 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result>
             var errors = string.Join(", ", createUser.Errors.Select(e => e.Description));
             return Result.Fail(errors);
         }
+        if((await _userManager.AddToRoleAsync(user.Value, "Customer")).Succeeded == false)
+            return Result.Fail("Failed to asign role");
         
         return Result.Ok();
 
