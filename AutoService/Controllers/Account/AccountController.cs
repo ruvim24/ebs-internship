@@ -1,3 +1,4 @@
+using Application.Contracts.Commands.Users;
 using Application.Contracts.Commands.Users.LogIn;
 using Application.Contracts.Commands.Users.Logout;
 using Application.Contracts.Commands.Users.Register;
@@ -8,6 +9,7 @@ using Domain.Entities;
 using FluentResults;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AutoService.Controllers.Account;
 
@@ -48,6 +50,13 @@ public class AccountController : ControllerBase
         return Ok("Logged out successfully.");
     }
     
-    //create Role
-    //asign Role
+    [Authorize( Roles = "Admin" )]
+    [HttpPost("asign-role")]
+    public async Task<IActionResult> AsignRole([FromBody] AsignRoleDto asignRoleDto)
+    {
+        var result = await _mediator.Send(new AsignRoleUserCommand(asignRoleDto));
+        if(result.IsFailed) 
+            return BadRequest(result.Errors);
+        return Ok("Asigned role successfully.");
+    }
 }
