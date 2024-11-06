@@ -1,4 +1,4 @@
-using Application.Contracts.Commands.ServiceCommands.Create;
+using Application.Contracts.Commands.Services.Create;
 using Application.Contracts.Commands.Services.Delete;
 using Application.Contracts.Commands.Services.Update;
 using Application.Contracts.Queries.ServiceQueries.Get;
@@ -7,6 +7,7 @@ using Application.Contracts.Queries.ServiceQueries.GetByType;
 using Application.DTOs.Services;
 using Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutoService.Controllers.Service;
@@ -40,6 +41,7 @@ public class ServiceController : ControllerBase
         return Ok(result.Value);
     }
 
+    [Authorize]
     [HttpGet("by-type")]
     public async Task<IActionResult> GetByType([FromQuery] ServiceType serviceType)
     {
@@ -48,9 +50,8 @@ public class ServiceController : ControllerBase
         return Ok(result.Value);
     }
     
+    [Authorize(Roles = "Admin")]
     [HttpPost]
-    [ProducesResponseType(typeof(CreateServiceDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create([FromBody] CreateServiceDto createService)
     {
         var result = await _mediator.Send(new CreateServiceCommand(createService));
