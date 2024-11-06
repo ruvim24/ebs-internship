@@ -2,6 +2,7 @@ using Application.Contracts.Commands.DaySchedules.Update;
 using Application.Contracts.Queries.DayScheduleQueries.GetAll;
 using Application.DTOs.DaySchedules;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutoService.Controllers.DaySchedule;
@@ -17,6 +18,7 @@ public class DayScheduleController : ControllerBase
         _mediator = mediator;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -24,6 +26,8 @@ public class DayScheduleController : ControllerBase
         if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
     }
+    
+    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateDayScheduleDto updateDto)
     {

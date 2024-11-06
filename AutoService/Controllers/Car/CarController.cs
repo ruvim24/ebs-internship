@@ -5,6 +5,7 @@ using Application.Contracts.Queries.Cars.GetByCustomerId;
 using Application.DTOs.CarDtos;
 using Application.DTOs.Cars;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutoService.Controllers.Car;
@@ -36,6 +37,7 @@ public class CarController : ControllerBase
         return Ok(result.Value);
     }
 
+    [Authorize(Roles = "Customer")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateCarDto createCarDto)
     {
@@ -44,6 +46,7 @@ public class CarController : ControllerBase
         return Ok(result.Value);
     }
 
+    [Authorize(Roles = "Customer")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateCarDto updateCarDto)
     {

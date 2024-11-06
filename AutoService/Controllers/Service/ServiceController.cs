@@ -24,8 +24,6 @@ public class ServiceController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(CreateServiceDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Get([FromRoute] int id)
     {
         var result = await _mediator.Send(new GetServiceQuery(id));
@@ -59,6 +57,7 @@ public class ServiceController : ControllerBase
         return Ok(result.Value);
     }
     
+    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateServiceDto updateServiceDto)
     {
@@ -67,6 +66,7 @@ public class ServiceController : ControllerBase
         return Ok(result.Value);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {

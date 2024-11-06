@@ -18,8 +18,6 @@ namespace AutoService.Controllers.Account;
 public class AccountController : ControllerBase
 {
     private IMediator _mediator;
-    
-
     public AccountController(IMediator mediator)
     {
         _mediator = mediator;

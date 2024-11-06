@@ -6,6 +6,7 @@ using Application.Contracts.Queries.Appointments.Get;
 using Application.Contracts.Queries.Appointments.GetByCarId;
 using Application.DTOs.Appointments;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutoService.Controllers.Appointment;
