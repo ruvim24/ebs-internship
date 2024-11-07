@@ -6,7 +6,7 @@ using Quartz;
 
 namespace Application.Jobs.Cleaner;
 
-public class SlotAppointmentCleanerJob : IJob
+public class SlotAppointmentCleanerJob 
 {
     private readonly IMediator _mediator;
 
@@ -14,8 +14,7 @@ public class SlotAppointmentCleanerJob : IJob
     {
         _mediator = mediator;
     }
-
-    public async Task Execute(IJobExecutionContext context)
+    public async Task Execute()
     {
         await _mediator.Send(new SlotCleanerCommand());
         await _mediator.Send(new MarkAsExpiredAppointmnetsPastDueDateCommand());

@@ -4,7 +4,7 @@ using Quartz;
 
 namespace Application.Jobs.Generator;
 
-public class SlotGeneratorJob : IJob
+public class SlotGeneratorJob 
 {
     private readonly ISlotService _slotService;
 
@@ -13,7 +13,7 @@ public class SlotGeneratorJob : IJob
         _slotService = slotService;
     }
 
-    public async Task Execute(IJobExecutionContext context)
+    public async Task Execute()
     {
         int advanceDays = 7;
         await _slotService.Generate(advanceDays); 

@@ -3,14 +3,18 @@
 using Application.Contracts.Commands.Cars.Create;
 using Application.Contracts.Commands.Users.SeedAdmin;
 using Application.DTOs.Users;
-using Application.Jobs.Configuration;
+using Application.Jobs.Cleaner;
+using Application.Jobs.Generator;
 using Application.Profiles;
 using Application.Validators.Users;
 using Domain.DomainServices.AppointmentService;
+using Domain.DomainServices.SlotGeneratorService;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -36,11 +40,12 @@ builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
 //---Service
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<ISlotService, SlotService>();
 /*
 builder.Services.AddScoped<ISlotService, SlotService>();
 */
 
-//----DataBaseSeeder
+//---DataBaseSeeder
 builder.Services.AddTransient<DayScheduleSeeder>();
 
 //---MediatR
@@ -55,10 +60,19 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
 //---Mapper-ul
 builder.Services.AddMapster();
 
-//---Hangfire
-/*
-builder.Services.ConfigureHangfire(builder.Configuration.GetConnectionString("DefaultConnection"));
-*/
+//---Hangfire 
+builder.Services.AddHangfire(config =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+    config.UsePostgreSqlStorage(connectionString, new PostgreSqlStorageOptions
+    {
+        SchemaName = "hangfire",
+        DistributedLockTimeout = TimeSpan.FromMinutes(1)
+    });
+});
+builder.Services.AddHangfireServer();
+
 
 
 //Identity Configuration
@@ -88,7 +102,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 
-builder.Services.ConfigureQuartzJobs();
 
 builder.Services.AddControllers();
 
@@ -97,19 +110,16 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-/*
-app.ConfigureHangfireJobs();
-*/
 
-//Seeding DaySchedule
+
+//----Seeding DaySchedule
 using (var scope = app.Services.CreateScope())
 {
     var dayScheduleSeeder = scope.ServiceProvider.GetRequiredService<DayScheduleSeeder>();
     await dayScheduleSeeder.SeedAsync(); 
 }
 
-//insert all Roles
-
+//----insert all Roles
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
@@ -124,7 +134,7 @@ using (var scope = app.Services.CreateScope())
     }
 };
 
-//seed the Admin
+//----seed the Admin
 using (var scope = app.Services.CreateScope())
 {
     var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
@@ -150,6 +160,36 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine("Error: " + result.Errors.FirstOrDefault()?.Message);
     }
 }
+
+//-----Set CronJobs
+
+var backgroundJobClient = app.Services.GetRequiredService<IBackgroundJobClient>();
+
+backgroundJobClient.Enqueue(() => Console.WriteLine("Job executat"));
+backgroundJobClient.Enqueue<SlotAppointmentCleanerJob>(job => job.Execute());
+backgroundJobClient.Enqueue<SlotGeneratorJob>(job => job.Execute());
+
+var recurringJobManager = app.Services.GetRequiredService<IRecurringJobManager>();
+
+recurringJobManager.AddOrUpdate<SlotGeneratorJob>(
+    "slotGenerator-job", 
+    job => job.Execute(),
+    "0 8 * * *",
+    new RecurringJobOptions 
+    {
+        TimeZone = TimeZoneInfo.Local 
+    });
+
+recurringJobManager.AddOrUpdate<SlotAppointmentCleanerJob>(
+    "cleaner-job",
+    job => job.Execute(),
+    "0 8 * * *",
+    new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.Local
+    });
+
+
 
 
 if (app.Environment.IsDevelopment())

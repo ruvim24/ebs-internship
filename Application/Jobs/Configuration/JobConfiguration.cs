@@ -1,4 +1,4 @@
-using Application.Jobs.Cleaner;
+/*using Application.Jobs.Cleaner;
 using Application.Jobs.Generator;
 using Domain.DomainServices.SlotGeneratorService;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,4 +40,4 @@ namespace Application.Jobs.Configuration
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         }
     }
-}
+}*/
