@@ -70,6 +70,6 @@ public class SlotRepository : ISlotRepository
     public async Task<DateTime> GetLastSlotGenerationDate()
     {
         var maxDate = await _applicationDb.Slots.MaxAsync(x => (DateTime?)x.EndTime);
-        return maxDate ??= DateTime.Now;
+        return maxDate ??= DateTime.UtcNow;
     }
 }

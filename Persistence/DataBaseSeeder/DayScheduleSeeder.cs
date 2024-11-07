@@ -22,6 +22,7 @@ public class DayScheduleSeeder
         
         foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
         {
+            if(day == DayOfWeek.Sunday) continue;
             var daySchedule = DaySchedule.Create(day, startTime, endTime);
             if(daySchedule.IsFailed) return;
             await _dayScheduleRepository.AddAsync(daySchedule.Value);

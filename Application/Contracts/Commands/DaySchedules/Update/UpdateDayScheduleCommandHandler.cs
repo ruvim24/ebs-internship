@@ -10,32 +10,45 @@ public record UpdateDayScheduleCommand(UpdateDayScheduleDto Model) : IRequest<Re
 public class UpdateDayScheduleCommandHandler : IRequestHandler<UpdateDayScheduleCommand, Result<DayScheduleDto>>
 {
     private readonly IDayScheduleRepository _dayScheduleRepository;
-    private readonly IValidator<UpdateDayScheduleDto> _validator;
     private readonly IMapper _mapper;
 
-    public UpdateDayScheduleCommandHandler(IDayScheduleRepository dayScheduleRepository, IValidator<UpdateDayScheduleDto> validator, IMapper mapper)
+    public UpdateDayScheduleCommandHandler(IDayScheduleRepository dayScheduleRepository, IMapper mapper)
     {
         _dayScheduleRepository = dayScheduleRepository;
-        _validator = validator;
         _mapper = mapper;
     }
     public async Task<Result<DayScheduleDto>> Handle(UpdateDayScheduleCommand request, CancellationToken cancellationToken)
     {
-        var validationResult = _validator.Validate(request.Model);
-        if (!validationResult.IsValid)
-        {
-            var errors = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-            return Result.Fail(errors);        
-        }
-        
         var daySchedule = await _dayScheduleRepository.GetByIdAsync(request.Model.Id);
         if (daySchedule == null)
         {
             return Result.Fail($"DaySchedule with Id: {request.Model.Id} does not exist");
         }
         
-        _mapper.Map(request.Model, daySchedule);
+        var newStartTime = ConvertToTimeOnly(request.Model.StartTime);
+        var newEndTime = ConvertToTimeOnly(request.Model.EndTime);
+        
+        if(newStartTime.IsFailed || newEndTime.IsFailed) 
+            return Result.Fail("Invalid time format");
+
+        daySchedule.StartTime = newStartTime.Value;
+        daySchedule.EndTime = newEndTime.Value;
+        
         await _dayScheduleRepository.UpdateAsync(daySchedule);
         return Result.Ok(_mapper.Map<DayScheduleDto>(daySchedule));
+    }
+
+    public Result<TimeOnly> ConvertToTimeOnly(string time)
+    {
+        try
+        {
+            var timeOnly = TimeOnly.ParseExact(time, "HH:mm");
+            return Result.Ok(timeOnly);
+        }
+        catch (Exception)
+        {
+            return Result.Fail("Invalid time format");
+        }
+        
     }
 }

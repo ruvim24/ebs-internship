@@ -38,7 +38,7 @@ public class SlotService : ISlotService
         //last day for wich slots was generated, if no slots exists will return DateTime.Now
         var lastDate = await _slotRepository.GetLastSlotGenerationDate();
         //period for wich we have generated slots
-        var periodGenerated = lastDate.Date - DateTime.Now.Date;
+        var periodGenerated = lastDate.Date - DateTime.UtcNow.Date;
         //for how many day are missing slots forward
         var daysToGenerate = nDays - periodGenerated.Days;
         

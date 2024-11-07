@@ -23,4 +23,8 @@
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Validators\DaySchedules\" />
+  </ItemGroup>
+
 </Project>
