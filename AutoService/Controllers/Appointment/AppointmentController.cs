@@ -1,8 +1,8 @@
 using Application.Contracts.Commands.Appointments.Cancel;
 using Application.Contracts.Commands.Appointments.Complete;
 using Application.Contracts.Commands.Appointments.Create;
-using Application.Contracts.Queries.AppointmentQueries.GetAll;
 using Application.Contracts.Queries.Appointments.Get;
+using Application.Contracts.Queries.Appointments.GetAll;
 using Application.Contracts.Queries.Appointments.GetByCarId;
 using Application.DTOs.Appointments;
 using MediatR;
@@ -30,14 +30,16 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
 
+    //[Authorize]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get([FromRoute] int id)
-    {
+    {   
         var result = await _mediator.Send(new GetAppointmentQuery(id));
         if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
     }
 
+    //[Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -46,6 +48,7 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
 
+    //[Authorize(Roles = "Customer")]
     [HttpGet("carId/{carId:int}")]
     public async Task<IActionResult> GetByCar([FromRoute] int carId)
     {
@@ -54,6 +57,7 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
     
+    //[Authorize(Roles = "Customer")]
     [HttpPut("cancel/{id:int}")]
     public async Task<IActionResult> Cancel([FromRoute] int id)
     {
@@ -62,6 +66,7 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
     
+    //[Authorize(Roles = "Master")]
     [HttpPut("complete/{id:int}")]
     public async Task<IActionResult> Complete([FromRoute] int id)
     {

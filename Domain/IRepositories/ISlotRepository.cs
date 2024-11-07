@@ -17,4 +17,6 @@ public interface ISlotRepository
     Task DeleteRangeAsync(IEnumerable<Slot> slots);
 
     public Task<bool> ExistsSlotsForDateAsync(int masterId, DateOnly date);
+
+    Task<DateTime> GetLastSlotGenerationDate();
 }

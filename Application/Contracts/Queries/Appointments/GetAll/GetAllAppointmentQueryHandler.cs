@@ -4,7 +4,7 @@ using FluentResults;
 using MapsterMapper;
 using MediatR;
 
-namespace Application.Contracts.Queries.AppointmentQueries.GetAll;
+namespace Application.Contracts.Queries.Appointments.GetAll;
 
 
 public record GetAllAppointmentsQuery() : IRequest<Result<IEnumerable<AppointmentDto>>>;

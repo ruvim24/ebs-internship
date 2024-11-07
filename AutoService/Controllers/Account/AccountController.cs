@@ -37,9 +37,11 @@ public class AccountController : ControllerBase
     {
         var result = await _mediator.Send(new LoginCommand(loginDto));
         if(result.IsFailed) return BadRequest(result.Errors);
+        
         return Ok("Logged in successfully");
     }
 
+    
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {

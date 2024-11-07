@@ -8,12 +8,12 @@ using Application.Profiles;
 using Application.Validators.Users;
 using Domain.DomainServices.AppointmentService;
 using Domain.Entities;
-using Domain.Entities.ValueObjects;
 using Domain.IRepositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence.DataBaseSeeder;
@@ -73,6 +73,19 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders(); 
+
+//Cookies
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.Name = "auth_token"; 
+        options.Cookie.HttpOnly = true; 
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
+        options.Cookie.SameSite = SameSiteMode.Strict; 
+        options.LoginPath = "/Account/Login"; 
+        options.LogoutPath = "/Account/Logout"; 
+        options.ExpireTimeSpan = TimeSpan.FromHours(1);
+    });
 
 
 builder.Services.ConfigureQuartzJobs();
@@ -147,8 +160,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();

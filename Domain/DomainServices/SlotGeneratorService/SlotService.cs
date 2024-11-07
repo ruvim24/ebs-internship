@@ -35,32 +35,26 @@ public class SlotService : ISlotService
         var services = await _serviceRepository.GetAllAsync();
         if (services == null || !services.Any()) return Result.Fail("No service available");
 
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var endDate  = startDate.AddDays(nDays);
+        //last day for wich slots was generated, if no slots exists will return DateTime.Now
+        var lastDate = await _slotRepository.GetLastSlotGenerationDate();
+        //period for wich we have generated slots
+        var periodGenerated = lastDate.Date - DateTime.Now.Date;
+        //for how many day are missing slots forward
+        var daysToGenerate = nDays - periodGenerated.Days;
+        
+        var startDate = DateOnly.FromDateTime(lastDate.Date.AddDays(1));
+        var endDate  = startDate.AddDays(daysToGenerate);
+        
         
         for (var date = startDate; date < endDate; date = date.AddDays(1))
         {
             foreach (var service in services)
             {
-                var existSlotsForDate =  await _slotRepository.ExistsSlotsForDateAsync(service.MasterId, date);
-                if(existSlotsForDate) continue;
-
-                
-                var masterExists = await _userRepository.GetByIdAsync(service.MasterId);
-                if (masterExists == null)
-                {
-                    Console.WriteLine($"Master with Id {service.MasterId} does not exist. Skipping service: {service.Name}");
-                    continue;
-                }
-
-                
                 await GenerateSlotsForServiceAndDate(service.MasterId, service.Duration, date );
             }
-            
         }
         return Result.Ok();
     }
-    
     
     private async Task GenerateSlotsForServiceAndDate(int masterId, int duration, DateOnly date)
     {
@@ -68,38 +62,27 @@ public class SlotService : ISlotService
         var daySchedule = await _dayScheduleRepository.GetByDayOfWeekAsync(dayOfWeek);
         if (daySchedule == null) return;
 
-        // Convertim startDateTime și endDateTime la UTC
+        //variables for start and end to create sltos
         var startDateTime = DateTime.SpecifyKind(date.ToDateTime(daySchedule.StartTime), DateTimeKind.Utc);
         var endDateTime = DateTime.SpecifyKind(startDateTime.AddMinutes(duration), DateTimeKind.Utc);
-
-        // Asigură-te că daySchedule.EndTime este și ea convertită la UTC
+        //time limit to create a slot
         var endTime = DateTime.SpecifyKind(date.ToDateTime(daySchedule.EndTime), DateTimeKind.Utc);
         
-        
-        
-
+        //slot creation for curent date
         while (startDateTime <= endTime)
         {
-            // Verifică dacă startDateTime este în trecut
-            if (startDateTime < DateTime.UtcNow)
-            {
-                startDateTime = endDateTime;
-                endDateTime = startDateTime.AddMinutes(duration);
-                continue;
-            }
-
             var slotResult = Slot.Create(masterId, startDateTime, endDateTime);
             if (slotResult.IsFailed)
             {
                 startDateTime = endDateTime;
                 endDateTime = startDateTime.AddMinutes(duration);
-                continue; // sau gestionează cum consideri necesar  
+                continue; 
             }
 
             var slot = slotResult.Value;
             await _slotRepository.AddAsync(slot);
 
-            // Actualizează startDateTime și endDateTime pentru următorul slot
+            // update for next slot
             startDateTime = endDateTime;
             endDateTime = startDateTime.AddMinutes(duration);
         }

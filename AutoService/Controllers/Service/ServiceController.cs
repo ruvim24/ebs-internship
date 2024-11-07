@@ -23,6 +23,7 @@ public class ServiceController : ControllerBase
         _mediator = mediator;
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> Get([FromRoute] int id)
     {
@@ -31,6 +32,7 @@ public class ServiceController : ControllerBase
         return Ok(result.Value);
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {

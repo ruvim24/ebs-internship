@@ -66,4 +66,10 @@ public class SlotRepository : ISlotRepository
         return await _applicationDb.Slots
             .AnyAsync(x => x.StartTime.ToUniversalTime().Date == dateTimeStartUtc.Date && x.MasterId == masterId);
     }
+
+    public async Task<DateTime> GetLastSlotGenerationDate()
+    {
+        var maxDate = await _applicationDb.Slots.MaxAsync(x => (DateTime?)x.EndTime);
+        return maxDate ??= DateTime.Now;
+    }
 }
