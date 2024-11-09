@@ -1,4 +1,3 @@
-//using Application.Jobs.Extension;
 
 using Application.Contracts.Commands.Cars.Create;
 using Application.Contracts.Commands.Users.SeedAdmin;
@@ -25,6 +24,16 @@ using Persistence.DBContext;
 using Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+//---CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorClient", builder =>
+    {
+        builder.WithOrigins("http://localhost:51065") 
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 
 //---BD
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -109,7 +118,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
+//---CORS
+app.UseCors("AllowBlazorClient");
 
 
 //----Seeding DaySchedule
