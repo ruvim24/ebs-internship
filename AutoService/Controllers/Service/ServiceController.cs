@@ -4,11 +4,11 @@ using Application.Contracts.Commands.Services.Update;
 using Application.Contracts.Queries.ServiceQueries.Get;
 using Application.Contracts.Queries.ServiceQueries.GetAll;
 using Application.Contracts.Queries.ServiceQueries.GetByType;
-using Application.DTOs.Services;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Dtos.Services;
 
 namespace AutoService.Controllers.Service;
 

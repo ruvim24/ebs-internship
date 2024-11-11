@@ -2,6 +2,7 @@ using Application.DTOs.Users;
 using Domain.Entities;
 using Domain.Enums;
 using Mapster;
+using Shared.Dtos.Users;
 
 namespace Application.Profiles;
 

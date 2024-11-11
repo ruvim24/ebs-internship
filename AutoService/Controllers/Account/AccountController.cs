@@ -10,6 +10,7 @@ using FluentResults;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Shared.Dtos.Users;
 
 namespace AutoService.Controllers.Account;
 

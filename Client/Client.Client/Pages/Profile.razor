@@ -1,0 +1,70 @@
+@page "/profile"
+@using System.Net
+@using Domain.Entities
+@using Shared.Dtos.Users
+@using MudBlazor
+
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<h3>User Details</h3>
+
+@if (user == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <MudCard Class="user-card" Elevation="6">
+        <MudCardContent>
+            <MudText Typo="Typo.h6" Align="Align.Center" Class="mud-text-primary">User Information</MudText>
+
+            <MudTextField Label="Full Name" Value="@user.FullName" Disabled="true" FullWidth="true" Variant="Variant.Filled" Margin="Margin.Normal" />
+            <MudTextField Label="Email" Value="@user.Email" Disabled="true" FullWidth="true" Variant="Variant.Filled" Margin="Margin.Normal" />
+            <MudTextField Label="Phone Number" Value="@user.PhoneNumber" Disabled="true" FullWidth="true" Variant="Variant.Filled" Margin="Margin.Normal" />
+        </MudCardContent>
+    </MudCard>
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <MudAlert Severity="Severity.Error">@message</MudAlert>
+}
+
+@code {
+    private UserDto user;
+    private int Id = 5;
+    private string message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var response = await Http.GetAsync($"api/User/{Id}");
+            
+            if (response.IsSuccessStatusCode)
+            {
+                user = await response.Content.ReadFromJsonAsync<UserDto>();
+            }
+            else
+            {
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    message = "Eroare: Cererea nu a fost validă (400).";
+                }
+                else if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    message = "Utilizatorul nu a fost găsit (404).";
+                }
+                else
+                {
+                    message = "A apărut o eroare necunoscută. Te rugăm să încerci mai târziu.";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            message = $"A apărut o eroare: {ex.Message}";
+        }
+    }
+}

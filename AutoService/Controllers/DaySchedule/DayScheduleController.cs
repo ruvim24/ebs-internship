@@ -1,9 +1,9 @@
 using Application.Contracts.Commands.DaySchedules.Update;
 using Application.Contracts.Queries.DayScheduleQueries.GetAll;
-using Application.DTOs.DaySchedules;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Dtos.DaySchedules;
 
 namespace AutoService.Controllers.DaySchedule;
 

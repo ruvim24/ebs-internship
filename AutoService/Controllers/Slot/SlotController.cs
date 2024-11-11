@@ -1,4 +1,4 @@
-using Application.Contracts.Commands.Slots.Cleaner;
+using Application.Contracts.Commands.Slots.Clean;
 using Application.Contracts.Commands.Slots.Generate;
 using Application.Contracts.Queries.Slots.GetMastersAvailableSlots;
 using MediatR;

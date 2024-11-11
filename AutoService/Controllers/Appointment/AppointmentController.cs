@@ -4,10 +4,10 @@ using Application.Contracts.Commands.Appointments.Create;
 using Application.Contracts.Queries.Appointments.Get;
 using Application.Contracts.Queries.Appointments.GetAll;
 using Application.Contracts.Queries.Appointments.GetByCarId;
-using Application.DTOs.Appointments;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Dtos.Appointments;
 
 namespace AutoService.Controllers.Appointment;
 

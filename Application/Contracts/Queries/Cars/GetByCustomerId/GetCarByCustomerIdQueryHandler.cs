@@ -1,8 +1,8 @@
-using Application.DTOs.Car;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.Cars;
 
 namespace Application.Contracts.Queries.Cars.GetByCustomerId;
 

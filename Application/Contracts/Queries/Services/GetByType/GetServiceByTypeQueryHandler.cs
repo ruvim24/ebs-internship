@@ -1,10 +1,10 @@
-using Application.DTOs.Services;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.Services;
 
 namespace Application.Contracts.Queries.ServiceQueries.GetByType;
 

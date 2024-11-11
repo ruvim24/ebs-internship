@@ -1,12 +1,10 @@
-using Application.DTOs.Car;
-using Application.DTOs.CarDtos;
-using Application.DTOs.Cars;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
 using FluentValidation;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.Cars;
 
 namespace Application.Contracts.Commands.Cars.Update;
 public record UpdateCarCommand(UpdateCarDto Model) : IRequest<Result<CarDto>>;

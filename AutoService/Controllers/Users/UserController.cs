@@ -5,6 +5,7 @@ using Application.Contracts.Queries.Users.Get;
 using Application.DTOs.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Dtos.Users;
 
 namespace AutoService.Controllers.Users
 {
@@ -23,7 +24,7 @@ namespace AutoService.Controllers.Users
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             var result = await _mediator.Send(new GetUserQuery(id));
-            if (result.IsSuccess) return BadRequest(result.Errors);
+            if (result.IsFailed) return BadRequest(result.Errors);
             return Ok(result.Value);
         }
 

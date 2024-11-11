@@ -1,9 +1,8 @@
 using Domain.DomainServices.SlotGeneratorService;
-using Domain.IRepositories;
 using FluentResults;
 using MediatR;
 
-namespace Application.Contracts.Commands.Slots.Cleaner;
+namespace Application.Contracts.Commands.Slots.Clean;
 
 public record SlotCleanerCommand() : IRequest<Result>;
 public class SlotAppointmnetCleanerCommandHandler : IRequestHandler<SlotCleanerCommand, Result>

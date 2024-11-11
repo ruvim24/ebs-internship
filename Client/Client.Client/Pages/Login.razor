@@ -1,0 +1,53 @@
+@page "/login"
+
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@using System.Net
+@using MudBlazor
+@using Shared.Dtos.Users
+
+<h3>Login</h3>
+
+<EditForm Model="@loginModel" OnValidSubmit="@HandleLogin" FormName="loginForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <MudTextField @bind-Value="loginModel.Username" Label="Username" For="@(() => loginModel.Username)" Required="true" />
+    
+    <MudTextField @bind-Value="loginModel.Password" Label="Password" For="@(() => loginModel.Password)" Required="true" />
+
+    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Login</MudButton>
+
+</EditForm>
+
+
+
+<br/>
+<p>@message</p>
+
+
+@code {
+    private LoginDto loginModel = new LoginDto();
+    private string message { get; set; }
+
+    private async Task HandleLogin()
+    {
+
+        var login = await Http.PostAsJsonAsync<LoginDto>("Account/login", loginModel);
+        
+        if (login.StatusCode == HttpStatusCode.OK )
+        {
+            Navigation.NavigateTo("/");
+        }
+
+        message = "Login failed";
+
+            //r response = await Http.PostAsync("Account/login", loginModel);
+    }
+
+    public class LoginModel
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+}

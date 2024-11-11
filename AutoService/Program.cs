@@ -5,7 +5,6 @@ using Application.DTOs.Users;
 using Application.Jobs.Cleaner;
 using Application.Jobs.Generator;
 using Application.Profiles;
-using Application.Validators.Users;
 using Domain.DomainServices.AppointmentService;
 using Domain.DomainServices.SlotGeneratorService;
 using Domain.Entities;
@@ -22,14 +21,18 @@ using Microsoft.EntityFrameworkCore;
 using Persistence.DataBaseSeeder;
 using Persistence.DBContext;
 using Persistence.Repositories;
+using Shared.Dtos.Users;
+using Shared.Validators.Users;
 
 var builder = WebApplication.CreateBuilder(args);
+
 //---CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazorClient", builder =>
     {
-        builder.WithOrigins("http://localhost:51065") 
+        builder.WithOrigins("http://localhost:5095") 
+            .AllowCredentials()
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
@@ -105,8 +108,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.HttpOnly = true; 
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
         options.Cookie.SameSite = SameSiteMode.Strict; 
-        options.LoginPath = "/Account/Login"; 
-        options.LogoutPath = "/Account/Logout"; 
+        options.LoginPath = "/Account/login"; 
+        options.LogoutPath = "/Account/logout"; 
         options.ExpireTimeSpan = TimeSpan.FromHours(1);
     });
 
@@ -118,6 +121,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
 //---CORS
 app.UseCors("AllowBlazorClient");
 

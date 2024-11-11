@@ -1,11 +1,10 @@
-using Application.DTOs.Car;
-using Application.DTOs.CarDtos;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
 using FluentValidation;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.Cars;
 
 namespace Application.Contracts.Commands.Cars.Create;
 public record CreateCarCommand(CreateCarDto Model) : IRequest<Result<CarDto>>;

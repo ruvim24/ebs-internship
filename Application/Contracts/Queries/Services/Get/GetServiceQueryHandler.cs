@@ -1,9 +1,9 @@
-using Application.DTOs.Services;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.Services;
 
 namespace Application.Contracts.Queries.ServiceQueries.Get;
 

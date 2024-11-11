@@ -1,6 +1,6 @@
-using Application.DTOs.Services;
 using Domain.Entities;
 using Mapster;
+using Shared.Dtos.Services;
 
 namespace Application.Profiles;
 

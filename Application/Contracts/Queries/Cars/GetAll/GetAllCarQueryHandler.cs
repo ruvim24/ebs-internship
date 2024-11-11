@@ -1,9 +1,9 @@
-using Application.DTOs.Car;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.Cars;
 
 namespace Application.Contracts.Queries.CarQueries.GetAll;
 

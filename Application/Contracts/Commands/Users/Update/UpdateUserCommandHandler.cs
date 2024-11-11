@@ -5,6 +5,7 @@ using FluentResults;
 using FluentValidation;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.Users;
 
 namespace Application.Contracts.Commands.Users.Update;
 

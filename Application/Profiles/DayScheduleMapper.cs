@@ -1,6 +1,6 @@
-using Application.DTOs.DaySchedules;
 using Domain.Entities;
 using Mapster;
+using Shared.Dtos.DaySchedules;
 
 namespace Application.Profiles;
 

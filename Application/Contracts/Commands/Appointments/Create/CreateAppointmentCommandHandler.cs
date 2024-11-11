@@ -1,5 +1,3 @@
-using Application.DTOs.AppointmentDtos;
-using Application.DTOs.Appointments;
 using Domain.DomainServices.AppointmentService;
 using Domain.Entities;
 using Domain.IRepositories;
@@ -7,6 +5,7 @@ using FluentResults;
 using FluentValidation;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.Appointments;
 
 namespace Application.Contracts.Commands.Appointments.Create;
 

@@ -1,9 +1,9 @@
-using Application.DTOs.DaySchedules;
 using Domain.IRepositories;
 using FluentResults;
 using FluentValidation;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.DaySchedules;
 
 namespace Application.Contracts.Commands.DaySchedules.Update;
 public record UpdateDayScheduleCommand(UpdateDayScheduleDto Model) : IRequest<Result<DayScheduleDto>>;

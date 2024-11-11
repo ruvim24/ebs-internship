@@ -1,8 +1,8 @@
-using Application.DTOs.AppointmentDtos;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.Appointments;
 
 namespace Application.Contracts.Queries.Appointments.GetAll;
 

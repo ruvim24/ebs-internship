@@ -5,6 +5,7 @@ using FluentResults;
 using FluentValidation;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.Users;
 
 namespace Application.Contracts.Commands.Users.Create;
 public record CreateUserCommand(CreateUserDto Model) : IRequest<Result<UserDto>>;

@@ -2,11 +2,10 @@ using Application.Contracts.Commands.Cars.Create;
 using Application.Contracts.Commands.Cars.Update;
 using Application.Contracts.Queries.CarQueries.Get;
 using Application.Contracts.Queries.Cars.GetByCustomerId;
-using Application.DTOs.CarDtos;
-using Application.DTOs.Cars;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Dtos.Cars;
 
 namespace AutoService.Controllers.Car;
 

@@ -1,9 +1,9 @@
-using Application.DTOs.DaySchedules;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.DaySchedules;
 
 namespace Application.Contracts.Queries.DayScheduleQueries.GetAll;
 

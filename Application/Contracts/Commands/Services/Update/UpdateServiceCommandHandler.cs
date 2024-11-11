@@ -1,9 +1,9 @@
-using Application.DTOs.Services;
 using Domain.IRepositories;
 using FluentResults;
 using FluentValidation;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.Services;
 
 namespace Application.Contracts.Commands.Services.Update;
 public record UpdateServiceCommand(UpdateServiceDto Model) : IRequest<Result<ServiceDto>>;

@@ -3,6 +3,7 @@ using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.Users;
 
 namespace Application.Contracts.Queries.Users.Get;
 

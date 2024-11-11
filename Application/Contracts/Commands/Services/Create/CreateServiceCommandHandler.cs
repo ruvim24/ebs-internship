@@ -1,4 +1,3 @@
-using Application.DTOs.Services;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
@@ -6,6 +5,7 @@ using FluentValidation;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Shared.Dtos.Services;
 
 namespace Application.Contracts.Commands.Services.Create;
 public record CreateServiceCommand(CreateServiceDto Model) : IRequest<Result<ServiceDto>>;

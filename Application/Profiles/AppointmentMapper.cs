@@ -1,7 +1,6 @@
-using Application.DTOs.AppointmentDtos;
-using Application.DTOs.Appointments;
 using Domain.Entities;
 using Mapster;
+using Shared.Dtos.Appointments;
 
 namespace Application.Profiles;
 

@@ -1,7 +1,6 @@
-using Application.DTOs.Slots;
 using Domain.Entities;
-using FluentResults;
 using Mapster;
+using Shared.Dtos.Slots;
 
 namespace Application.Profiles;
 

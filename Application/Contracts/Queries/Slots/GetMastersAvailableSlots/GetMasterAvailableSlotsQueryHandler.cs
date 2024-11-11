@@ -1,8 +1,8 @@
-using Application.DTOs.Slots;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
+using Shared.Dtos.Slots;
 
 namespace Application.Contracts.Queries.Slots.GetMastersAvailableSlots;
 

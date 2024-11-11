@@ -4,6 +4,7 @@ using FluentResults;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Shared.Dtos.Users;
 
 namespace Application.Contracts.Commands.Users.SeedAdmin
 {
