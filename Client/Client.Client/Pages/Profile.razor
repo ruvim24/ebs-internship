@@ -1,6 +1,8 @@
 @page "/profile"
+@*@attribute [Authorize(Roles = "Admin")]*@
 @using System.Net
 @using Domain.Entities
+@using Microsoft.AspNetCore.Authorization
 @using Shared.Dtos.Users
 @using MudBlazor
 
@@ -14,16 +16,11 @@
     <p>Loading...</p>
 }
 else
-{
-    <MudCard Class="user-card" Elevation="6">
-        <MudCardContent>
-            <MudText Typo="Typo.h6" Align="Align.Center" Class="mud-text-primary">User Information</MudText>
-
-            <MudTextField Label="Full Name" Value="@user.FullName" Disabled="true" FullWidth="true" Variant="Variant.Filled" Margin="Margin.Normal" />
-            <MudTextField Label="Email" Value="@user.Email" Disabled="true" FullWidth="true" Variant="Variant.Filled" Margin="Margin.Normal" />
-            <MudTextField Label="Phone Number" Value="@user.PhoneNumber" Disabled="true" FullWidth="true" Variant="Variant.Filled" Margin="Margin.Normal" />
-        </MudCardContent>
-    </MudCard>
+{<div>
+        <p><strong>Full Name:</strong> @user.FullName</p>
+        <p><strong>Email:</strong> @user.Email</p>
+        <p><strong>Phone Number:</strong> @user.PhoneNumber</p>
+    </div>
 }
 
 @if (!string.IsNullOrEmpty(message))
@@ -33,7 +30,7 @@ else
 
 @code {
     private UserDto user;
-    private int Id = 5;
+    private int Id = 6;
     private string message;
 
     protected override async Task OnInitializedAsync()
