@@ -1,0 +1,95 @@
+@page "/register"
+@using MudBlazor
+@using Shared.Dtos.Users
+@inject HttpClient Http
+@rendermode InteractiveServer
+<h3>Registration Form</h3>
+
+
+
+<EditForm Model="@registerModel" OnValidSubmit="HandleRegister" FormName="registerFrom">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Username"
+                                  @bind-Value="registerModel.Username" For="@(() => registerModel.Username)" />
+
+                    <MudTextField Label="Email" InputType="InputType.Text"
+                                  @bind-Value="registerModel.Email" For="@(() => registerModel.Email)" />
+
+                    <MudTextField Label="Password" InputType="InputType.Password"
+                                  @bind-Value="registerModel.Password" For="@(() => registerModel.Password)" />
+                    
+                    <MudTextField Label="Confirm Password" InputType="InputType.Password"
+                                  @bind-Value="registerModel.ConfirmPassword" For="@(() => registerModel.ConfirmPassword)" />
+
+                    <MudTextField Label="Fullname" InputType="InputType.Text"
+                                  @bind-Value="registerModel.FullName" For="@(() => registerModel.FullName)" />
+                    
+                    <MudTextField Label="Phone Number" InputType="InputType.Text"
+                                  @bind-Value="registerModel.PhoneNumber" For="@(() => registerModel.PhoneNumber)" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto">Submit</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Result</MudText>
+                @if (!string.IsNullOrEmpty(message))
+                {
+                <MudText Color="@messageColor">@message</MudText>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+<p>@StatusCode</p>
+@code
+{
+    private RegisterDto registerModel = new RegisterDto();
+    
+    private bool success;
+    private string message;
+    private Color messageColor = Color.Default;
+
+    private string StatusCode;
+
+    public async Task HandleRegister()
+    {
+        try
+        {
+            
+            var response = await Http.PostAsJsonAsync("Account/register", registerModel);
+            if (response.IsSuccessStatusCode)
+            {
+                success = true;
+                message = "Succeseful login!";
+                messageColor = Color.Success;
+                
+                //Navigation.NavigateTo("/");
+                StatusCode = "StatusCode: " + response.StatusCode;
+
+            }
+            else
+            {
+                StatusCode = "Error: " + response.Content.ReadAsStringAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            success = false;
+            message = $"Error: {ex.Message}";
+            messageColor = Color.Error;
+
+
+            StatusCode = "eroare din exceptie";
+        }
+    }
+}
+
+

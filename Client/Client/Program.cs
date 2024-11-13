@@ -1,5 +1,6 @@
 using Client.Client.Pages;
 using Client.Components;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,9 +9,27 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5173") });
 
 builder.Services.AddMudServices();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/login";
+        options.LogoutPath = "/logout"
+        options.AccessDeniedPath = "/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30); 
+        options.SlidingExpiration = true; 
+        options.Cookie.Name = "MyAppCookie"; 
+        options.Cookie.HttpOnly = true; 
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; 
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
 
 
 var app = builder.Build();
@@ -29,6 +48,9 @@ else
     app.UseHsts();
 }
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
@@ -36,6 +58,7 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
+    .AddInteractiveServerRenderMode()
     .AddAdditionalAssemblies(typeof(Client.Client._Imports).Assembly);
 
 app.Run();

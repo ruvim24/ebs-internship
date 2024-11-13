@@ -15,42 +15,6 @@ using Shared.Validators.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//---CORS
-builder.Services.CorsConfiguration();
-
-//---BD
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-//--Repositiories and Services
-builder.Services.DIConfiguration();
-
-//---MediatR
-builder.Services.AddMediatR(typeof(CreateCarCommandHandler).Assembly);
-TypeAdapterConfig.GlobalSettings.Scan(typeof(AppointmentMapper).Assembly);
-
-//---FluentValidation
-builder.Services.AddFluentValidationAutoValidation()
-    .AddFluentValidationClientsideAdapters();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
-
-//---Mapper-ul
-builder.Services.AddMapster();
-
-//---Hangfire 
-builder.Services.HangfireConfiguration();
-
-//Identity Configuration
-builder.Services.IdentityConfiguration();
-
-//Cookies
-builder.Services.AutentificationCookiesConfiguration();
-
-builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
 
 //---CORS
@@ -71,8 +35,7 @@ await app.AdminSeeder();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    
 }
 
 app.UseHttpsRedirection();

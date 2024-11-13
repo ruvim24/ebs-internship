@@ -1,21 +1,107 @@
 @page "/login"
-@using Shared.Dtos.Users
-@using Shared.Validators
+@using System.ComponentModel.DataAnnotations
 @using MudBlazor
+@using Shared.Dtos.Users
 @inject HttpClient Http
 @inject NavigationManager Navigation
-@using FluentValidation 
-@using Shared.Validators.Users
+
+@rendermode InteractiveServer
 
 <h3>Login</h3>
-<EditForm></EditForm>
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin" FormName="loginForm">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Username"
+                                  @bind-Value="loginModel.Username" For="@(() => loginModel.Username)" />
+                    <MudTextField Label="Password" InputType="InputType.Password"
+                                  @bind-Value="loginModel.Password" For="@(() => loginModel.Password)" />
+                </MudCardContent>
+                
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Login</MudButton>
 
-@code
-{
-    LoginDto LoginDto = new LoginDto();
+                    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" OnClick="Register">Register here</MudButton>
 
-    public void HandleLogin()
-    {
+                </MudCardActions>
+                
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Result</MudText>
+                @if (!string.IsNullOrEmpty(message))
+                {
+                    <MudText Color="@messageColor">@message</MudText>
+                }
+            </MudPaper>
+        </MudItem>
         
+    </MudGrid>
+</EditForm>
+
+<p>@StatusCode</p>
+@code {
+    private LoginDto loginModel = new LoginDto();
+    private bool success;
+    private string message;
+    private Color messageColor = Color.Default;
+
+    private string StatusCode;
+
+    
+    private async Task HandleLogin()
+    {
+        try
+        {
+            
+            var response = await Http.PostAsJsonAsync("Account/login", loginModel);
+            if (response.IsSuccessStatusCode)
+            {
+                success = true;
+                message = "Succeseful login!";
+                messageColor = Color.Success;
+                
+                //Navigation.NavigateTo("/");
+                StatusCode = "StatusCode: " + response.StatusCode;
+
+            }
+            else
+            {
+                StatusCode = "Error: " + response.StatusCode;
+            }
+        }
+        catch (Exception ex)
+        {
+            success = false;
+            message = $"Error: {ex.Message}";
+            messageColor = Color.Error;
+
+
+            StatusCode = "eroare din exceptie";
+        }
+    }
+    
+    public class ErrorResponse
+    {
+        public List<string> Messages { get; set; }
+    }
+    
+    public class Model
+    {
+        [Required]
+        [MaxLength(30)]
+        public string Username { get; set; }
+        
+        [Required]
+        [MaxLength(30)]
+        public string Password { get; set; }
+    }
+
+    public void Register()
+    {
+        Navigation.NavigateTo("/register");
     }
 }

@@ -1,5 +1,6 @@
 @page "/profile"
-@*@attribute [Authorize(Roles = "Admin")]*@
+@*@attribute [Authorize(Roles = "Customer")]*@
+@attribute [Authorize(Roles = "Admin")]
 @using System.Net
 @using Domain.Entities
 @using Microsoft.AspNetCore.Authorization
@@ -30,7 +31,7 @@ else
 
 @code {
     private UserDto user;
-    private int Id = 6;
+    private int Id = 5; 
     private string message;
 
     protected override async Task OnInitializedAsync()
