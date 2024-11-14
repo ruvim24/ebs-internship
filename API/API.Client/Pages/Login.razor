@@ -1,0 +1,127 @@
+@page "/login"
+@using System.ComponentModel.DataAnnotations
+@using API.Client.Services
+@using MudBlazor
+@using Shared.Dtos.Users
+@using Color = MudBlazor.Color
+@inject NavigationManager Navigation
+@*
+@inject HttpClient HttpClient
+*@
+
+@inject AccountService AccountService
+
+@rendermode InteractiveWebAssembly
+
+<h3>Login</h3>
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin" FormName="loginForm">
+    <DataAnnotationsValidator />
+    <MudContainer MaxWidth="MaxWidth.Medium" Style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #e3f2fd;">
+        <MudCard Elevation="6" Style="width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; background-color: #ffffff;">
+            <MudCardContent>
+                <MudText Typo="Typo.h5" Align="Align.Center" Style="color: #1976d2;">Login</MudText>
+
+                <MudForm @ref="loginForm" Model="loginModel" OnValidSubmit="HandleLogin" Style="margin-top: 20px;">
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <MudTextField Label="Username"
+                                          @bind-Value="loginModel.Username"
+                                          FullWidth="true"
+                                          Required="true"
+                                          Margin="Margin.Dense"
+                                          Style="margin-bottom: 20px;" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField Label="Password"
+                                          @bind-Value="loginModel.Password"
+                                          FullWidth="true"
+                                          Required="true"
+                                          Margin="Margin.Dense"
+                                          InputType="InputType.Password"
+                                          Style="margin-bottom: 20px;" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudButton ButtonType="ButtonType.Submit" FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Style="margin-top: 16px;">
+                                Login
+                            </MudButton>
+                        </MudItem>
+
+                        <MudItem xs="12" Style="text-align: center; margin-top: 10px;">
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="NavigateToRegister">
+                                Don't have an account? Register here
+                            </MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </MudForm>
+            </MudCardContent>
+        </MudCard>
+    </MudContainer>
+</EditForm>
+
+
+<p>@StatusCode</p>
+@code {
+    private LoginDto loginModel = new LoginDto();
+    private bool success;
+    private string message;
+    private Color messageColor = Color.Default;
+    MudForm loginForm;
+
+    private string StatusCode;
+
+    
+    private async Task HandleLogin()
+    {
+        try
+        {
+            var response = await AccountService.Login(loginModel);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                success = true;
+                message = "Succeseful login!";
+                messageColor = Color.Success;
+                StatusCode = response.StatusCode.ToString();
+                Navigation.NavigateTo("/");
+                
+
+            }
+            else
+            {
+                StatusCode = "Error: " + response.StatusCode;
+            }
+        }
+        catch (Exception ex)
+        {
+            success = false;
+            message = $"Error: {ex.Message}";
+            messageColor = Color.Error;
+
+
+            StatusCode = "eroare din exceptie";
+        }
+    }
+    
+    public class ErrorResponse
+    {
+        public List<string> Messages { get; set; }
+    }
+    
+    public class Model
+    {
+        [Required]
+        [MaxLength(30)]
+        public string Username { get; set; }
+        
+        [Required]
+        [MaxLength(30)]
+        public string Password { get; set; }
+    }
+
+    public void NavigateToRegister()
+    {
+        Navigation.NavigateTo("/register");
+    }
+}

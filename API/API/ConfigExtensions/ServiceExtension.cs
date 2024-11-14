@@ -1,5 +1,3 @@
-using Application.Jobs.Cleaner;
-using Application.Jobs.Generator;
 using Domain.DomainServices.AppointmentService;
 using Domain.DomainServices.SlotGeneratorService;
 using Domain.Entities;
@@ -11,9 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Persistence.DataBaseSeeder;
 using Persistence.DBContext;
 using Persistence.Repositories;
-using Quartz;
 
-namespace AutoService.ConfigExtensions;
+namespace API.ConfigExtensions;
 
 public static class ServiceExtension
 {
@@ -92,10 +89,10 @@ public static class ServiceExtension
         return services;
     }
 
-    public static IServiceCollection CorsConfiguration(this IServiceCollection services)
-    {
+    /*public static IServiceCollection CorsConfiguration(this IServiceCollection services)
+    {*/
         
-        services.AddCors(options =>
+        /*services.AddCors(options =>
         {
             options.AddPolicy("AllowBlazorClient", builder =>
             {
@@ -105,6 +102,6 @@ public static class ServiceExtension
                     .AllowAnyHeader();
             });
         });
-        return services;
-    }
+        return services;*/
+    /*/*#1#}*/
 }

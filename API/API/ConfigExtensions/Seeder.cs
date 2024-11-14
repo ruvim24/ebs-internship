@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Persistence.DataBaseSeeder;
 using Shared.Dtos.Users;
 
-namespace AutoService.DbSeeder;
+namespace API.ConfigExtensions;
 
 public static class Seeder
 {

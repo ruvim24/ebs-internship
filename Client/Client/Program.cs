@@ -1,4 +1,4 @@
-using Client.Client.Pages;
+/*using Client.Client.Pages;
 using Client.Components;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MudBlazor.Services;
@@ -19,7 +19,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/login";
-        options.LogoutPath = "/logout"
+        options.LogoutPath = "/logout";
         options.AccessDeniedPath = "/AccessDenied";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30); 
         options.SlidingExpiration = true; 
@@ -61,4 +61,4 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddAdditionalAssemblies(typeof(Client.Client._Imports).Assembly);
 
-app.Run();
+app.Run();*/

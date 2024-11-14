@@ -1,5 +1,6 @@
-using API.Client.Pages;
+using API.Client.Services;
 using API.Components;
+using API.ConfigExtensions;
 using Application.Contracts.Commands.Cars.Create;
 using Application.Profiles;
 using AutoService.ConfigExtensions;
@@ -8,16 +9,23 @@ using FluentValidation.AspNetCore;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 using Persistence.DBContext;
 using Shared.Validators.Users;
+using _Imports = API.Client._Imports;
 
 var builder = WebApplication.CreateBuilder(args);
 
+    builder.Services.AddRazorComponents()
+    .AddInteractiveWebAssemblyComponents();
+ 
+builder.Services.AddMudServices();
+builder.Services.AddHttpClient();
 
-//---CORS
-builder.Services.CorsConfiguration();
+builder.Services.AddScoped<AccountService>();
 
-//---BD
+
+//---DB
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -51,11 +59,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-
-
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveWebAssemblyComponents();
+ /*
+builder.Services.AddCascadingAuthenticationState();
+*/
 
 var app = builder.Build();
 
@@ -71,17 +77,35 @@ else
     app.UseHsts();
 }
 
+//----Seeding DaySchedule
+await app.DayScheduleSeeder();
+
+//----insert all Roles
+await app.RoleSeeder();
+
+//----seed the Admin
+await app.AdminSeeder();
+
+//-----Set CronJobs
+app.JobsConfiguration();
+
+
 app.UseOpenApi();
 app.UseSwagger();
 app.UseSwaggerUi();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
 app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(API.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(_Imports).Assembly);
 
 app.Run();
