@@ -1,14 +1,20 @@
 using API.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MudBlazor;
 using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-builder.Services.AddMudServices();
+builder.Services.AddMudServices(cfg =>
+{
+    cfg.SnackbarConfiguration.VisibleStateDuration = 5000;
+    cfg.SnackbarConfiguration.HideTransitionDuration = 200;
+    cfg.SnackbarConfiguration.ShowTransitionDuration = 200;
+});
 
+builder.Services.AddScoped<ISnackbar, SnackbarService>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<AccountService>();
-
 
 await builder.Build().RunAsync();       

@@ -1,0 +1,26 @@
+@page "/test"
+<h3>Test</h3>
+
+@inject ISnackbar Snackbar
+@rendermode InteractiveWebAssembly
+ 
+
+    <MudButton OnClick="ShowInfoSnackbar">Info</MudButton>
+    <MudButton OnClick="ShowWarningSnackbar">Warning</MudButton>
+    <MudButton OnClick="ShowErrorSnackbar">Error</MudButton>
+ 
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="@(() => Snackbar.Add("Simple Snackbar"))">
+        Open Snackbar
+    </MudButton>
+
+
+@code {
+    private void ShowInfoSnackbar() =>
+        Snackbar.Add("This is an info message!", Severity.Info);
+
+    private void ShowWarningSnackbar() =>
+        Snackbar.Add("This is a warning!", Severity.Warning);
+
+    private void ShowErrorSnackbar() =>
+        Snackbar.Add("An error occurred!", Severity.Error);
+}

@@ -15,7 +15,7 @@ using Shared.Dtos.Users;
 namespace AutoService.Controllers.Account;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class AccountController : ControllerBase
 {
     private IMediator _mediator;

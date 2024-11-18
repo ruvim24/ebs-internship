@@ -1,11 +1,10 @@
-using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
 using Shared.Dtos.Cars;
 
-namespace Application.Contracts.Queries.CarQueries.Get;
+namespace Application.Contracts.Queries.Cars.Get;
 
 public record GetCarQuery(int Id) : IRequest<Result<CarDto>>;
 

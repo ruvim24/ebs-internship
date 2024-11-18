@@ -1,6 +1,6 @@
 using Application.Contracts.Commands.Cars.Create;
 using Application.Contracts.Commands.Cars.Update;
-using Application.Contracts.Queries.CarQueries.Get;
+using Application.Contracts.Queries.Cars.Get;
 using Application.Contracts.Queries.Cars.GetByCustomerId;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

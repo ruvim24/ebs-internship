@@ -9,6 +9,7 @@ using FluentValidation.AspNetCore;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
 using MudBlazor.Services;
 using Persistence.DBContext;
 using Shared.Validators.Users;
@@ -16,14 +17,22 @@ using _Imports = API.Client._Imports;
 
 var builder = WebApplication.CreateBuilder(args);
 
-    builder.Services.AddRazorComponents()
+    builder.Services.AddRazorComponents()   
     .AddInteractiveWebAssemblyComponents();
- 
-builder.Services.AddMudServices();
+
+
+builder.Services.AddMudServices(cfg =>
+{
+    cfg.SnackbarConfiguration.VisibleStateDuration = 5000;
+    cfg.SnackbarConfiguration.HideTransitionDuration = 200;
+    cfg.SnackbarConfiguration.ShowTransitionDuration = 200;
+});
+
+builder.Services.AddScoped<ISnackbar, SnackbarService>();
+
 builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<AccountService>();
-
 
 //---DB
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

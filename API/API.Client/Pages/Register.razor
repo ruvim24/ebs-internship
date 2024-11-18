@@ -2,72 +2,74 @@
 @using API.Client.Services
 @using Shared.Dtos.Users
 @using MudBlazor
+@using Shared.Validators.Users
 @inject AccountService AccountService
-
-
-
-<h3>Register</h3>
-
-<EditForm Model="@registerDto" OnValidSubmit="HandleRegister" >
+@rendermode InteractiveWebAssembly
 
 <MudContainer MaxWidth="MaxWidth.Medium" Style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #e3f2fd;">
+
     <MudCard Elevation="6" Style="width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; background-color: #ffffff;">
         <MudCardContent>
-            <MudText Typo="Typo.h5" Align="Align.Center" Style="color: #1976d2;">Create Account</MudText>
-
-            <MudForm @ref="from" Model="registerDto" OnValidSubmit="HandleRegister" Style="margin-top: 20px;">
-                <MudGrid>
-                    <MudItem xs="12">
-                        <MudTextField Label="Full Name" @bind-Value="registerDto.FullName" FullWidth="true" Required="true" Margin="Margin.Dense" />
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudTextField Label="Username" @bind-Value="registerDto.Username" FullWidth="true" Required="true" Margin="Margin.Dense" Style="margin-bottom: 20px;" />
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudTextField Label="Phone Number" @bind-Value="registerDto.PhoneNumber" FullWidth="true" Margin="Margin.Dense" InputType="InputType.Telephone" />
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudTextField Label="Email" @bind-Value="registerDto.Email" FullWidth="true" Required="true" Margin="Margin.Dense" InputType="InputType.Email" />
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudTextField Label="Password" @bind-Value="registerDto.Password" FullWidth="true" Required="true" Margin="Margin.Dense" InputType="InputType.Password" />
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudTextField Label="Confirm Password" @bind-Value="registerDto.ConfirmPassword" FullWidth="true" Required="true" Margin="Margin.Dense" InputType="InputType.Password" />
-                    </MudItem>
-
-                    <MudItem xs="12">
-                        <MudButton ButtonType="ButtonType.Submit" @*Type="Submit"*@ FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Style="margin-top: 16px;">
-                            Register
-                        </MudButton>
-                    </MudItem>
-                    
-                    <MudItem>
-                        <p>@message</p>
-                    </MudItem>
-                    
-                </MudGrid>
+            <MudText Typo="Typo.h5" Align="Align.Center" Style="color: #1976d2;">Register</MudText>
+            <MudForm Model="@registerDto" @ref="@form" Validation="@(registerUserDtoValidator.ValidateValue)" ValidationDelay="0">
+                <MudCardContent>
+                    <MudTextField Label="Full Name" @bind-Value="registerDto.FullName" For="@(() => registerDto.FullName)" Immediate="true" />
+                    <MudTextField Label="Username" @bind-Value="registerDto.Username" For="@(() => registerDto.Username)" Immediate="true"/>
+                    <MudTextField Label="Phone Number" @bind-Value="registerDto.PhoneNumber" For="@(() => registerDto.PhoneNumber)" Immediate="true"  InputType="InputType.Telephone"/>
+                    <MudTextField Label="Email" @bind-Value="registerDto.Email" For="@(() => registerDto.Email)" Immediate="true" InputType="InputType.Email"/>
+                    <MudTextField Label="Password" @bind-Value="registerDto.Password" For="@(() => registerDto.Password)" Immediate="true"  InputType="InputType.Password"/>
+                    <MudTextField Label="Confirm Password" @bind-Value="registerDto.ConfirmPassword" For="@(() => registerDto.ConfirmPassword)"  Immediate="true" InputType="InputType.Password"/>
+                </MudCardContent>
             </MudForm>
         </MudCardContent>
+        <MudCardActions>
+            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Style="margin-top: 16px;" OnClick="@(async () => await HandleRegister())">Login</MudButton>
+        </MudCardActions>
+
+        @if (showAlert)
+        {
+        <MudAlert Severity="@alertSeverity" Variant="Variant.Outlined" Style="margin-top: 10px;">
+            @alertMessage
+        </MudAlert>
+        }
     </MudCard>
 </MudContainer>
-</EditForm>
 
 @code {
-    MudForm from;
+    MudForm form;
     RegisterDto registerDto = new();
-    string message;
+    RegisterUserDtoValidator registerUserDtoValidator = new();
+
+    bool showAlert;
+    string alertMessage;
+    Severity alertSeverity;
     
     public async Task HandleRegister()
     {
-        var response = await AccountService.Register(registerDto);
-        if (response.IsSuccessStatusCode)
+        form.Validate();
+
+        if (form.IsValid)
         {
-            message = "Account created!! ";
+            var response = await AccountService.Register(registerDto);
+            if (response.IsSuccessStatusCode)
+            {
+                alertMessage = "Succesefully registered";
+                alertSeverity = Severity.Success;
+                
+            }
+            else
+            {
+                alertMessage = "Error attemptin register";
+                alertSeverity = Severity.Error;
+            }
         }
         else
         {
-            
+            alertMessage = "Validation error";
+            alertSeverity = Severity.Error;
         }
+        showAlert = true;
+        await Task.Delay(4000);
+        showAlert = false;  
     }
 }
