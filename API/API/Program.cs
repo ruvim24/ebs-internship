@@ -1,3 +1,4 @@
+using API;
 using API.Client.Services;
 using API.Components;
 using API.ConfigExtensions;
@@ -108,8 +109,9 @@ app.UseOpenApi();
 app.UseSwagger();
 app.UseSwaggerUi();
 
-app.UseHttpsRedirection();
+app.UseMiddleware<RedirectIfUnauthorizedMiddleware>(); //rederection to login page
 
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

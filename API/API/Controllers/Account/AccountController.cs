@@ -29,6 +29,7 @@ public class AccountController : ControllerBase
         return Ok("Registered successfully");
     }
     
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
