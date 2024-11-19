@@ -14,7 +14,8 @@ builder.Services.AddMudServices(cfg =>
 
 builder.Services.AddScoped<ISnackbar, SnackbarService>();
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
 builder.Services.AddScoped<AccountService>();
 
 await builder.Build().RunAsync();       

@@ -3,11 +3,13 @@ using API.Components;
 using API.ConfigExtensions;
 using Application.Contracts.Commands.Cars.Create;
 using Application.Profiles;
-using AutoService.ConfigExtensions;
+using Domain.Entities;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Mapster;
+using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 using MudBlazor.Services;
@@ -45,18 +47,24 @@ builder.Services.DIConfiguration();
 builder.Services.AddMediatR(typeof(CreateCarCommandHandler).Assembly);
 TypeAdapterConfig.GlobalSettings.Scan(typeof(AppointmentMapper).Assembly);
 
+//---Mapper-ul
+// Adaugă Mapster în DI
+/*
+builder.Services.AddSingleton<IMapper, Mapper>();
+*/
+builder.Services.AddMapster();
+
 //---FluentValidation
 builder.Services.AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
 
-//---Mapper-ul
-builder.Services.AddMapster();
-
 //---Hangfire 
 builder.Services.HangfireConfiguration();
 
 //Identity Configuration
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.IdentityConfiguration();
 
 //Cookies
@@ -68,7 +76,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
- /*
+/*
 builder.Services.AddCascadingAuthenticationState();
 */
 

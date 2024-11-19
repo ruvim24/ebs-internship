@@ -2,7 +2,7 @@ using Application.Jobs.Cleaner;
 using Application.Jobs.Generator;
 using Hangfire;
 
-namespace AutoService.ConfigExtensions;
+namespace API.ConfigExtensions;
 
 public static class Jobs
 {

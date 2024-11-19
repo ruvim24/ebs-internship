@@ -69,12 +69,11 @@
             {
                 alertMessage = "Logged succesefully";
                 alertSeverity = Severity.Success;
+                StateHasChanged();  
 
                 
                 Snackbar.Add("Succesefull Login", Severity.Success);
-                /*
-                Navigation.NavigateTo("/");
-            */
+                Navigation.NavigateTo("/personalCabinet");
             }
             else
             {
@@ -86,14 +85,14 @@
         {
             Snackbar.Add("Validation error", Severity.Error);
             
-
-            /*alertMessage = "Validation error";
-            alertSeverity = Severity.Error;*/
+            alertMessage = "Validation error";
+            alertSeverity = Severity.Error;
         }
         
         showAlert = true;
         await Task.Delay(4000);
         showAlert = false;  
+        StateHasChanged();
     }
     
     public void NavigateToRegister()

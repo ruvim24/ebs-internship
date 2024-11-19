@@ -1,0 +1,53 @@
+@page "/logout"
+
+@using API.Client.Services
+@using FluentResults
+@inject ISnackbar Snackbar
+@inject AccountService AccountService
+@rendermode InteractiveWebAssembly
+
+<h3>Logout</h3>
+
+
+<MudCard Elevation="6" Style="width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; background-color: #ffffff;">
+
+    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Logout" Color="Color.Error" OnClick="LogoutHandler">Logout</MudButton>
+
+    @if (showAlert)
+    {
+        <MudAlert Severity="Severity.Warning">@allertMessage</MudAlert>
+
+    }
+</MudCard>
+
+
+@code {
+
+    string allertMessage;
+    bool showAlert;
+    
+    private async Task LogoutHandler()
+    {
+        var response = await AccountService.Logout();
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("Logged out succesefully", Severity.Success);
+            showAlert = true;
+            allertMessage = "Logged out succesefully";
+            StateHasChanged();
+        }
+        else
+        {
+            Snackbar.Add("You are already logged out", Severity.Error);
+            showAlert = true;
+            allertMessage = "You are already logged out";
+            StateHasChanged();
+
+        }
+
+        await Task.Delay(3000);
+        showAlert = false;
+        StateHasChanged();
+    }
+
+}

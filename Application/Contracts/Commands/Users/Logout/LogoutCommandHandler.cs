@@ -16,6 +16,7 @@ public class LogoutCommandHandler : IRequestHandler<LogoutCommand, Result>
     }
     public async Task<Result> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
+        
         await _signInManager.SignOutAsync();
         return Result.Ok();
     }

@@ -42,8 +42,8 @@ public static class ServiceExtension
                 options.Cookie.HttpOnly = true; 
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
                 options.Cookie.SameSite = SameSiteMode.Strict; 
-                options.LoginPath = "/Account/login"; 
-                options.LogoutPath = "/Account/logout"; 
+                options.LoginPath = "/api/Account/login"; 
+                options.LogoutPath = "/api/Account/logout"; 
                 options.ExpireTimeSpan = TimeSpan.FromHours(1);
             });
         return services;
