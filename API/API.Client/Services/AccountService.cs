@@ -30,9 +30,9 @@ public class AccountService
         return await _httpClient.PostAsJsonAsync<object>("api/Account/logout", null! );
     }
 
-    public async Task<UserDto> GetLoggedInUser()
+    public Task<UserDto> GetLoggedInUser()
     {
-        return  await _httpClient.GetFromJsonAsync<UserDto>("https://localhost:7277/api/Account/user-info");
+        return _httpClient.GetFromJsonAsync<UserDto>("api/Account/user-info");
         
     }
     

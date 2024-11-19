@@ -3,6 +3,7 @@ using API.Components;
 using API.ConfigExtensions;
 using Application.Contracts.Commands.Cars.Create;
 using Application.Profiles;
+using Blazr.RenderState.Server;
 using Domain.Entities;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -29,12 +30,8 @@ builder.Services.AddMudServices(cfg =>
     cfg.SnackbarConfiguration.HideTransitionDuration = 200;
     cfg.SnackbarConfiguration.ShowTransitionDuration = 200;
 });
-
+builder.AddBlazrRenderStateServerServices();
 builder.Services.AddScoped<ISnackbar, SnackbarService>();
-
-builder.Services.AddHttpClient();
-
-builder.Services.AddScoped<AccountService>();
 
 //---DB
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

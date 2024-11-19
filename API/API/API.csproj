@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Blazr.RenderState.Server" Version="1.0.0" />
         <PackageReference Include="MudBlazor" Version="7.15.0" />
         <PackageReference Include="NSwag.AspNetCore" Version="14.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="7.0.0" />
@@ -16,6 +17,11 @@
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.10"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Layout\MainLayout.razor" />
+      <_ContentIncludedByDefault Remove="Components\Layout\NavMenu.razor" />
     </ItemGroup>
 
 </Project>
