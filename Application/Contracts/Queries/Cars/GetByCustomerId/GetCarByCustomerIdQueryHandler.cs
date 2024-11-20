@@ -7,8 +7,8 @@ using Shared.Dtos.Cars;
 namespace Application.Contracts.Queries.Cars.GetByCustomerId;
 
 
-public record GetCarByCustomerIdQuery(int Id) : IRequest<Result<IEnumerable<CarDto>>>;
-public class GetCarByCustomerIdQueryHandler : IRequestHandler<GetCarByCustomerIdQuery, Result<IEnumerable<CarDto>>>
+public record GetCarByCustomerIdQuery(int Id) : IRequest<Result<CarDto>>;
+public class GetCarByCustomerIdQueryHandler : IRequestHandler<GetCarByCustomerIdQuery, Result<CarDto>>
 {
     private readonly ICarRepository _carRepository;
     private readonly IMapper _mapper;
@@ -18,11 +18,11 @@ public class GetCarByCustomerIdQueryHandler : IRequestHandler<GetCarByCustomerId
         _carRepository = carRepository;
         _mapper = mapper;
     }
-    public async Task<Result<IEnumerable<CarDto>>> Handle(GetCarByCustomerIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<CarDto>> Handle(GetCarByCustomerIdQuery request, CancellationToken cancellationToken)
     {
         if(request.Id <= 0) return Result.Fail("Id should be greater than 0");
         var car = await _carRepository.GetCarByCustomerIdAsync(request.Id);
         if (car == null) return Result.Fail("Invalid Id");
-        return Result.Ok(_mapper.Map<IEnumerable<CarDto>>(car));
+        return Result.Ok(_mapper.Map<CarDto>(car));
     }
 }

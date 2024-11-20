@@ -1,0 +1,36 @@
+@using Shared.Dtos.Cars
+@using Shared.Dtos.Users
+
+<MudCard Elevation="6" Style="width: 100%; max-width: 400px; margin: 20px 0; border-radius: 15px; text-align: left;">
+    <MudDialog>
+        <TitleContent>Editare detalii masina</TitleContent>
+        <DialogContent>
+            <MudTextField @bind-Value="carEdit.Maker" Label="Maker"/>
+            <MudTextField @bind-Value="carEdit.Model" Label="Model" InputType="InputType.Text" />
+            <MudTextField @bind-Value="carEdit.PlateNumber" Label="Plate Number"  />
+            <MudTextField @bind-Value="carEdit.VIN" Label="VIN"  />
+            
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
+            <MudButton OnClick="Save" Color="Color.Primary">Save</MudButton>
+        </DialogActions>
+    </MudDialog>
+</MudCard>
+
+@code {
+
+    [Parameter] public UpdateCarDto carEdit { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    
+    private void Save()
+    {
+        MudDialog.Close(DialogResult.Ok(carEdit));
+    }
+    
+    private void Cancel()
+    { 
+        MudDialog.Cancel();
+    }
+
+}

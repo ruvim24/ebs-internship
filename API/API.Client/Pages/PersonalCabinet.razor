@@ -1,0 +1,87 @@
+@page "/personalCabinet"
+@using API.Client.Components
+@using API.Client.Services
+@using Shared.Dtos.Users
+@inject IDialogService DialogService
+@inject AccountService AccountService
+@inject UserService UserService
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+
+<h3>Cabinet Personal</h3>
+
+<MudCard Elevation="6" Style="width: 100%; max-width: 400px; margin: 20px 0; border-radius: 15px; text-align: left;">
+    <MudCardHeader>
+        <MudText Typo="Typo.h5" Align="Align.Center">Informatii personale</MudText>
+    </MudCardHeader>
+    
+    <MudCardContent>
+        <MudStack Spacing="2">
+            <MudText Typo="Typo.subtitle1" Color="Color.Primary">Nume complet:</MudText>
+            <MudText Typo="Typo.body1">@userInfo.FullName</MudText>
+
+            <MudDivider />
+
+            <MudText Typo="Typo.subtitle1" Color="Color.Primary">Email:</MudText>
+            <MudText Typo="Typo.body1">@userInfo.Email</MudText>
+
+            <MudDivider />
+
+            <MudText Typo="Typo.subtitle1" Color="Color.Primary">Telefon:</MudText>
+            <MudText Typo="Typo.body1">@userInfo.PhoneNumber</MudText>
+        </MudStack>
+    </MudCardContent>
+
+    <MudCardActions>
+        <MudButton Variant="Variant.Filled" OnClick="OpenEditDialog" Color="Color.Info">Editare</MudButton>
+    </MudCardActions>
+</MudCard>
+
+<CarDetails CustomerId="@userInfo.Id"/>
+@code {
+    UserDto userInfo;
+    UpdateUserDto userEdit;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userInfo = await AccountService.GetLoggedInUser();
+
+        userEdit = new UpdateUserDto()
+        {
+            Id = userInfo.Id,
+            Email = userInfo.Email,
+            Password = string.Empty,
+            PhoneNumber = userInfo.PhoneNumber
+        };
+    }
+
+    private async Task OpenEditDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "userEdit", userEdit }
+        };
+
+        var dialog = DialogService.Show<EditUserDialog>("Editare Informatii personale", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            userEdit = (UpdateUserDto)result.Data;
+            var response = await UserService.UpdateUserAsync(userEdit);
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Saved", Severity.Success);           
+                Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+            }
+            else
+            {
+                Snackbar.Add("Saving error", Severity.Warning);
+            }
+        }
+        else
+        {
+            Snackbar.Add("Canceled", Severity.Info);
+        }
+    }
+}

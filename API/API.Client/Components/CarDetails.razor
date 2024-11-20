@@ -1,0 +1,138 @@
+@using System.Text.Json
+@using API.Client.Services
+@using Shared.Dtos
+@using Shared.Dtos.Cars
+@inject NavigationManager Navigation
+@inject CarService CarService
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+@if (carExists)
+{
+    
+    <MudCard Elevation="6" Style="width: 100%; max-width: 500px; margin: 20px 0;">
+        <MudCardHeader>
+            <MudText Typo="Typo.h5" Align="Align.Center">Informații Mașină</MudText>
+        </MudCardHeader>
+
+        <MudCardContent>
+            <MudStack Spacing="3">
+                <MudText Typo="Typo.subtitle1" Color="Color.Primary">Marca:</MudText>
+                <MudText Typo="Typo.body1">@carDetails.Maker</MudText>
+
+                <MudText Typo="Typo.subtitle1" Color="Color.Primary">Model:</MudText>
+                <MudText Typo="Typo.body1">@carDetails.Model</MudText>
+
+                <MudText Typo="Typo.subtitle1" Color="Color.Primary">Număr de Înmatriculare:</MudText>
+                <MudText Typo="Typo.body1">@carDetails.PlateNumber</MudText>
+
+                <MudText Typo="Typo.subtitle1" Color="Color.Primary">VIN:</MudText>
+                <MudText Typo="Typo.body1">@carDetails.VIN</MudText>
+            </MudStack>
+        </MudCardContent>
+
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" OnClick="Editare" Color="Color.Primary">Editare</MudButton>
+        </MudCardActions>
+    </MudCard>
+}
+else
+{
+    <MudButton Variant="Variant.Filled" OnClick="CreateCar" Color="Color.Primary">Create Car</MudButton>
+
+}
+
+@code {
+
+    [Parameter] public int CustomerId { get; set; }
+    bool carExists;
+    
+    CarDto carDetails { get; set; }
+    UpdateCarDto carEdit { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await CarService.GetCustumerCar(CustomerId);
+        if (response.IsSuccessStatusCode)
+        {
+            string CarJson = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            carDetails = JsonSerializer.Deserialize<CarDto>(CarJson, options);
+            
+            carEdit = new UpdateCarDto()    
+            {
+                Id = carDetails.Id,
+                Maker = carDetails.Maker,
+                Model = carDetails.Model,
+                PlateNumber = carDetails.PlateNumber,
+                VIN = carDetails.VIN
+            };
+        }
+        else
+        {
+            carExists = false;
+        }
+        
+    }
+
+    private async Task Editare()
+    {
+        var parameters = new DialogParameters
+        {
+            { "carEdit", carEdit }
+        };
+
+        var dialog = DialogService.Show<EditCarDialog>("Editare detalii masina", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            carEdit = (UpdateCarDto)result.Data;
+            var response = await CarService.UpdateCar(carEdit);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Saved", Severity.Success);    
+                Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+            }
+            else
+            {
+                Snackbar.Add("Saving error", Severity.Warning);
+            }
+            
+        }
+        else
+        {
+            Snackbar.Add("Canceled", Severity.Info);
+        }
+    }
+
+    public async Task CreateCar()
+    {
+        var dialog = DialogService.Show<CreateCar>("Car registration");
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var car = (CreateCarDto)result.Data;
+            var response = CarService.CreateCar(car);
+            if (response.IsCompletedSuccessfully)
+            {
+                Snackbar.Add("Car was registred", Severity.Success);
+                Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+
+            }
+            
+            Snackbar.Add("Registration error", Severity.Error);
+        }
+
+        Snackbar.Add("Canceled", Severity.Info);
+
+    }
+    
+    
+}

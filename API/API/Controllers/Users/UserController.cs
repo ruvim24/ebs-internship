@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos.Users;
 
-namespace AutoService.Controllers.Users
+namespace API.Controllers.Users
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -36,7 +36,7 @@ namespace AutoService.Controllers.Users
             return Ok(result.Value);
         }
 
-        [HttpPut]
+        [HttpPut("update")]
         public async Task<IActionResult> Put([FromBody] UpdateUserDto updateUserDto)
         {
             var result = await _mediator.Send(new UpdateUserCommand(updateUserDto));
@@ -44,7 +44,7 @@ namespace AutoService.Controllers.Users
             return Ok();
         }
         
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> Post([FromBody] CreateUserDto createUserDto)
         {
             var result = await _mediator.Send(new CreateUserCommand(createUserDto));

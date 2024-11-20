@@ -36,14 +36,6 @@
                 Don't have an account? Register here
             </MudButton>
         </MudItem>
-
-        @if (showAlert)
-        {
-        <MudAlert Severity="@alertSeverity" Variant="Variant.Outlined" Style="margin-top: 10px;">
-            @alertMessage
-        </MudAlert>
-        }
-        
     </MudCard>
 </MudContainer>
 
@@ -53,9 +45,6 @@
     private MudForm form;
     private bool isValid;
     private LoginDto model = new LoginDto();
-    string alertMessage;
-    bool showAlert;
-    Severity alertSeverity;
 
     LoginDtoValidator loginValidator = new LoginDtoValidator();
     
@@ -67,32 +56,19 @@
             var response = await AccountService.Login(model);
             if (response.IsSuccessStatusCode)
             {
-                alertMessage = "Logged succesefully";
-                alertSeverity = Severity.Success;
-                StateHasChanged();  
-
-                
                 Snackbar.Add("Succesefull Login", Severity.Success);
                 Navigation.NavigateTo("/personalCabinet");
             }
             else
             {
-                alertMessage = "Error while attempting logging";
-                alertSeverity = Severity.Error;
+                Snackbar.Add("Error while logging", Severity.Error);
             }
         }
         else
         {
             Snackbar.Add("Validation error", Severity.Error);
-            
-            alertMessage = "Validation error";
-            alertSeverity = Severity.Error;
+
         }
-        
-        showAlert = true;
-        await Task.Delay(4000);
-        showAlert = false;  
-        StateHasChanged();
     }
     
     public void NavigateToRegister()

@@ -34,6 +34,7 @@ builder.Services.AddMudServices(cfg =>
 builder.AddBlazrRenderStateServerServices();
 builder.Services.AddScoped<ISnackbar, SnackbarService>();
 
+
 //---DB
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -109,7 +110,9 @@ app.UseOpenApi();
 app.UseSwagger();
 app.UseSwaggerUi();
 
+/*
 app.UseMiddleware<RedirectIfUnauthorizedMiddleware>(); //rederection to login page
+*/
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

@@ -24,4 +24,12 @@ public class CreateCarDtoValidator : AbstractValidator<CreateCarDto>
             .NotNull().NotEmpty().WithMessage("VIN is required")
             .MaximumLength(19).WithMessage("VIN should have max 19 characters long");
     }
+    
+    public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+    {
+        var result = await ValidateAsync(ValidationContext<CreateCarDto>.CreateWithOptions((CreateCarDto)model, x => x.IncludeProperties(propertyName)));
+        if (result.IsValid)
+            return Array.Empty<string>();
+        return result.Errors.Select(e => e.ErrorMessage);
+    };
 }

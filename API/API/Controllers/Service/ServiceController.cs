@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos.Services;
 
-namespace AutoService.Controllers.Service;
+namespace API.Controllers.Service;
 
 [Route("api/[controller]")]
 [ApiController]

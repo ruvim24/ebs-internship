@@ -1,0 +1,33 @@
+@using MudBlazor
+@using Shared.Dtos.Users
+
+<MudCard Elevation="6" Style="width: 100%; max-width: 400px; margin: 20px 0; border-radius: 15px; text-align: left;">
+<MudDialog>
+    <TitleContent>Editare informatii personale</TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="userEdit.Email" Label="Email" InputType="InputType.Email" />
+        <MudTextField @bind-Value="userEdit.Password" Label="Password" InputType="InputType.Password" />
+        <MudTextField @bind-Value="userEdit.PhoneNumber" Label="Phone Number" InputType="InputType.Telephone" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
+        <MudButton OnClick="Save" Color="Color.Primary">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+</MudCard>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public UpdateUserDto userEdit { get; set; }
+    
+    private void Save()
+    {
+        MudDialog.Close(DialogResult.Ok(userEdit));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

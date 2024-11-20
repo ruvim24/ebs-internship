@@ -4,7 +4,8 @@
 @using MudBlazor
 @using Shared.Validators.Users
 @inject AccountService AccountService
-
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
 
 <MudContainer MaxWidth="MaxWidth.Medium" Style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #e3f2fd;">
 
@@ -25,13 +26,6 @@
         <MudCardActions>
             <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Style="margin-top: 16px;" OnClick="@(async () => await HandleRegister())">Login</MudButton>
         </MudCardActions>
-
-        @if (showAlert)
-        {
-        <MudAlert Severity="@alertSeverity" Variant="Variant.Outlined" Style="margin-top: 10px;">
-            @alertMessage
-        </MudAlert>
-        }
     </MudCard>
 </MudContainer>
 
@@ -40,36 +34,26 @@
     RegisterDto registerDto = new();
     RegisterUserDtoValidator registerUserDtoValidator = new();
 
-    bool showAlert;
-    string alertMessage;
-    Severity alertSeverity;
-    
     public async Task HandleRegister()
     {
-        form.Validate();
+        await form.Validate();
 
         if (form.IsValid)
         {
             var response = await AccountService.Register(registerDto);
             if (response.IsSuccessStatusCode)
             {
-                alertMessage = "Succesefully registered";
-                alertSeverity = Severity.Success;
-                
+                Snackbar.Add("Succesefully registered", Severity.Success);
+                Navigation.NavigateTo("/personalCabinet");
             }
             else
             {
-                alertMessage = "Error attemptin register";
-                alertSeverity = Severity.Error;
+                Snackbar.Add("Error attempting register", Severity.Error);
             }
         }
         else
         {
-            alertMessage = "Validation error";
-            alertSeverity = Severity.Error;
+            Snackbar.Add("Validation error", Severity.Error);
         }
-        showAlert = true;
-        await Task.Delay(4000);
-        showAlert = false;  
     }
 }

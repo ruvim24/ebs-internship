@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos.Cars;
 
-namespace AutoService.Controllers.Car;
+namespace API.Controllers.Car;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -29,7 +29,7 @@ public class CarController : ControllerBase
     }
     
     
-    [HttpGet("{customerId}")]
+    [HttpGet("getCustumer/{customerId}")]
     public async Task<IActionResult> GetCarByCustomerId([FromRoute] int customerId)
     {
         var result = await _mediator.Send(new GetCarByCustomerIdQuery(customerId));
@@ -37,7 +37,9 @@ public class CarController : ControllerBase
         return Ok(result.Value);
     }
 
+    /*
     [Authorize(Roles = "Customer")]
+    */
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateCarDto createCarDto)
     {
@@ -46,7 +48,9 @@ public class CarController : ControllerBase
         return Ok(result.Value);
     }
 
+    /*
     [Authorize(Roles = "Customer")]
+    */
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateCarDto updateCarDto)
     {

@@ -19,5 +19,7 @@ builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().Cre
 builder.Services.AddHttpClient("API", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CarService>();
 
 await builder.Build().RunAsync();       
