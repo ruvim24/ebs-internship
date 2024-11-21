@@ -8,36 +8,46 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager Navigation
 
-<h3>Cabinet Personal</h3>
+<h3>Personal Cabinet</h3>
 
-<MudCard Elevation="6" Style="width: 100%; max-width: 400px; margin: 20px 0; border-radius: 15px; text-align: left;">
-    <MudCardHeader>
-        <MudText Typo="Typo.h5" Align="Align.Center">Informatii personale</MudText>
-    </MudCardHeader>
+<MudGrid>
+    <MudItem>
+            <MudCard Elevation="6" Style="width: 100%; max-width: 400px; margin: 20px 0; border-radius: 15px; text-align: left;">
+                <MudCardHeader>
+                    <MudText Typo="Typo.h5" Align="Align.Center">Peronal information</MudText>
+                </MudCardHeader>
+
+                <MudCardContent>
+                    <MudStack Spacing="3">
+                        <MudText Typo="Typo.subtitle1" Color="Color.Primary">Name:</MudText>
+                        <MudText Typo="Typo.body1">@userInfo.FullName</MudText>
+
+                        <MudDivider />
+
+                        <MudText Typo="Typo.subtitle1" Color="Color.Primary">Email:</MudText>
+                        <MudText Typo="Typo.body1">@userInfo.Email</MudText>
+
+                        <MudDivider />
+
+                        <MudText Typo="Typo.subtitle1" Color="Color.Primary">Phone:</MudText>
+                        <MudText Typo="Typo.body1">@userInfo.PhoneNumber</MudText>
+                </MudStack>
+            </MudCardContent>
+
+                <MudCardActions>
+                    <MudButton Variant="Variant.Filled" OnClick="EditUser" Color="Color.Info">Edit</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
     
-    <MudCardContent>
-        <MudStack Spacing="2">
-            <MudText Typo="Typo.subtitle1" Color="Color.Primary">Nume complet:</MudText>
-            <MudText Typo="Typo.body1">@userInfo.FullName</MudText>
+    <MudItem>
+        <CarDetails CustomerId="@userInfo.Id"/>    
+    </MudItem>
+</MudGrid>
 
-            <MudDivider />
 
-            <MudText Typo="Typo.subtitle1" Color="Color.Primary">Email:</MudText>
-            <MudText Typo="Typo.body1">@userInfo.Email</MudText>
 
-            <MudDivider />
 
-            <MudText Typo="Typo.subtitle1" Color="Color.Primary">Telefon:</MudText>
-            <MudText Typo="Typo.body1">@userInfo.PhoneNumber</MudText>
-        </MudStack>
-    </MudCardContent>
-
-    <MudCardActions>
-        <MudButton Variant="Variant.Filled" OnClick="OpenEditDialog" Color="Color.Info">Editare</MudButton>
-    </MudCardActions>
-</MudCard>
-
-<CarDetails CustomerId="@userInfo.Id"/>
 @code {
     UserDto userInfo;
     UpdateUserDto userEdit;
@@ -55,14 +65,11 @@
         };
     }
 
-    private async Task OpenEditDialog()
+    private async Task EditUser()
     {
-        var parameters = new DialogParameters
-        {
-            { "userEdit", userEdit }
-        };
+        var parameters = new DialogParameters { { "userEdit", userEdit } };
 
-        var dialog = DialogService.Show<EditUserDialog>("Editare Informatii personale", parameters);
+        var dialog = DialogService.Show<EditUserDialog>("Edit personal information", parameters);
         var result = await dialog.Result;
 
         if (!result.Canceled)

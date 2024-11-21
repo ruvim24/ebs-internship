@@ -9,21 +9,20 @@
 
 @if (carExists)
 {
-    
-    <MudCard Elevation="6" Style="width: 100%; max-width: 500px; margin: 20px 0;">
+    <MudCard Elevation="6" Style="width: 100%; max-width: 400px; margin: 20px 0; border-radius: 15px; text-align: left;">
         <MudCardHeader>
-            <MudText Typo="Typo.h5" Align="Align.Center">Informații Mașină</MudText>
+            <MudText Typo="Typo.h5" Align="Align.Center">Car Information</MudText>
         </MudCardHeader>
 
         <MudCardContent>
             <MudStack Spacing="3">
-                <MudText Typo="Typo.subtitle1" Color="Color.Primary">Marca:</MudText>
+                <MudText Typo="Typo.subtitle1" Color="Color.Primary">Maker:</MudText>
                 <MudText Typo="Typo.body1">@carDetails.Maker</MudText>
 
                 <MudText Typo="Typo.subtitle1" Color="Color.Primary">Model:</MudText>
                 <MudText Typo="Typo.body1">@carDetails.Model</MudText>
 
-                <MudText Typo="Typo.subtitle1" Color="Color.Primary">Număr de Înmatriculare:</MudText>
+                <MudText Typo="Typo.subtitle1" Color="Color.Primary">Plate Number:</MudText>
                 <MudText Typo="Typo.body1">@carDetails.PlateNumber</MudText>
 
                 <MudText Typo="Typo.subtitle1" Color="Color.Primary">VIN:</MudText>
@@ -32,20 +31,21 @@
         </MudCardContent>
 
         <MudCardActions>
-            <MudButton Variant="Variant.Filled" OnClick="Editare" Color="Color.Primary">Editare</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick="EditCar" Color="Color.Primary">Edit</MudButton>
         </MudCardActions>
     </MudCard>
+
 }
 else
 {
-    <MudButton Variant="Variant.Filled" OnClick="CreateCar" Color="Color.Primary">Create Car</MudButton>
+    <MudButton Variant="Variant.Filled" OnClick="CarRegistration" Color="Color.Primary">Register your car</MudButton>
 
 }
 
 @code {
 
     [Parameter] public int CustomerId { get; set; }
-    bool carExists;
+    bool carExists = true;
     
     CarDto carDetails { get; set; }
     UpdateCarDto carEdit { get; set; }
@@ -55,13 +55,13 @@ else
         var response = await CarService.GetCustumerCar(CustomerId);
         if (response.IsSuccessStatusCode)
         {
-            string CarJson = await response.Content.ReadAsStringAsync();
+            string carJson = await response.Content.ReadAsStringAsync();
 
             var options = new JsonSerializerOptions()
             {
                 PropertyNameCaseInsensitive = true
             };
-            carDetails = JsonSerializer.Deserialize<CarDto>(CarJson, options);
+            carDetails = JsonSerializer.Deserialize<CarDto>(carJson, options);
             
             carEdit = new UpdateCarDto()    
             {
@@ -79,14 +79,11 @@ else
         
     }
 
-    private async Task Editare()
+    private async Task EditCar()
     {
-        var parameters = new DialogParameters
-        {
-            { "carEdit", carEdit }
-        };
+        var parameters = new DialogParameters { { "carEdit", carEdit } };
 
-        var dialog = DialogService.Show<EditCarDialog>("Editare detalii masina", parameters);
+        var dialog = DialogService.Show<EditCarDialog>("Edit car information", parameters);
         var result = await dialog.Result;
 
         if (!result.Canceled)
@@ -107,11 +104,11 @@ else
         }
         else
         {
-            Snackbar.Add("Canceled", Severity.Info);
+            Snackbar.Add("Edit canceled", Severity.Info);
         }
     }
 
-    public async Task CreateCar()
+    public async Task CarRegistration()
     {
         var dialog = DialogService.Show<CreateCar>("Car registration");
         var result = await dialog.Result;
@@ -119,6 +116,9 @@ else
         if (!result.Canceled)
         {
             var car = (CreateCarDto)result.Data;
+
+            car.CustomerId = CustomerId; //for current user
+            
             var response = CarService.CreateCar(car);
             if (response.IsCompletedSuccessfully)
             {
@@ -130,7 +130,7 @@ else
             Snackbar.Add("Registration error", Severity.Error);
         }
 
-        Snackbar.Add("Canceled", Severity.Info);
+        Snackbar.Add("Car registration canceled", Severity.Info);
 
     }
     

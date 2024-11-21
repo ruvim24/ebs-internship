@@ -5,72 +5,23 @@
 @inject ISnackbar Snackbar
 
 
-
-@*
-<MudCard Elevation="6" Style="width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; background-color: #ffffff;">
-    <MudCardContent>
-        <MudText Typo="Typo.h5" Align="Align.Center" Style="color: #1976d2;">Creare Mașină</MudText>
-        <MudForm Model="@createCarModel" @ref="@form" Validation="@(createCarValidator.ValidateValue)" ValidationDelay="0">
-            <MudCardContent>
-                <MudTextField @bind-Value="createCarModel.CustomerId"
-                              For="@(() => createCarModel.CustomerId)"
-                              Immediate="true"
-                              Label="Customer ID" />
-                              
-                <MudTextField @bind-Value="createCarModel.Maker"
-                              For="@(() => createCarModel.Maker)"
-                              Immediate="true"
-                              Label="Marca Mașinii" />
-                              
-                <MudTextField @bind-Value="createCarModel.Model"
-                              For="@(() => createCarModel.Model)"
-                              Immediate="true"
-                              Label="Modelul Mașinii" />
-
-                <MudTextField @bind-Value="createCarModel.PlateNumber"
-                              For="@(() => createCarModel.PlateNumber)"
-                              Immediate="true"
-                              Label="Număr de Înmatriculare" />
-
-                <MudTextField @bind-Value="createCarModel.VIN"
-                              For="@(() => createCarModel.VIN)"
-                              Immediate="true"
-                              Label="VIN" />
-            </MudCardContent>
-        </MudForm>
-    </MudCardContent>
-    <MudCardActions>
-        <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Style="margin-top: 16px;" OnClick="@(async () => await HandleCreateCar())">Salvează</MudButton>
-    </MudCardActions>
-    
-    
-    
-    
-</MudCard>
-*@
-
 <MudDialog>
     <TitleContent>Create Car</TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="createCarModel.CustomerId"
-                      For="@(() => createCarModel.CustomerId)"
-                      Immediate="true"
-                      Label="Customer ID" />
-
         <MudTextField @bind-Value="createCarModel.Maker"
                       For="@(() => createCarModel.Maker)"
                       Immediate="true"
-                      Label="Marca Mașinii" />
+                      Label="Maker" />
 
         <MudTextField @bind-Value="createCarModel.Model"
                       For="@(() => createCarModel.Model)"
                       Immediate="true"
-                      Label="Modelul Mașinii" />
+                      Label="Model" />
 
         <MudTextField @bind-Value="createCarModel.PlateNumber"
                       For="@(() => createCarModel.PlateNumber)"
                       Immediate="true"
-                      Label="Număr de Înmatriculare" />
+                      Label="Number Plate" />
 
         <MudTextField @bind-Value="createCarModel.VIN"
                       For="@(() => createCarModel.VIN)"
@@ -89,28 +40,6 @@
     private CreateCarDtoValidator createCarValidator = new CreateCarDtoValidator();
     
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-
-    /*private async Task HandleCreateCar()
-    {
-        await form.Validate();
-        if (form.IsValid)
-        {
-            var response = await CarSerivce.CreateCar(createCarModel);
-            if (response.IsSuccessStatusCode)
-            {
-                Snackbar.Add("Car created", Severity.Success);
-            }
-            else
-            {
-                Snackbar.Add("Error", Severity.Error);
-            }
-        }
-        else
-        {
-            Snackbar.Add("Validation error", Severity.Warning);
-        }
-    }*/
-    
     
     private void Save()
     {
