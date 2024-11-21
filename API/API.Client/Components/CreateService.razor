@@ -1,0 +1,73 @@
+@using Domain.Enums
+@using Shared.Dtos.Services
+@inject ISnackbar Snackbar
+
+<MudDialog Style="height: 800px; width: 600px" >
+    <TitleContent>
+        Create Service
+    </TitleContent>
+    
+    <DialogContent >
+        <EditForm FormName="Create Service" Model="@createServiceDto" OnValidSubmit="OnValidSubmit">
+            <MudGrid>
+                <MudItem xs="12" sm="7">
+                    <MudCard Style="height: 500px; width: 500px">
+                        <MudCardContent>
+                            <MudTextField Label="Name" HelperText="Max. 15 characters"
+                                          @bind-Value="createServiceDto.Name" For="@(() => createServiceDto.Name)"/>
+                            <MudTextField Label="Description" Class="mt-3"
+                                          @bind-Value="createServiceDto.Description" For="@(() => createServiceDto.Description)"/>
+
+                            <MudSelect HelperText="Select duration" @bind-Value="createServiceDto.Duration" Required RequiredError="You must select Duration!!!" Margin="@Margin.Dense">
+                                <MudSelectItem Value="30">30 min</MudSelectItem>
+                                <MudSelectItem Value="60">60 min</MudSelectItem>
+                                <MudSelectItem Value="90">90 min</MudSelectItem>
+                            </MudSelect>
+
+                            <MudTextField Label="Price" HelperText="Price must be greated than 0" Class="mt-3"
+                                          @bind-Value="createServiceDto.Price" For="@(() => createServiceDto.Price)"/>
+
+                            <MudSelect HelperText="Select Service Type" @bind-Value="createServiceDto.ServiceType" Required RequiredError="You must select a ServiceType !!!" Margin="@Margin.Dense">
+                                <MudSelectItem Value="ServiceType.Consultation">Consultation</MudSelectItem>
+                                <MudSelectItem Value="ServiceType.Maintenance">Maintenance</MudSelectItem>
+                                <MudSelectItem Value="ServiceType.Reparation">Reparation</MudSelectItem>
+                            </MudSelect>
+
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+        </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+    
+</MudDialog>
+
+
+
+@code {
+ //to add fluent validaton
+ //
+
+    CreateServiceDto createServiceDto = new CreateServiceDto(); 
+    
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+    
+    
+    private void OnValidSubmit(EditContext context)
+    {
+        Snackbar.Add("Service was saved", Severity.Success);
+        StateHasChanged();
+    }
+}

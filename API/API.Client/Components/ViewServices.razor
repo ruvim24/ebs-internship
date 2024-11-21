@@ -1,57 +1,75 @@
-@page "/test"
-@using Domain.Enums
-@using Shared.Dtos.Services
-@inject ISnackbar Snackbar
+@using System.Net.Http.Json
+@inject HttpClient httpClient
 
-
-<MudDataGrid Items="@serviceList">
-    
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Our Services</MudText>
-        <MudSpacer/>
-        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
-
+<MudDataGrid T="Element" Items="@Elements.Take(4)" ReadOnly="@_readOnly" EditMode=" DataGridEditMode.Form"
+    StartedEditingItem="@StartedEditingItem" CanceledEditingItem="@CanceledEditingItem" CommittedItemChanges="@CommittedItemChanges"
+    Bordered="true" Dense="true" EditTrigger=" DataGridEditTrigger.Manual">
     <Columns>
-        <PropertyColumn Property="x => x.Name" Title="Name"/>
-        <PropertyColumn Property="x => x.Description" Title="Description"/>
-        <PropertyColumn Property="x => x.Duration" Title="Duration"/>
-        <PropertyColumn Property="x => x.Price" Title="Price"/>
-        <PropertyColumn Property="x => x.ServiceType" Title="Type"/>
-            @*<EditTemplate>
-                <MudSelect @bind-Value="context.Item.Position" Required RequiredError="You must select a Type!!!" Margin="@Margin.Dense">
-                    <MudSelectItem Value="ServiceType.Consultation">Consultation</MudSelectItem>
-                    <MudSelectItem Value="ServiceType.Maintenance">Maintenance</MudSelectItem>
-                    <MudSelectItem Value="ServiceType.Reparation">Reparation</MudSelectItem>
-            </MudSelect>
-        </EditTemplate>*@
-        
-        <TemplateColumn StickyRight="true">
+        <PropertyColumn Property="x => x.Number" Title="Nr" Editable="false" />
+        <PropertyColumn Property="x => x.Sign" />
+        <PropertyColumn Property="x => x.Name" />
+        <PropertyColumn Property="x => x.Position">
+            <EditTemplate>
+                <MudSelect @bind-Value="context.Item.Position" Required RequiredError="You must select a Position!!!" Margin="@Margin.Dense">
+                    <MudSelectItem Value="0">zero</MudSelectItem>
+                    <MudSelectItem Value="1">one</MudSelectItem>
+                    <MudSelectItem Value="17">seventeen</MudSelectItem>
+                </MudSelect>
+            </EditTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="x => x.Molar" Title="Molar mass" />
+        <TemplateColumn Hidden="@(_isCellEditMode || _readOnly || _editTriggerRowClick)" CellClass="d-flex justify-end">
             <CellTemplate>
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="@Size.Small" OnClick="@context.Actions.StartEditingItemAsync" />
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="@Size.Small" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
             </CellTemplate>
         </TemplateColumn>
     </Columns>
 </MudDataGrid>
 
 
-
-
 @code {
-    private List<ServiceDto> serviceList = new List<ServiceDto>
+    private IEnumerable<Element> Elements = new List<Element>()
     {
-        new ServiceDto { Id = 1, Name = "Haircut", Description = "Standard haircut", ServiceType = ServiceType.Consultation, Price = 15.99m, Duration = 30 },
-        new ServiceDto { Id = 2, Name = "Shave", Description = "Professional shave", ServiceType = ServiceType.Reparation, Price = 10.99m, Duration = 20 },
+        new Element() { Number = 1, Sign = "asdf", Name = "asdf", Position = 1, Molar = 0.050m },
+        new Element() { Number = 1, Sign = "asdf", Name = "asdf", Position = 1, Molar = 0.050m },
+        new Element() { Number = 1, Sign = "asdf", Name = "asdf", Position = 1, Molar = 0.050m }
     };
-    
-    MudDataGrid<ServiceDto> dataGrid;
-    string searchString = null;
+    private bool _readOnly;
+    private bool _isCellEditMode;
+    private List<string> _events = new();
+    private bool _editTriggerRowClick;
 
-    private Task OnSearch(string text)
+    /*protected override async Task OnInitializedAsync()
     {
-        searchString = text;
-        return dataGrid.ReloadServerData();
+        Elements = await httpClient.GetFromJsonAsync<List<Element>>("webapi/periodictable");
+    }*/
+
+    // events
+    void StartedEditingItem(Element item)
+    {
+        _events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    void CanceledEditingItem(Element item)
+    {
+        _events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    void CommittedItemChanges(Element item)
+    {
+        _events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    
+    
+    
+    public class Element
+    {
+        public int  Number { get; set; }
+        public string Sign { get; set; }
+        public string Name { get; set; }
+        public int Position { get; set; }
+        public decimal Molar { get; set; }
+        
     }
 }

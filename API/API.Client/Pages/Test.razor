@@ -2,37 +2,59 @@
 @using Domain.Enums
 @using Shared.Dtos.Services
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@using MudBlazor
+@using API.Client.Components
 
 
-<MudDataGrid Items="@serviceList">
+<MudDataGrid T="ServiceDto" Items="@serviceList" ReadOnly="@_readOnly" EditMode="DataGridEditMode.Form" 
+             StartedEditingItem="@StartedEditingItem" CommittedItemChanges="@CommittedItemChanges" CanceledEditingItem="@CanceledEditingItem"
+             Bordered="true" Dense="true" EditTrigger="DataGridEditTrigger.Manual">
     
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Our Services</MudText>
+        <MudText Class="mr-4" Typo="Typo.h6" Color="Color.Default">Our Services</MudText>
+        
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary"  Size="Size.Small" OnClick="@CreateService">Create New Service</MudButton>
+
         <MudSpacer/>
         <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        
     </ToolBarContent>
-
-    <Columns>
-        <PropertyColumn Property="x => x.Name" Title="Name"/>
-        <PropertyColumn Property="x => x.Description" Title="Description"/>
-        <PropertyColumn Property="x => x.Duration" Title="Duration"/>
-        <PropertyColumn Property="x => x.Price" Title="Price"/>
-        <PropertyColumn Property="x => x.ServiceType" Title="Type"/>
-            @*<EditTemplate>
-                <MudSelect @bind-Value="context.Item.Position" Required RequiredError="You must select a Type!!!" Margin="@Margin.Dense">
+    
+    <Columns >
+        <PropertyColumn Property="x => x.Name" Title="Name" HeaderClass="mud-text-secondary"/>
+        <PropertyColumn Property="x => x.Description" Title="Description" HeaderClass="mud-text-secondary"/>
+        
+        <PropertyColumn Property="x => x.Duration" Title="Duration" HeaderClass="mud-text-secondary">
+            <EditTemplate>
+                <MudSelect  @bind-Value="context.Item.Duration" Required RequiredError="You must select Duration!!!" Margin="@Margin.Dense">
+                    <MudSelectItem Value="30">30 min</MudSelectItem>
+                    <MudSelectItem Value="60">60 min</MudSelectItem>
+                    <MudSelectItem Value="90">90 min</MudSelectItem>
+                </MudSelect>
+            </EditTemplate>
+        </PropertyColumn>
+        
+        <PropertyColumn Property="x => x.Price" Title="Price" HeaderClass="mud-text-secondary"/>
+        
+        <PropertyColumn  Property="x => x.ServiceType" Title="Type" HeaderClass="mud-text-secondary">
+            <EditTemplate>
+                <MudSelect @bind-Value="context.Item.ServiceType" Required RequiredError="You must select a Type!!!" Margin="@Margin.Dense">
                     <MudSelectItem Value="ServiceType.Consultation">Consultation</MudSelectItem>
                     <MudSelectItem Value="ServiceType.Maintenance">Maintenance</MudSelectItem>
                     <MudSelectItem Value="ServiceType.Reparation">Reparation</MudSelectItem>
-            </MudSelect>
-        </EditTemplate>*@
+                </MudSelect>
+            </EditTemplate>
+        </PropertyColumn>
         
-        <TemplateColumn StickyRight="true">
+        <TemplateColumn StickyRight="true" >
             <CellTemplate>
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="@Size.Small" OnClick="@context.Actions.StartEditingItemAsync" />
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="@Size.Small" />
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="@Size.Small" OnClick="@(async () => await context.Actions.StartEditingItemAsync())" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="@Size.Small" OnClick="() => DeleteService(context.Item)" />
             </CellTemplate>
         </TemplateColumn>
+        
     </Columns>
 </MudDataGrid>
 
@@ -40,18 +62,59 @@
 
 
 @code {
-    private List<ServiceDto> serviceList = new List<ServiceDto>
-    {
-        new ServiceDto { Id = 1, Name = "Haircut", Description = "Standard haircut", ServiceType = ServiceType.Consultation, Price = 15.99m, Duration = 30 },
-        new ServiceDto { Id = 2, Name = "Shave", Description = "Professional shave", ServiceType = ServiceType.Reparation, Price = 10.99m, Duration = 20 },
-    };
-    
+    private bool _readOnly;
     MudDataGrid<ServiceDto> dataGrid;
     string searchString = null;
+
+    private List<ServiceDto> serviceList = new List<ServiceDto>
+    {
+        new ServiceDto { Id = 3, Name = "Schimb ulei", Description = "Schimb de ulei sintetic complet", ServiceType = ServiceType.Maintenance, Price = 249.99m, Duration = 45 },
+        new ServiceDto { Id = 4, Name = "Rotire anvelope", Description = "Rotirea celor patru anvelope", ServiceType = ServiceType.Maintenance, Price = 149.99m, Duration = 30 },
+        new ServiceDto { Id = 5, Name = "Inspectare frâne", Description = "Verificare completă a sistemului de frânare", ServiceType = ServiceType.Consultation, Price = 199.99m, Duration = 40 },
+        new ServiceDto { Id = 6, Name = "Diagnostic motor", Description = "Diagnostic avansat pentru defecțiuni ale motorului", ServiceType = ServiceType.Reparation, Price = 299.99m, Duration = 60 },
+        new ServiceDto { Id = 7, Name = "Verificare baterie", Description = "Testare și verificare stare baterie auto", ServiceType = ServiceType.Consultation, Price = 99.99m, Duration = 20 },
+        new ServiceDto { Id = 8, Name = "Schimb plăcuțe frână", Description = "Înlocuire plăcuțe de frână uzate", ServiceType = ServiceType.Reparation, Price = 349.99m, Duration = 50 },
+        new ServiceDto { Id = 9, Name = "Aliniere roți", Description = "Alinierea roților pentru o rulare optimă", ServiceType = ServiceType.Maintenance, Price = 199.99m, Duration = 45 },
+        new ServiceDto { Id = 10, Name = "Schimb lichid de frână", Description = "Înlocuirea lichidului de frână", ServiceType = ServiceType.Maintenance, Price = 149.99m, Duration = 30 },
+    };
+    
+
 
     private Task OnSearch(string text)
     {
         searchString = text;
         return dataGrid.ReloadServerData();
     }
+
+    
+    private void CommittedItemChanges(ServiceDto obj)
+    {
+        Snackbar.Add("Service edited succesefully", Severity.Success);
+    }
+
+    private void CanceledEditingItem(ServiceDto obj)
+    {
+        Snackbar.Add("Edit canceled", Severity.Info);
+    }
+
+    private void DeleteService(ServiceDto contextItem)
+    {
+        Snackbar.Add($"Service: {contextItem.Name} was delted", Severity.Info);
+    }
+
+    private void StartedEditingItem(ServiceDto obj)
+    {
+        Snackbar.Add("Start editing", Severity.Normal);
+
+    }
+
+    private async Task CreateService()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        await DialogService.ShowAsync<CreateService>("Create Service", options);
+
+        Snackbar.Add("Create new Service", Severity.Info);
+    }
+
 }
+
