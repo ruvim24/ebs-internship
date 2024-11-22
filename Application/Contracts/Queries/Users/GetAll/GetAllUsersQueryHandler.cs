@@ -1,11 +1,10 @@
-using Application.DTOs.Users;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
 using Shared.Dtos.Users;
 
-namespace Application.Contracts.Queries.UserQueries.GetAll;
+namespace Application.Contracts.Queries.Users.GetAll;
 
 public record GetAllUsersQuery() : IRequest<Result<IEnumerable<UserDto>>>;
 

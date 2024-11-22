@@ -21,5 +21,6 @@ builder.Services.AddHttpClient("API", client => client.BaseAddress = new Uri(bui
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CarService>();
+builder.Services.AddScoped<ServicesService>();
 
 await builder.Build().RunAsync();       

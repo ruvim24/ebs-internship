@@ -16,4 +16,14 @@ public class UserService
     {
         return await _httpClient.PutAsJsonAsync("api/user/update", updateUserDto);
     }
+
+    public async Task<HttpResponseMessage> GetUsersAsync()
+    {
+        return await _httpClient.GetAsync("api/User");
+    }
+
+    public async Task<HttpResponseMessage> GetMastersAsync()
+    {
+        return await _httpClient.GetAsync("api/User/masters");
+    }
 }

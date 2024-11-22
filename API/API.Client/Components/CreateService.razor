@@ -1,18 +1,23 @@
+@using System.Text.Json
+@using API.Client.Services
 @using Domain.Enums
 @using Shared.Dtos.Services
+@using Shared.Dtos.Users
 @inject ISnackbar Snackbar
+@inject ServicesService ServicesService
+@inject UserService UserService
 
 <MudDialog Style="height: 800px; width: 600px" >
     <TitleContent>
         Create Service
     </TitleContent>
     
-    <DialogContent >
+    <DialogContent >@*
         <EditForm FormName="Create Service" Model="@createServiceDto" OnValidSubmit="OnValidSubmit">
             <MudGrid>
                 <MudItem xs="12" sm="7">
                     <MudCard Style="height: 500px; width: 500px">
-                        <MudCardContent>
+                        <MudCardContent>*@
                             <MudTextField Label="Name" HelperText="Max. 15 characters"
                                           @bind-Value="createServiceDto.Name" For="@(() => createServiceDto.Name)"/>
                             <MudTextField Label="Description" Class="mt-3"
@@ -32,15 +37,22 @@
                                 <MudSelectItem Value="ServiceType.Maintenance">Maintenance</MudSelectItem>
                                 <MudSelectItem Value="ServiceType.Reparation">Reparation</MudSelectItem>
                             </MudSelect>
+                            
+                            <MudSelect HelperText="Select Master" @bind-Value="createServiceDto.MasterId" Required RequiredError="You must select a Master" Margin="@Margin.Dense">
+                                @foreach (var master in masters)
+                                {
+                                    <MudSelectItem Value="master.Id">@master.FullName</MudSelectItem>
+                                }
+                            </MudSelect>
 
-                        </MudCardContent>
+                        @*</MudCardContent>
                         <MudCardActions>
                             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
                         </MudCardActions>
                     </MudCard>
                 </MudItem>
             </MudGrid>
-        </EditForm>
+        </EditForm>#2##1#*@
         </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -54,17 +66,38 @@
 @code {
  //to add fluent validaton
  //
-
+    
     CreateServiceDto createServiceDto = new CreateServiceDto(); 
     
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; }
 
-    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    private void Submit() => MudDialog.Close(DialogResult.Ok(createServiceDto));
 
     private void Cancel() => MudDialog.Cancel();
-    
-    
+
+    IEnumerable<UserDto> masters;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //extragerea din baza de date lista de Masteri --- !!!!!!
+        var response = await UserService.GetMastersAsync();
+        if (response.IsSuccessStatusCode)
+        {
+            var mastersJson = await response.Content.ReadAsStringAsync();
+            if (mastersJson != string.Empty)
+            {
+                var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                masters = JsonSerializer.Deserialize<IEnumerable<UserDto>>(mastersJson, options);
+
+            }
+            Snackbar.Add("No masters registered", Severity.Info);
+
+        }
+        //nu sunt masteri - nu poti crea un serviciu
+    }
+
+
     private void OnValidSubmit(EditContext context)
     {
         Snackbar.Add("Service was saved", Severity.Success);

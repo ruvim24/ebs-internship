@@ -1,7 +1,8 @@
 ﻿using Application.Contracts.Commands.Users.Create;
 using Application.Contracts.Commands.Users.Update;
-using Application.Contracts.Queries.UserQueries.GetAll;
 using Application.Contracts.Queries.Users.Get;
+using Application.Contracts.Queries.Users.GetAll;
+using Application.Contracts.Queries.Users.GetMasters;
 using Application.DTOs.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,14 @@ namespace API.Controllers.Users
             return Ok(result.Value);
         }
 
+        [HttpGet("masters")]
+        public async Task<IActionResult> GetAllMasters()
+        {
+            var result = await _mediator.Send(new GetMastersQuery());
+            if(result.IsFailed) return BadRequest(result.Errors);
+            return Ok(result.Value);
+        }
+        
         [HttpPut("update")]
         public async Task<IActionResult> Put([FromBody] UpdateUserDto updateUserDto)
         {

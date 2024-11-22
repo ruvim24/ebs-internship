@@ -1,13 +1,19 @@
 @page "/test"
+@using System.Text.Json
 @using Domain.Enums
 @using Shared.Dtos.Services
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @using MudBlazor
 @using API.Client.Components
+@using API.Client.Services
+@inject ServicesService ServicesService
+@inject NavigationManager Navigation
 
 
-<MudDataGrid T="ServiceDto" Items="@serviceList" ReadOnly="@_readOnly" EditMode="DataGridEditMode.Form" 
+@if (servicesExists)
+{
+    <MudDataGrid T="ServiceDto" Items="@serviceList" ReadOnly="@_readOnly" EditMode="DataGridEditMode.Form" 
              StartedEditingItem="@StartedEditingItem" CommittedItemChanges="@CommittedItemChanges" CanceledEditingItem="@CanceledEditingItem"
              Bordered="true" Dense="true" EditTrigger="DataGridEditTrigger.Manual">
     
@@ -17,14 +23,14 @@
         <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary"  Size="Size.Small" OnClick="@CreateService">Create New Service</MudButton>
 
         <MudSpacer/>
-        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search Service Name" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         
     </ToolBarContent>
-    
-    <Columns >
+
+    <Columns>
         <PropertyColumn Property="x => x.Name" Title="Name" HeaderClass="mud-text-secondary"/>
-        <PropertyColumn Property="x => x.Description" Title="Description" HeaderClass="mud-text-secondary"/>
+        <PropertyColumn Property="x => x.Description" Title="Description" HeaderClass="mud-text-secondary" />
         
         <PropertyColumn Property="x => x.Duration" Title="Duration" HeaderClass="mud-text-secondary">
             <EditTemplate>
@@ -48,37 +54,53 @@
             </EditTemplate>
         </PropertyColumn>
         
-        <TemplateColumn StickyRight="true" >
+        <TemplateColumn StickyRight="true">
             <CellTemplate>
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="@Size.Small" OnClick="@(async () => await context.Actions.StartEditingItemAsync())" />
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="@Size.Small" OnClick="() => DeleteService(context.Item)" />
+                <MudIconButton  Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="@Size.Small" OnClick="@(async () => await context.Actions.StartEditingItemAsync())" />
             </CellTemplate>
         </TemplateColumn>
-        
+        <TemplateColumn StickyRight="true">
+            
+            <CellTemplate>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="@Size.Small" OnClick="() => DeleteService(context.Item)"/>
+            </CellTemplate>
+        </TemplateColumn>
+    
     </Columns>
+    
 </MudDataGrid>
-
-
-
+}
+else
+{
+    <MudStack Direction="Row" Spacing="2">
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">No Service was registered</MudAlert>
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary" Size="Size.Small" OnClick="@CreateService">Create New Service</MudButton>
+    </MudStack>
+}
 
 @code {
     private bool _readOnly;
     MudDataGrid<ServiceDto> dataGrid;
     string searchString = null;
 
-    private List<ServiceDto> serviceList = new List<ServiceDto>
-    {
-        new ServiceDto { Id = 3, Name = "Schimb ulei", Description = "Schimb de ulei sintetic complet", ServiceType = ServiceType.Maintenance, Price = 249.99m, Duration = 45 },
-        new ServiceDto { Id = 4, Name = "Rotire anvelope", Description = "Rotirea celor patru anvelope", ServiceType = ServiceType.Maintenance, Price = 149.99m, Duration = 30 },
-        new ServiceDto { Id = 5, Name = "Inspectare frâne", Description = "Verificare completă a sistemului de frânare", ServiceType = ServiceType.Consultation, Price = 199.99m, Duration = 40 },
-        new ServiceDto { Id = 6, Name = "Diagnostic motor", Description = "Diagnostic avansat pentru defecțiuni ale motorului", ServiceType = ServiceType.Reparation, Price = 299.99m, Duration = 60 },
-        new ServiceDto { Id = 7, Name = "Verificare baterie", Description = "Testare și verificare stare baterie auto", ServiceType = ServiceType.Consultation, Price = 99.99m, Duration = 20 },
-        new ServiceDto { Id = 8, Name = "Schimb plăcuțe frână", Description = "Înlocuire plăcuțe de frână uzate", ServiceType = ServiceType.Reparation, Price = 349.99m, Duration = 50 },
-        new ServiceDto { Id = 9, Name = "Aliniere roți", Description = "Alinierea roților pentru o rulare optimă", ServiceType = ServiceType.Maintenance, Price = 199.99m, Duration = 45 },
-        new ServiceDto { Id = 10, Name = "Schimb lichid de frână", Description = "Înlocuirea lichidului de frână", ServiceType = ServiceType.Maintenance, Price = 149.99m, Duration = 30 },
-    };
-    
+    bool servicesExists = true;
 
+    private IEnumerable<ServiceDto> serviceList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await ServicesService.GetServicesAsync();
+        if (response.IsSuccessStatusCode)
+        {
+            var servicesJson = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            serviceList = JsonSerializer.Deserialize<IEnumerable<ServiceDto>>(servicesJson, options);
+        }
+        else
+        {
+            servicesExists = false;
+        }
+    }
 
     private Task OnSearch(string text)
     {
@@ -87,19 +109,42 @@
     }
 
     
-    private void CommittedItemChanges(ServiceDto obj)
+    private async Task CommittedItemChanges(ServiceDto serviceUpdate)
     {
-        Snackbar.Add("Service edited succesefully", Severity.Success);
+        var response = await ServicesService.UpdateServiceAsync(serviceUpdate);
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("Service edited succesefully", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add("Error to edit", Severity.Error);
+
+        }
+        /*
+        Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+    */
     }
 
     private void CanceledEditingItem(ServiceDto obj)
     {
+        /*
         Snackbar.Add("Edit canceled", Severity.Info);
+    */
     }
 
-    private void DeleteService(ServiceDto contextItem)
+    private async Task DeleteService(ServiceDto contextItem)
     {
-        Snackbar.Add($"Service: {contextItem.Name} was delted", Severity.Info);
+        var response = await ServicesService.DeleteServiceAsync(contextItem.Id);
+        if(response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Service: \"{contextItem.Name}\" was delted", Severity.Info);
+            Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+        }
+        else
+        {
+            Snackbar.Add($"Error deleting service: \"{contextItem.Name}\"");
+        }
     }
 
     private void StartedEditingItem(ServiceDto obj)
@@ -111,10 +156,40 @@
     private async Task CreateService()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        await DialogService.ShowAsync<CreateService>("Create Service", options);
+        var dialog =  DialogService.Show<CreateService>("Create Service", options);
 
-        Snackbar.Add("Create new Service", Severity.Info);
+        
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            var serviceCreateDto = (CreateServiceDto)result.Data;
+            var response = await ServicesService.CreateServiceAsync(serviceCreateDto);
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Service created succesefully", Severity.Success);
+                Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+            }
+        }
     }
 
 }
+
+
+
+
+@*
+/*
+private List<ServiceDto> serviceList = new List<ServiceDto>
+{
+new ServiceDto { Id = 3, Name = "Schimb ulei", Description = "Schimb de ulei sintetic complet", ServiceType = ServiceType.Maintenance, Price = 249.99m, Duration = 45 },
+new ServiceDto { Id = 4, Name = "Rotire anvelope", Description = "Rotirea celor patru anvelope", ServiceType = ServiceType.Maintenance, Price = 149.99m, Duration = 30 },
+new ServiceDto { Id = 5, Name = "Inspectare frâne", Description = "Verificare completă a sistemului de frânare", ServiceType = ServiceType.Consultation, Price = 199.99m, Duration = 40 },
+new ServiceDto { Id = 6, Name = "Diagnostic motor", Description = "Diagnostic avansat pentru defecțiuni ale motorului", ServiceType = ServiceType.Reparation, Price = 299.99m, Duration = 60 },
+new ServiceDto { Id = 7, Name = "Verificare baterie", Description = "Testare și verificare stare baterie auto", ServiceType = ServiceType.Consultation, Price = 99.99m, Duration = 20 },
+new ServiceDto { Id = 8, Name = "Schimb plăcuțe frână", Description = "Înlocuire plăcuțe de frână uzate", ServiceType = ServiceType.Reparation, Price = 349.99m, Duration = 50 },
+new ServiceDto { Id = 9, Name = "Aliniere roți", Description = "Alinierea roților pentru o rulare optimă", ServiceType = ServiceType.Maintenance, Price = 199.99m, Duration = 45 },
+new ServiceDto { Id = 10, Name = "Schimb lichid de frână", Description = "Înlocuirea lichidului de frână", ServiceType = ServiceType.Maintenance, Price = 149.99m, Duration = 30 },
+};*/
+*@
+
 
