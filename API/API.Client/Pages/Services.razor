@@ -1,0 +1,174 @@
+@page "/services"
+@using System.Text.Json
+@using API.Client.Components
+@using API.Client.Services
+@using Domain.Enums
+@using Shared.Dtos.Services
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject ServicesService ServicesService
+@inject NavigationManager Navigation
+
+
+@if (servicesExists)
+{
+    <MudDataGrid T="ServiceDto" Items="@serviceList" ReadOnly="@_readOnly" EditMode="DataGridEditMode.Form" 
+             CommittedItemChanges="@CommittedItemChanges"
+             Bordered="true" Dense="true" EditTrigger="DataGridEditTrigger.Manual">
+    
+    <ToolBarContent>
+        <MudText Class="mr-4" Typo="Typo.h6" Color="Color.Default">Our Services</MudText>
+        
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary"  Size="Size.Small" OnClick="@CreateService">Create New Service</MudButton>
+
+        <MudSpacer/>
+        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search Service Name" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        
+    </ToolBarContent>
+
+    <Columns>
+        <PropertyColumn Property="x => x.Name" Title="Name" HeaderClass="mud-text-secondary"/>
+        <PropertyColumn Property="x => x.Description" Title="Description" HeaderClass="mud-text-secondary" />
+        
+        <PropertyColumn Property="x => x.Duration" Title="Duration" HeaderClass="mud-text-secondary">
+            <EditTemplate>
+                <MudSelect  @bind-Value="context.Item.Duration" Required RequiredError="You must select Duration!!!" Margin="@Margin.Dense">
+                    <MudSelectItem Value="30">30 min</MudSelectItem>
+                    <MudSelectItem Value="60">60 min</MudSelectItem>
+                    <MudSelectItem Value="90">90 min</MudSelectItem>
+                </MudSelect>
+            </EditTemplate>
+        </PropertyColumn>
+        
+        <PropertyColumn Property="x => x.Price" Title="Price" HeaderClass="mud-text-secondary"/>
+        
+        <PropertyColumn  Property="x => x.ServiceType" Title="Type" HeaderClass="mud-text-secondary">
+            <EditTemplate>
+                <MudSelect @bind-Value="context.Item.ServiceType" Required RequiredError="You must select a Type!!!" Margin="@Margin.Dense">
+                    <MudSelectItem Value="ServiceType.Consultation">Consultation</MudSelectItem>
+                    <MudSelectItem Value="ServiceType.Maintenance">Maintenance</MudSelectItem>
+                    <MudSelectItem Value="ServiceType.Reparation">Reparation</MudSelectItem>
+                </MudSelect>
+            </EditTemplate>
+        </PropertyColumn>
+        
+        <TemplateColumn StickyRight="true">
+            <CellTemplate>
+                <MudIconButton  Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="@Size.Small" OnClick="@(async () => await context.Actions.StartEditingItemAsync())" />
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn StickyRight="true">
+            
+            <CellTemplate>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="@Size.Small" OnClick="() => DeleteService(context.Item)"/>
+            </CellTemplate>
+        </TemplateColumn>
+    
+    </Columns>
+    
+</MudDataGrid>
+}
+else
+{
+    <MudStack Direction="Row" Spacing="2">
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">No Service was registered</MudAlert>
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary" Size="Size.Small" OnClick="@CreateService">Create New Service</MudButton>
+    </MudStack>
+}
+
+@code {
+    private bool _readOnly;
+    MudDataGrid<ServiceDto> dataGrid;
+    string searchString = null;
+
+    bool servicesExists = true;
+
+    private IEnumerable<ServiceDto> serviceList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await ServicesService.GetServicesAsync();
+        if (response.IsSuccessStatusCode)
+        {
+            var servicesJson = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            serviceList = JsonSerializer.Deserialize<IEnumerable<ServiceDto>>(servicesJson, options);
+        }
+        else
+        {
+            servicesExists = false;
+        }
+    }
+
+    private Task OnSearch(string text)
+    {
+        searchString = text;
+        return dataGrid.ReloadServerData();
+    }
+
+    
+    private async Task CommittedItemChanges(ServiceDto serviceUpdate)
+    {
+        var response = await ServicesService.UpdateServiceAsync(serviceUpdate);
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("Service edited succesefully", Severity.Success);
+            Navigation.NavigateTo(Navigation.Uri, forceLoad: true); 
+        }
+        else
+        {
+            Snackbar.Add("Error to edit", Severity.Error);
+
+        }
+    }
+    
+    private async Task DeleteService(ServiceDto contextItem)
+    {
+        
+        var parameters = new DialogParameters { ["Message"] = $"Are you sure you want to delete \"{contextItem.Name}\"?" };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small };
+
+        var dialog = DialogService.Show<ConfirmationDialog>("Confirm Action", parameters, options);
+        var result = await dialog.Result;
+        
+        if (!result.Canceled)
+        {
+            var response = await ServicesService.DeleteServiceAsync(contextItem.Id);
+            if(response.IsSuccessStatusCode)
+            {
+                Snackbar.Add($"Service: \"{contextItem.Name}\" was delted", Severity.Info);
+                Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+            }
+            else
+            {
+                Snackbar.Add($"Error deleting service: \"{contextItem.Name}\"");
+            }
+        }
+        
+        
+    }
+    private async Task CreateService()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var dialog =  DialogService.Show<CreateService>("Create Service", options);
+
+        
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            var serviceCreateDto = (CreateServiceDto)result.Data;
+            var response = await ServicesService.CreateServiceAsync(serviceCreateDto);
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Service created succesefully", Severity.Success);
+                Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+            }
+            else
+            {
+                Snackbar.Add("Error creating new Service", Severity.Error);
+            }
+        }
+    }
+
+}

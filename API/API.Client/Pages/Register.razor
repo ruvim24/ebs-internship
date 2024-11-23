@@ -24,7 +24,7 @@
             </MudForm>
         </MudCardContent>
         <MudCardActions>
-            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Style="margin-top: 16px;" OnClick="@(async () => await HandleRegister())">Login</MudButton>
+            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Style="margin-top: 16px;" OnClick="@(async () => await HandleRegister())">Register</MudButton>
         </MudCardActions>
     </MudCard>
 </MudContainer>
@@ -44,7 +44,7 @@
             if (response.IsSuccessStatusCode)
             {
                 Snackbar.Add("Succesefully registered", Severity.Success);
-                Navigation.NavigateTo("/personalCabinet");
+                Navigation.NavigateTo("/login");
             }
             else
             {

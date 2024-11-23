@@ -25,6 +25,11 @@ public class AccountService
         return await _httpClient.PostAsJsonAsync("api/Account/register", registerDto);
     }
 
+    public async Task<HttpResponseMessage> RegisterMaster(RegisterDto registerDto)
+    {
+        return await _httpClient.PostAsJsonAsync("api/Account/register-master", registerDto);
+    }
+
     public async Task<HttpResponseMessage> Logout()
     {
         return await _httpClient.PostAsJsonAsync<object>("api/Account/logout", null! );

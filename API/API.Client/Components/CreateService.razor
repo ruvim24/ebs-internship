@@ -67,20 +67,16 @@
  //to add fluent validaton
  //
     
-    CreateServiceDto createServiceDto = new CreateServiceDto(); 
+    private CreateServiceDto createServiceDto = new CreateServiceDto(); 
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+    private IEnumerable<UserDto> masters;
     
-    [CascadingParameter]
-    private MudDialogInstance MudDialog { get; set; }
-
     private void Submit() => MudDialog.Close(DialogResult.Ok(createServiceDto));
 
     private void Cancel() => MudDialog.Cancel();
-
-    IEnumerable<UserDto> masters;
-
+    
     protected override async Task OnInitializedAsync()
     {
-        //extragerea din baza de date lista de Masteri --- !!!!!!
         var response = await UserService.GetMastersAsync();
         if (response.IsSuccessStatusCode)
         {
@@ -91,13 +87,14 @@
                 masters = JsonSerializer.Deserialize<IEnumerable<UserDto>>(mastersJson, options);
 
             }
-            Snackbar.Add("No masters registered", Severity.Info);
-
+            else
+            {
+                Snackbar.Add("No masters registered", Severity.Info);
+            }
         }
         //nu sunt masteri - nu poti crea un serviciu
     }
-
-
+    
     private void OnValidSubmit(EditContext context)
     {
         Snackbar.Add("Service was saved", Severity.Success);

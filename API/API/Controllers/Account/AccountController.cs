@@ -29,6 +29,15 @@ public class AccountController : ControllerBase
         return Ok("Registered successfully");
     }
     
+    [HttpPost("register-master")]
+    public async Task<IActionResult> RegisterMaster(RegisterDto registerDto)
+    {
+        var result = await _mediator.Send(new RegisterMasterCommand(registerDto));
+        if(result.IsFailed) return BadRequest(result.Errors);
+        
+        return Ok("Registered successfully");
+    }
+    
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)

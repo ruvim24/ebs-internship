@@ -1,0 +1,53 @@
+@using Shared.Dtos.Users
+@using Shared.Validators.Users
+@inject ISnackbar Snackbar
+
+
+<MudDialog Style="height: 800px; width: 600px">
+    <TitleContent>
+        Register Master
+    </TitleContent>
+    
+    <DialogContent>
+        <MudForm @ref="_form" Model="createMasterDto" Validation="@(registerValidator.ValidateValue)" >
+            <MudTextField Label="Fullname" HelperText="Max. 15 characters"
+                          @bind-Value="createMasterDto.FullName" For="@(() => createMasterDto.FullName)"/>
+            <MudTextField Label="Username" Class="mt-3"
+                          @bind-Value="createMasterDto.Username" For="@(() => createMasterDto.Username)"/>
+            <MudTextField Label="Phone Number" Class="mt-3"
+                          @bind-Value="createMasterDto.PhoneNumber" For="@(() => createMasterDto.PhoneNumber)"/>
+            <MudTextField Label="Email" Class="mt-3" InputType="InputType.Email"
+                          @bind-Value="createMasterDto.Email" For="@(() => createMasterDto.Email)"/>
+            <MudTextField Label="Password" Class="mt-3" InputType="InputType.Password"
+                          @bind-Value="createMasterDto.Password" For="@(() => createMasterDto.Password)"/>
+            <MudTextField Label="Confirm Password" Class="mt-3" InputType="InputType.Password"
+                          @bind-Value="createMasterDto.ConfirmPassword" For="@(() => createMasterDto.ConfirmPassword)"/>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    RegisterDto createMasterDto = new();
+    MudForm _form;
+    RegisterUserDtoValidator registerValidator = new();
+    
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+    
+    private void Submit()
+    {
+        if (_form.IsValid)
+        {
+            MudDialog.Close(DialogResult.Ok(createMasterDto));
+        }
+        else
+        {
+            Snackbar.Add("Validation error", Severity.Error);
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+    
+}

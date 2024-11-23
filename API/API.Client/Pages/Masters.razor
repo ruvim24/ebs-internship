@@ -1,0 +1,113 @@
+@page "/masters"
+@using System.Text.Json
+@using API.Client.Components
+@using API.Client.Services
+@using Shared.Dtos.Users
+@inject IDialogService DialogService
+@inject AccountService AccountService
+@inject ISnackbar Snackbar
+@inject UserService UserService
+<h3>Masters</h3>
+
+@if (mastersExist)
+{
+    <MudDataGrid T="UserDto" Items="@mastersList" ReadOnly="@_readOnly" EditMode="DataGridEditMode.Form" 
+             CommittedItemChanges="@CommittedItemChanges"
+             Bordered="true" Dense="true" EditTrigger="DataGridEditTrigger.Manual">
+    
+    <ToolBarContent>
+        <MudText Class="mr-4" Typo="Typo.h6" Color="Color.Default">Masters</MudText>
+        
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary"  Size="Size.Small" OnClick="@RegisterMaster">Register New Master </MudButton>
+
+        <MudSpacer/>
+        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search Master Name" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        
+    </ToolBarContent>
+
+    <Columns>
+        <PropertyColumn Property="x => x.FullName" Title="Fullname" HeaderClass="mud-text-secondary"/>
+        <PropertyColumn Property="x => x.Email" Title="Email" HeaderClass="mud-text-secondary" />
+        <PropertyColumn Property="x => x.PhoneNumber" Title="PhoneNumber" HeaderClass="mud-text-secondary"/>
+        
+        <TemplateColumn StickyRight="true">
+            <CellTemplate>
+                <MudIconButton  Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="@Size.Small" OnClick="@(async () => await context.Actions.StartEditingItemAsync())" />
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn StickyRight="true">
+            
+            <CellTemplate>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="@Size.Small" OnClick="() => DeleteMaster(context.Item)"/>
+            </CellTemplate>
+        </TemplateColumn>
+    
+    </Columns>
+    
+</MudDataGrid>
+}
+else
+{
+    <MudStack Direction="Row" Spacing="2">
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">No Master was registered</MudAlert>
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary" Size="Size.Small" OnClick="@RegisterMaster">Register Master</MudButton>
+    </MudStack>
+}
+
+
+@code {
+    bool _readOnly;
+    bool mastersExist;
+    IEnumerable<UserDto> mastersList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await UserService.GetMastersAsync();
+        if (response.IsSuccessStatusCode)
+        {
+            var jsonContent = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            mastersList = JsonSerializer.Deserialize<IEnumerable<UserDto>>(jsonContent, options);
+            mastersExist = true;
+        }
+    }
+
+    private Task CommittedItemChanges(UserDto arg)
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task RegisterMaster()
+    {
+        var options = new DialogOptions() { CloseOnEscapeKey = true };
+        var dialog = DialogService.Show<RegisterMasterDialog>("Master account registration", options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var master = (RegisterDto)result.Data;
+
+            var response = await AccountService.RegisterMaster(master);
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add($"Master: {master.FullName} registered succesefully", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add("Error to register Master", Severity.Error);
+            }
+        }
+    }
+
+    private Task OnSearch(string s)
+    {
+        throw new NotImplementedException();
+    }
+
+    private Task DeleteMaster(UserDto contextItem)
+    {
+        throw new NotImplementedException();
+    }
+
+}
