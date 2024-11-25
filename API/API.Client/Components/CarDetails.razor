@@ -9,7 +9,7 @@
 
 @if (carExists)
 {
-    <MudCard Elevation="6" Style="width: 100%; max-width: 400px; margin: 20px 0; border-radius: 15px; text-align: left;">
+    <MudCard Elevation="6" Style="width: 100%; max-width: 400px; border-radius: 15px; text-align: left; margin: auto;">
         <MudCardHeader>
             <MudText Typo="Typo.h5" Align="Align.Center">Car Information</MudText>
         </MudCardHeader>
@@ -46,7 +46,7 @@ else
 
     [Parameter] public int CustomerId { get; set; }
     bool carExists = true;
-    
+
     CarDto carDetails { get; set; }
     UpdateCarDto carEdit { get; set; }
 
@@ -62,8 +62,8 @@ else
                 PropertyNameCaseInsensitive = true
             };
             carDetails = JsonSerializer.Deserialize<CarDto>(carJson, options);
-            
-            carEdit = new UpdateCarDto()    
+
+            carEdit = new UpdateCarDto()
             {
                 Id = carDetails.Id,
                 Maker = carDetails.Maker,
@@ -76,7 +76,7 @@ else
         {
             carExists = false;
         }
-        
+
     }
 
     private async Task EditCar()
@@ -90,17 +90,17 @@ else
         {
             carEdit = (UpdateCarDto)result.Data;
             var response = await CarService.UpdateCar(carEdit);
-            
+
             if (response.IsSuccessStatusCode)
             {
-                Snackbar.Add("Saved", Severity.Success);    
-                Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+                Snackbar.Add("Saved", Severity.Success);
+                Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
             }
             else
             {
                 Snackbar.Add("Saving error", Severity.Warning);
             }
-            
+
         }
         else
         {
@@ -118,21 +118,20 @@ else
             var car = (CreateCarDto)result.Data;
 
             car.CustomerId = CustomerId; //for current user
-            
+
             var response = CarService.CreateCar(car);
             if (response.IsCompletedSuccessfully)
             {
                 Snackbar.Add("Car was registred", Severity.Success);
-                Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+                Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
 
             }
-            
+
             Snackbar.Add("Registration error", Severity.Error);
         }
 
         Snackbar.Add("Car registration canceled", Severity.Info);
 
     }
-    
     
 }

@@ -67,8 +67,8 @@
         }
         else
         {
-            Snackbar.Add("Validation error", Severity.Error);
-
+            string validationErrors = string.Join(" ", form.Errors.Select(s => s.ToString()));
+            Snackbar.Add($"Validation error: {validationErrors}", Severity.Error);
         }
     }
     

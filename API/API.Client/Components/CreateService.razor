@@ -3,57 +3,62 @@
 @using Domain.Enums
 @using Shared.Dtos.Services
 @using Shared.Dtos.Users
+@using Shared.Validators.Services
 @inject ISnackbar Snackbar
 @inject ServicesService ServicesService
 @inject UserService UserService
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject AccountService AccountService
 
 <MudDialog Style="height: 800px; width: 600px" >
     <TitleContent>
         Create Service
     </TitleContent>
     
-    <DialogContent >@*
-        <EditForm FormName="Create Service" Model="@createServiceDto" OnValidSubmit="OnValidSubmit">
-            <MudGrid>
-                <MudItem xs="12" sm="7">
-                    <MudCard Style="height: 500px; width: 500px">
-                        <MudCardContent>*@
-                            <MudTextField Label="Name" HelperText="Max. 15 characters"
-                                          @bind-Value="createServiceDto.Name" For="@(() => createServiceDto.Name)"/>
-                            <MudTextField Label="Description" Class="mt-3"
-                                          @bind-Value="createServiceDto.Description" For="@(() => createServiceDto.Description)"/>
+    <DialogContent >
+        @if (mastersExists)
+        {
+            <MudForm @ref="_form" Model="_createServiceDto" Validation="@(_createServiceDtoValidator.ValidateValue)">
+                <MudTextField Label="Name" HelperText="Max. 15 characters"
+                              @bind-Value="_createServiceDto.Name" For="@(() => _createServiceDto.Name)"/>
+                <MudTextField Label="Description" Class="mt-3"
+                              @bind-Value="_createServiceDto.Description" For="@(() => _createServiceDto.Description)"/>
 
-                            <MudSelect HelperText="Select duration" @bind-Value="createServiceDto.Duration" Required RequiredError="You must select Duration!!!" Margin="@Margin.Dense">
-                                <MudSelectItem Value="30">30 min</MudSelectItem>
-                                <MudSelectItem Value="60">60 min</MudSelectItem>
-                                <MudSelectItem Value="90">90 min</MudSelectItem>
-                            </MudSelect>
+                <MudSelect HelperText="Select duration" @bind-Value="_createServiceDto.Duration"
+                           Required RequiredError="You must select Duration!!!" Margin="@Margin.Dense">
+                    <MudSelectItem Value="30">30 min</MudSelectItem>
+                    <MudSelectItem Value="60">60 min</MudSelectItem>
+                    <MudSelectItem Value="90">90 min</MudSelectItem>
+                </MudSelect>
 
-                            <MudTextField Label="Price" HelperText="Price must be greated than 0" Class="mt-3"
-                                          @bind-Value="createServiceDto.Price" For="@(() => createServiceDto.Price)"/>
+                <MudTextField Label="Price" HelperText="Price must be greated than 0" Class="mt-3" @bind-Value="_createServiceDto.Price"
+                              For="@(() => _createServiceDto.Price)"/>
 
-                            <MudSelect HelperText="Select Service Type" @bind-Value="createServiceDto.ServiceType" Required RequiredError="You must select a ServiceType !!!" Margin="@Margin.Dense">
-                                <MudSelectItem Value="ServiceType.Consultation">Consultation</MudSelectItem>
-                                <MudSelectItem Value="ServiceType.Maintenance">Maintenance</MudSelectItem>
-                                <MudSelectItem Value="ServiceType.Reparation">Reparation</MudSelectItem>
-                            </MudSelect>
-                            
-                            <MudSelect HelperText="Select Master" @bind-Value="createServiceDto.MasterId" Required RequiredError="You must select a Master" Margin="@Margin.Dense">
-                                @foreach (var master in masters)
-                                {
-                                    <MudSelectItem Value="master.Id">@master.FullName</MudSelectItem>
-                                }
-                            </MudSelect>
+                <MudSelect HelperText="Select Service Type" @bind-Value="_createServiceDto.ServiceType"
+                           Required RequiredError="You must select a ServiceType !!!" Margin="@Margin.Dense">
+                    <MudSelectItem Value="ServiceType.Consultation">Consultation</MudSelectItem>
+                    <MudSelectItem Value="ServiceType.Maintenance">Maintenance</MudSelectItem>
+                    <MudSelectItem Value="ServiceType.Reparation">Reparation</MudSelectItem>
+                </MudSelect>
 
-                        @*</MudCardContent>
-                        <MudCardActions>
-                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
-                        </MudCardActions>
-                    </MudCard>
-                </MudItem>
-            </MudGrid>
-        </EditForm>#2##1#*@
-        </DialogContent>
+                <MudSelect HelperText="Select Master" @bind-Value="_createServiceDto.MasterId"
+                           Required RequiredError="You must select a Master" Margin="@Margin.Dense">
+                    @foreach (var master in _masters)
+                    {
+                        <MudSelectItem Value="master.Id">@master.FullName</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudForm>
+        }
+        else
+        {
+            <MudStack Direction="Row" Spacing="2">
+                <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">No Master was registered. First register Master!</MudAlert>
+                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary" Size="Size.Small" OnClick="@(RegisterMaster)">Register Master here</MudButton>
+            </MudStack>
+        }
+    </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
         <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
@@ -64,16 +69,26 @@
 
 
 @code {
- //to add fluent validaton
- //
-    
-    private CreateServiceDto createServiceDto = new CreateServiceDto(); 
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
-    private IEnumerable<UserDto> masters;
-    
-    private void Submit() => MudDialog.Close(DialogResult.Ok(createServiceDto));
+    IEnumerable<UserDto>? _masters;
+    CreateServiceDtoValidator _createServiceDtoValidator = new();
+    CreateServiceDto _createServiceDto = new();
+    MudForm _form;
+    bool mastersExists = true;
 
     private void Cancel() => MudDialog.Cancel();
+
+    private void Submit()
+    {
+        if (_form.IsValid)
+        {
+            MudDialog.Close(DialogResult.Ok(_createServiceDto));    
+        }
+        else
+        {
+            Snackbar.Add("Validation error", Severity.Error);
+        }
+    }
     
     protected override async Task OnInitializedAsync()
     {
@@ -84,20 +99,37 @@
             if (mastersJson != string.Empty)
             {
                 var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-                masters = JsonSerializer.Deserialize<IEnumerable<UserDto>>(mastersJson, options);
-
+                _masters = JsonSerializer.Deserialize<IEnumerable<UserDto>>(mastersJson, options);
             }
             else
             {
                 Snackbar.Add("No masters registered", Severity.Info);
             }
         }
-        //nu sunt masteri - nu poti crea un serviciu
+        else
+        {
+            mastersExists = false;
+        }
     }
-    
-    private void OnValidSubmit(EditContext context)
+
+    private async Task RegisterMaster()
     {
-        Snackbar.Add("Service was saved", Severity.Success);
-        StateHasChanged();
+        var dialog = DialogService.Show<RegisterMasterDialog>("Register Master");
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            var master = (RegisterDto)result.Data;
+            var response = await AccountService.RegisterMaster(master);
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Succesefully registered Master", Severity.Success);
+                Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+            }
+            else
+            {
+                Snackbar.Add("Error registering Master", Severity.Error);
+            }
+        }
     }
+
 }

@@ -12,7 +12,7 @@
 
 @if (servicesExists)
 {
-    <MudDataGrid T="ServiceDto" Items="@serviceList" ReadOnly="@_readOnly" EditMode="DataGridEditMode.Form" 
+    <MudDataGrid T="ServiceDto" Items="@filteredServiceList" ReadOnly="@_readOnly" EditMode="DataGridEditMode.Form" 
              CommittedItemChanges="@CommittedItemChanges"
              Bordered="true" Dense="true" EditTrigger="DataGridEditTrigger.Manual">
     
@@ -22,7 +22,7 @@
         <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary"  Size="Size.Small" OnClick="@CreateService">Create New Service</MudButton>
 
         <MudSpacer/>
-        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search Service Name" Adornment="Adornment.Start"
+        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search Service Name or Description" Adornment="Adornment.Start" Immediate="true"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         
     </ToolBarContent>
@@ -81,10 +81,9 @@ else
     private bool _readOnly;
     MudDataGrid<ServiceDto> dataGrid;
     string searchString = null;
-
     bool servicesExists = true;
-
     private IEnumerable<ServiceDto> serviceList;
+    private IEnumerable<ServiceDto> filteredServiceList;
 
     protected override async Task OnInitializedAsync()
     {
@@ -94,6 +93,7 @@ else
             var servicesJson = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
             serviceList = JsonSerializer.Deserialize<IEnumerable<ServiceDto>>(servicesJson, options);
+            filteredServiceList = serviceList;
         }
         else
         {
@@ -101,10 +101,19 @@ else
         }
     }
 
-    private Task OnSearch(string text)
+    private void OnSearch(string searchTerm)
     {
-        searchString = text;
-        return dataGrid.ReloadServerData();
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            filteredServiceList = serviceList;
+        }
+        else
+        {
+            filteredServiceList = serviceList.Where(service =>
+                    service.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || 
+                    service.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+            ).ToList();
+        }
     }
 
     
@@ -125,7 +134,6 @@ else
     
     private async Task DeleteService(ServiceDto contextItem)
     {
-        
         var parameters = new DialogParameters { ["Message"] = $"Are you sure you want to delete \"{contextItem.Name}\"?" };
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small };
 
@@ -145,9 +153,8 @@ else
                 Snackbar.Add($"Error deleting service: \"{contextItem.Name}\"");
             }
         }
-        
-        
     }
+    
     private async Task CreateService()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };

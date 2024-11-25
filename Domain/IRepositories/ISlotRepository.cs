@@ -19,4 +19,6 @@ public interface ISlotRepository
     public Task<bool> ExistsSlotsForDateAsync(int masterId, DateOnly date);
 
     Task<DateTime> GetLastSlotGenerationDate();
+    public Task<IEnumerable<Slot>> GetMastersAvailableSlotsForDate(DateTime date, int masterId);
+
 }

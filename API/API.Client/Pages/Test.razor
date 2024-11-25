@@ -1,21 +1,219 @@
 @page "/test"
+@using System.Text.Json
+@using API.Client.Services
+@using Shared.Dtos.Appointments
+@using Shared.Dtos.Cars
+@using Shared.Dtos.Services
+@using Shared.Dtos.Slots
+@using Shared.Dtos.Users
+@using Shared.Validators.Cars
+@inject AccountService AccountService
+@inject CarService CarService
+@inject ServicesService ServicesService
+@inject SlotsService SlotService
 
-
-
-
-@*
-/*
-private List<ServiceDto> serviceList = new List<ServiceDto>
+@if (servicesExists)
 {
-new ServiceDto { Id = 3, Name = "Schimb ulei", Description = "Schimb de ulei sintetic complet", ServiceType = ServiceType.Maintenance, Price = 249.99m, Duration = 45 },
-new ServiceDto { Id = 4, Name = "Rotire anvelope", Description = "Rotirea celor patru anvelope", ServiceType = ServiceType.Maintenance, Price = 149.99m, Duration = 30 },
-new ServiceDto { Id = 5, Name = "Inspectare frâne", Description = "Verificare completă a sistemului de frânare", ServiceType = ServiceType.Consultation, Price = 199.99m, Duration = 40 },
-new ServiceDto { Id = 6, Name = "Diagnostic motor", Description = "Diagnostic avansat pentru defecțiuni ale motorului", ServiceType = ServiceType.Reparation, Price = 299.99m, Duration = 60 },
-new ServiceDto { Id = 7, Name = "Verificare baterie", Description = "Testare și verificare stare baterie auto", ServiceType = ServiceType.Consultation, Price = 99.99m, Duration = 20 },
-new ServiceDto { Id = 8, Name = "Schimb plăcuțe frână", Description = "Înlocuire plăcuțe de frână uzate", ServiceType = ServiceType.Reparation, Price = 349.99m, Duration = 50 },
-new ServiceDto { Id = 9, Name = "Aliniere roți", Description = "Alinierea roților pentru o rulare optimă", ServiceType = ServiceType.Maintenance, Price = 199.99m, Duration = 45 },
-new ServiceDto { Id = 10, Name = "Schimb lichid de frână", Description = "Înlocuirea lichidului de frână", ServiceType = ServiceType.Maintenance, Price = 149.99m, Duration = 30 },
-};*/
-*@
+    <MudPaper Style="width: 800px">
+    <MudStepper Vertical ShowResetButton>
+        
+        <ChildContent>
+            @*Car Registration*@
+            @if (userHasCar)
+            {
+                <MudStep Title="Register Your Car">
+                    <MudCard Elevation="6" Style="width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; background-color: #ffffff; margin: auto;">
+                        <MudCardContent>
+                            <MudText Typo="Typo.h5" Align="Align.Center" Style="color: #1976d2;">Register Your Car</MudText>
+                            <MudForm @ref="_form" Model="createCarModel" Validation="@(createCarValidator.ValidateValue)" ValidationDelay="0">
+                                <MudCardContent>
+                                    <MudTextField @bind-Value="createCarModel.Maker"
+                                                  For="@(() => createCarModel.Maker)"
+                                                  Immediate="true"
+                                                  Label="Car Maker"
+                                                  Variant="Variant.Filled"
+                                                  Margin="Margin.Dense"
+                                                  Style="background-color: #f5f5f5;"/>
+
+                                    <MudTextField @bind-Value="createCarModel.Model"
+                                                  For="@(() => createCarModel.Model)"
+                                                  Immediate="true"
+                                                  Label="Car Model"
+                                                  Variant="Variant.Filled"
+                                                  Margin="Margin.Dense"
+                                                  Style="background-color: #f5f5f5;"/>
+
+                                    <MudTextField @bind-Value="createCarModel.PlateNumber"
+                                                  For="@(() => createCarModel.PlateNumber)"
+                                                  Immediate="true"
+                                                  Label="Number Plate"
+                                                  Variant="Variant.Filled"
+                                                  Margin="Margin.Dense"
+                                                  Style="background-color: #f5f5f5;"/>
+
+                                    <MudTextField @bind-Value="createCarModel.VIN"
+                                                  For="@(() => createCarModel.VIN)"
+                                                  Immediate="true"
+                                                  Label="VIN"
+                                                  Variant="Variant.Filled"
+                                                  Margin="Margin.Dense"
+                                                  Style="background-color: #f5f5f5;"/>
+                                </MudCardContent>
+                            </MudForm>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Style="margin-top: 16px;" Disabled="!_form.IsValid" OnClick="HandleSubmit">Submit</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudStep>
+            }
+
+            @*Service Selection*@
+            <MudStep Title="Select desired service">
+                <MudCard Elevation="6" Style="width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; background-color: #ffffff; margin: auto;">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center" Style="color: #1976d2;">Select Your Service</MudText>
+                        <MudForm @ref="_form" Model="serviceDto">
+                            <MudCardContent>
+                                <MudSelect @bind-Value="serviceDto.Id" Label="Choose Service" Variant="Variant.Filled" Margin="Margin.Dense" Style="background-color: #f5f5f5;" Icon="icons:build">
+                                    @foreach (var service in serviceList)
+                                    {
+                                        <MudSelectItem Value="@service.Id">
+                                            <MudText Typo="Typo.body1">@service.Name</MudText>
+                                            <MudText Typo="Typo.body2" Color="Color.Info">@service.Description</MudText>
+                                            <MudText Typo="Typo.body2" Color="Color.Primary">@($"${service.Price}")</MudText>
+                                        </MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudCardContent>
+                        </MudForm>
+                    </MudCardContent>
+
+                    <MudCardActions>
+                        <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Style="margin-top: 16px;" Disabled="!_form.IsValid" OnClick="SubimtService">Submit</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudStep>
+
+            @* Time Appointment Selection*@
+            <MudStep Title="Select appointment Date">
+
+                <MudCard Elevation="6" Style="width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; background-color: #ffffff; margin: auto;">
+                    <MudDatePicker Label="Select Date" HelperText="@_day?.ToShortDateString()" @bind-Date="_day" FixYear="@DateTime.Today.Year" FixMonth="@DateTime.Today.Month" DateFormat="dd"/>
+                    <MudCardActions>
+                        <MudButton OnClick="SubmitDate" Color="Color.Primary">Confirm</MudButton>
+                    </MudCardActions>
+                </MudCard>
+                
+                @*Select Time*@
+                <MudCard>
+                    <MudCardContent>
+                        @if (slotList != null && slotList.Any())
+                        {
+                        <MudSelect T="int" bind-Value="appointmentDto.SlotId" Label="Select Time">
+                            @foreach (var slot in slotList)
+                            {
+                            <MudSelectItem Value="slot.Id">@slot.StartTime</MudSelectItem>
+                            }
+                        </MudSelect>
+                        }
+                        else
+                        {
+                        <MudText>No slots available</MudText>
+                        }
+                    </MudCardContent>
+                </MudCard>
+            </MudStep>
+
+        </ChildContent>
+        <CompletedContent>
+            Appointmet succesefully saved!!
+        </CompletedContent>
+    </MudStepper>
+</MudPaper>
+}
+else
+{
+    <p> no service exist, you can't create an appointment</p>
+}
+
+
+
+<br/>
+@code
+{
+    MudForm _form;
+    CreateCarDto createCarModel = new();
+    CreateCarDtoValidator createCarValidator = new();
+    ServiceDto serviceDto = new();
+    UserDto currentUser = new();
+    bool userHasCar;
+    CarDto userCar = new();
+    bool servicesExists;
+    IEnumerable<ServiceDto> serviceList;
+    DateTime? _day;
+    IEnumerable<SlotDto> slotList;
+
+    CreateAppointmentDto appointmentDto = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        currentUser = await AccountService.GetLoggedInUser();
+        var response = await CarService.GetCustumerCar(currentUser.Id);
+        if (response.IsSuccessStatusCode)
+        {
+            userCar = JsonSerializer.Deserialize<CarDto>(await response.Content.ReadAsStringAsync());
+            userHasCar = true;
+        }
+        else
+        {
+            userHasCar = false;
+        }
+        
+        var servicesResponse = await ServicesService.GetServicesAsync();
+        var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+        var services = JsonSerializer.Deserialize<IEnumerable<ServiceDto>>(await servicesResponse.Content.ReadAsStringAsync(), options);
+        if (services != null)
+        {
+            serviceList = services;
+            servicesExists = true;
+        }
+
+    }
+
+    private async Task SubmitDate()
+    {
+        if (_day.HasValue || serviceDto.MasterId > 0)
+        {
+            var response = await SlotService.GetMastersAvailableSlotsForDate(serviceDto.MasterId);
+            if (response.IsSuccessStatusCode)
+            {
+                var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                var availableSlotList = JsonSerializer.Deserialize<IEnumerable<SlotDto>>(await response.Content.ReadAsStringAsync(), options);
+                slotList = availableSlotList.Where(x => x.StartTime.Date == _day);
+            }
+            else
+            {
+                slotList = null;
+            }
+        }
+        else
+        {
+            //must select day and service
+        }
+        
+    }
+
+    private void HandleSubmit()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void SubimtService()
+    {
+        
+    }
+}
+
 
 

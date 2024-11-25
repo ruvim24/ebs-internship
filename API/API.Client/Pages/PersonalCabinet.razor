@@ -10,40 +10,39 @@
 
 <h3>Personal Cabinet</h3>
 
-<MudGrid>
-    <MudItem>
-            <MudCard Elevation="6" Style="width: 100%; max-width: 400px; margin: 20px 0; border-radius: 15px; text-align: left;">
-                <MudCardHeader>
-                    <MudText Typo="Typo.h5" Align="Align.Center">Peronal information</MudText>
-                </MudCardHeader>
+<MudGrid Spacing="3" Justify="Justify.SpaceBetween" AlignItems="Center">
+    <MudItem xs="12" sm="6" md="5">
+        <MudCard Elevation="6" Style="width: 100%; max-width: 400px; border-radius: 15px; text-align: left; margin: auto;">
+            <MudCardHeader>
+                <MudText Typo="Typo.h5" Align="Align.Center">Personal Information</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudStack Spacing="2">
+                    <MudText Typo="Typo.subtitle1" Color="Color.Primary">Name:</MudText>
+                    <MudText Typo="Typo.body1">@userInfo.FullName</MudText>
 
-                <MudCardContent>
-                    <MudStack Spacing="3">
-                        <MudText Typo="Typo.subtitle1" Color="Color.Primary">Name:</MudText>
-                        <MudText Typo="Typo.body1">@userInfo.FullName</MudText>
+                    <MudDivider />
 
-                        <MudDivider />
+                    <MudText Typo="Typo.subtitle1" Color="Color.Primary">Email:</MudText>
+                    <MudText Typo="Typo.body1">@userInfo.Email</MudText>
 
-                        <MudText Typo="Typo.subtitle1" Color="Color.Primary">Email:</MudText>
-                        <MudText Typo="Typo.body1">@userInfo.Email</MudText>
+                    <MudDivider />
 
-                        <MudDivider />
-
-                        <MudText Typo="Typo.subtitle1" Color="Color.Primary">Phone:</MudText>
-                        <MudText Typo="Typo.body1">@userInfo.PhoneNumber</MudText>
+                    <MudText Typo="Typo.subtitle1" Color="Color.Primary">Phone:</MudText>
+                    <MudText Typo="Typo.body1">@userInfo.PhoneNumber</MudText>
                 </MudStack>
             </MudCardContent>
-
-                <MudCardActions>
-                    <MudButton Variant="Variant.Filled" OnClick="EditUser" Color="Color.Info">Edit</MudButton>
+            <MudCardActions Style="text-align: center;">
+                <MudButton Variant="Variant.Filled" OnClick="EditUser" Color="Color.Info">Edit</MudButton>
             </MudCardActions>
         </MudCard>
     </MudItem>
-    
-    <MudItem>
-        <CarDetails CustomerId="@userInfo.Id"/>    
+
+    <MudItem xs="12" sm="6" md="6">
+                <CarDetails CustomerId="@userInfo.Id"/>
     </MudItem>
 </MudGrid>
+
 
 
 

@@ -4,7 +4,7 @@ using Application.Contracts.Queries.Slots.GetMastersAvailableSlots;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AutoService.Controllers.Slot;
+namespace API.Controllers.Slot;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -24,6 +24,12 @@ public class SlotController : ControllerBase
         if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
     }
+
+    /*[HttpGet]
+    public async Task<IActionResult> GetMastersAvailableSlotsForDate(DateTime date, int masterId)
+    {
+        
+    }*/
 
     [HttpPost("[action]")]
     public async Task<IActionResult> Generate([FromQuery] int advanceDays)

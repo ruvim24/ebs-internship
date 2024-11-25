@@ -26,4 +26,9 @@ public class UserService
     {
         return await _httpClient.GetAsync("api/User/masters");
     }
+
+    public async Task<HttpResponseMessage> DeleteUserAsync(int userId)
+    {
+        return await _httpClient.DeleteAsync($"api/User/delete/{userId}");
+    }
 }

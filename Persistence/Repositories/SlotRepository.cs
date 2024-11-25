@@ -46,6 +46,12 @@ public class SlotRepository : ISlotRepository
     {
         return await _applicationDb.Slots.Where(x => x.MasterId == masterId).ToListAsync();
     }
+
+    public async Task<IEnumerable<Slot>> GetMastersAvailableSlotsForDate(DateTime date, int masterId)
+    {
+        var slots = await _applicationDb.Slots.Where(x => x.MasterId == masterId && x.Availability == true && x.StartTime.Date == date).ToListAsync();
+        return slots;
+    }
     
     public Task<List<Slot>> GetUnReservedSlots()
     {

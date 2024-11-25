@@ -1,6 +1,7 @@
 @using API.Client.Services
 @using Shared.Dtos.Cars
 @using Shared.Validators.Cars
+@using Shared.Validators.Services
 @inject CarService CarSerivce
 @inject ISnackbar Snackbar
 
@@ -8,42 +9,53 @@
 <MudDialog>
     <TitleContent>Create Car</TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="createCarModel.Maker"
-                      For="@(() => createCarModel.Maker)"
-                      Immediate="true"
-                      Label="Maker" />
+        <MudForm @ref="_form" Model="createCarModel" Validation="@(createCarValidator.ValidateValue)">
+            <MudTextField @bind-Value="createCarModel.Maker"
+                          For="@(() => createCarModel.Maker)"
+                          Immediate="true"
+                          Label="Maker"/>
 
-        <MudTextField @bind-Value="createCarModel.Model"
-                      For="@(() => createCarModel.Model)"
-                      Immediate="true"
-                      Label="Model" />
+            <MudTextField @bind-Value="createCarModel.Model"
+                          For="@(() => createCarModel.Model)"
+                          Immediate="true"
+                          Label="Model"/>
 
-        <MudTextField @bind-Value="createCarModel.PlateNumber"
-                      For="@(() => createCarModel.PlateNumber)"
-                      Immediate="true"
-                      Label="Number Plate" />
+            <MudTextField @bind-Value="createCarModel.PlateNumber"
+                          For="@(() => createCarModel.PlateNumber)"
+                          Immediate="true"
+                          Label="Number Plate"/>
 
-        <MudTextField @bind-Value="createCarModel.VIN"
-                      For="@(() => createCarModel.VIN)"
-                      Immediate="true"
-                      Label="VIN" />
+            <MudTextField @bind-Value="createCarModel.VIN"
+                          For="@(() => createCarModel.VIN)"
+                          Immediate="true"
+                          Label="VIN"/>
+        </MudForm>
     </DialogContent>
 
     <DialogActions>
         <MudButton OnClick="Cancel" Color="Color.Default">Cancel</MudButton>
         <MudButton OnClick="Save" Color="Color.Primary">Save</MudButton>
     </DialogActions>
+    
 </MudDialog>
 @code {
-    private MudForm form;
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    private MudForm _form;
     private CreateCarDto createCarModel = new CreateCarDto();
     private CreateCarDtoValidator createCarValidator = new CreateCarDtoValidator();
     
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     
     private void Save()
     {
-        MudDialog.Close(DialogResult.Ok(createCarModel));
+        if (_form.IsValid)
+        {
+            MudDialog.Close(DialogResult.Ok(createCarModel));
+        }
+        else
+        {
+            string validationErrors = string.Join(" ", _form.Errors.Select(s => s.ToString()));
+            Snackbar.Add($"Validation error: {validationErrors}", Severity.Error);
+        }
     }
     
     private void Cancel()

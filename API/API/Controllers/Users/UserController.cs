@@ -1,4 +1,5 @@
 ﻿using Application.Contracts.Commands.Users.Create;
+using Application.Contracts.Commands.Users.Delete;
 using Application.Contracts.Commands.Users.Update;
 using Application.Contracts.Queries.Users.Get;
 using Application.Contracts.Queries.Users.GetAll;
@@ -59,6 +60,14 @@ namespace API.Controllers.Users
             var result = await _mediator.Send(new CreateUserCommand(createUserDto));
             if (result.IsFailed) return BadRequest(result.Errors);
             return Ok(result.Value);
+        }
+
+        [HttpDelete("delete/{userId:int}")]
+        public async Task<IActionResult> Delete([FromRoute]int userId)
+        {
+            var result = await _mediator.Send(new DeleteUserCommand(userId));
+            if(result.IsFailed) return BadRequest(result.Errors);   
+            return Ok();
         }
         
     }
