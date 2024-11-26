@@ -1,3 +1,6 @@
+using System.Net.Http.Json;
+using Shared.Dtos.Slots;
+
 namespace API.Client.Services;
 
 public class SlotsService
@@ -10,8 +13,8 @@ public class SlotsService
     }
     
 
-    public async Task<HttpResponseMessage> GetMastersAvailableSlotsForDate(int masterId)
+    public async Task<IEnumerable<SlotDto>?> GetMastersAvailableSlotsForDate(int masterId)
     {
-        return await _httpClient.GetAsync($"api/Slot/masters-available/{masterId}");
+        return await _httpClient.GetFromJsonAsync<IEnumerable<SlotDto>>($"api/Slot/masters-available/{masterId}");
     }
 }

@@ -15,7 +15,7 @@
 @if (servicesExists)
 {
     <MudPaper Style="width: 800px">
-    <MudStepper Vertical ShowResetButton>
+    <MudStepper Vertical ShowResetButton bind-ActiveStepIndex="activeStepIndex">
         
         <ChildContent>
             @*Car Registration*@
@@ -62,7 +62,7 @@
                             </MudForm>
                         </MudCardContent>
                         <MudCardActions>
-                            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Style="margin-top: 16px;" Disabled="!_form.IsValid" OnClick="HandleSubmit">Submit</MudButton>
+                            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Style="margin-top: 16px;" Disabled="!_form.IsValid" OnClick="SubmitCar">Submit</MudButton>
                         </MudCardActions>
                     </MudCard>
                 </MudStep>
@@ -75,7 +75,7 @@
                         <MudText Typo="Typo.h5" Align="Align.Center" Style="color: #1976d2;">Select Your Service</MudText>
                         <MudForm @ref="_form" Model="serviceDto">
                             <MudCardContent>
-                                <MudSelect @bind-Value="serviceDto.Id" Label="Choose Service" Variant="Variant.Filled" Margin="Margin.Dense" Style="background-color: #f5f5f5;" Icon="icons:build">
+                                <MudSelect @bind-Value="serviceDto.Id" Label="Choose Service" Variant="Variant.Text" Margin="Margin.Dense" Style="background-color: #f5f5f5;">
                                     @foreach (var service in serviceList)
                                     {
                                         <MudSelectItem Value="@service.Id">
@@ -99,31 +99,66 @@
             <MudStep Title="Select appointment Date">
 
                 <MudCard Elevation="6" Style="width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; background-color: #ffffff; margin: auto;">
-                    <MudDatePicker Label="Select Date" HelperText="@_day?.ToShortDateString()" @bind-Date="_day" FixYear="@DateTime.Today.Year" FixMonth="@DateTime.Today.Month" DateFormat="dd"/>
+                    <MudDatePicker Variant="Variant.Text" Label="Select Date" HelperText="@_day?.ToShortDateString()" @bind-Date="_day" FixYear="@DateTime.Today.Year"  DateFormat="dd/MM/yyyy"/>
                     <MudCardActions>
-                        <MudButton OnClick="SubmitDate" Color="Color.Primary">Confirm</MudButton>
+                        <MudButton Style="width: 100%" OnClick="SubmitDate" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done" Color="Color.Primary">Confirm Date</MudButton>
                     </MudCardActions>
-                </MudCard>
-                
-                @*Select Time*@
-                <MudCard>
+
+                    @*Select Time*@
                     <MudCardContent>
-                        @if (slotList != null && slotList.Any())
+                        @if (slotList.Any())
                         {
-                        <MudSelect T="int" bind-Value="appointmentDto.SlotId" Label="Select Time">
-                            @foreach (var slot in slotList)
-                            {
-                            <MudSelectItem Value="slot.Id">@slot.StartTime</MudSelectItem>
-                            }
-                        </MudSelect>
+                            <MudSelect T="int" bind-Value="appointmentDto.SlotId" Label="Select Time" Variant="Variant.Text">
+                                @foreach (var slot in slotList)
+                                {
+                                    <MudSelectItem Value="slot.Id">@($"{slot.StartTime.ToString("H:mm")} - {slot.EndTime.ToString("H:mm")}")</MudSelectItem>
+                                }
+                            </MudSelect>
                         }
                         else
                         {
-                        <MudText>No slots available</MudText>
+                            <MudAlert Severity="Severity.Warning" NoIcon="true" Class="my-2">@($"No available time for {_day.Value.Date.ToString("d")}, choose another time!")</MudAlert>
                         }
+
+                        @if (slotList.Any())
+                        {
+                            <MudButton Style="width: 100%" OnClick="SumbmitTime" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done" Color="Color.Primary">Confirm Time</MudButton>
+                        }
+                        
                     </MudCardContent>
                 </MudCard>
             </MudStep>
+
+            <MudStep Title="Confirm Appointment">
+                <MudCard Elevation="5" Style="width: 300px; padding: 20px; margin: auto; border-radius: 10px;">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6" Align="Align.Start" Style="color: #333;">Appointment Details</MudText>
+                        <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 10px;">
+                            <strong>Name:</strong> @(serviceDto.Name.ToString())
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 10px;">
+                            <strong>Price: </strong> @(serviceDto.Price.ToString())
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 10px;">
+                            <strong>Duration: </strong> @(serviceDto.Duration.ToString())
+                        </MudText>
+                        
+                        
+                        <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 10px;">
+                            <strong>Time: </strong> @(appointmentTime.Date.ToString("t"))
+                        </MudText>
+                    </MudCardContent>
+                    
+                    @if (appointmentDto != null)
+                    {
+                        <MudButton Style="width: 100%" OnClick="ConfirmAppointment" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done" Color="Color.Primary">Confirm Appointment</MudButton>
+
+                    }
+                </MudCard>
+            </MudStep>
+
 
         </ChildContent>
         <CompletedContent>
@@ -137,9 +172,8 @@ else
     <p> no service exist, you can't create an appointment</p>
 }
 
-
-
 <br/>
+
 @code
 {
     MudForm _form;
@@ -151,10 +185,13 @@ else
     CarDto userCar = new();
     bool servicesExists;
     IEnumerable<ServiceDto> serviceList;
-    DateTime? _day;
     IEnumerable<SlotDto> slotList;
-
+    DateTime? _day { get; set; }
     CreateAppointmentDto appointmentDto = new();
+
+    DateTime appointmentTime;
+
+    private int activeStepIndex = 0;
     
     protected override async Task OnInitializedAsync()
     {
@@ -185,33 +222,41 @@ else
     {
         if (_day.HasValue || serviceDto.MasterId > 0)
         {
-            var response = await SlotService.GetMastersAvailableSlotsForDate(serviceDto.MasterId);
-            if (response.IsSuccessStatusCode)
-            {
-                var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-                var availableSlotList = JsonSerializer.Deserialize<IEnumerable<SlotDto>>(await response.Content.ReadAsStringAsync(), options);
-                slotList = availableSlotList.Where(x => x.StartTime.Date == _day);
-            }
-            else
-            {
-                slotList = null;
-            }
+            IEnumerable<SlotDto>? availableSlotList;
+            
+            availableSlotList = await SlotService.GetMastersAvailableSlotsForDate(serviceDto.MasterId);
+            
+            var utcDay = _day.Value.ToUniversalTime();
+            utcDay = utcDay.AddDays(1);
+            if (availableSlotList != null) slotList = availableSlotList.Where((SlotDto x) => _day != null && x.StartTime.Date == utcDay.Date).ToList();
         }
-        else
-        {
-            //must select day and service
-        }
-        
     }
 
-    private void HandleSubmit()
+    private void SubmitCar()
     {
-        throw new NotImplementedException();
+        GoToStep(userHasCar? 1:2);
     }
 
     private void SubimtService()
     {
+        serviceDto = serviceList.Where(x => x.Id == serviceDto.Id).First();
+        GoToStep(servicesExists? 2:3);
+    }
+
+    private void SumbmitTime()
+    {
+        var slot = slotList.Where(x => x.Id == appointmentDto.SlotId).FirstOrDefault();
+        appointmentTime = slot.StartTime;
+    }
+
+    private void ConfirmAppointment()
+    {
         
+    }
+    
+    private void GoToStep(int stepIndex)
+    {
+        activeStepIndex = stepIndex;
     }
 }
 
