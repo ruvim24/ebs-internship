@@ -23,5 +23,5 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CarService>();
 builder.Services.AddScoped<ServicesService>();
 builder.Services.AddScoped<SlotsService>();
-
+builder.Services.AddScoped<AppointmentService>();
 await builder.Build().RunAsync();       
