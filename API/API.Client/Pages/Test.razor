@@ -16,10 +16,13 @@
 
 @if (servicesExists)
 {
-    <MudPaper Style="width: 800px">
-        <MudStepper Vertical ShowResetButton @bind-ActiveIndex="activeStepIndex" CompletedStepColor="Color.Success"  >
-
-        <ChildContent>
+    <MudPaper Style="width: 1200px">
+        <MudText Typo="Typo.h5" Align="Align.Center" Style="margin-bottom: 20px; " Color="Color.Error" >
+            Create Appointment
+        </MudText>
+        
+        <MudStepper Vertical ShowResetButton @bind-ActiveIndex="activeStepIndex" CompletedStepColor="Color.Success" DisableActions="true" >
+            <ChildContent>
             @*Car Registration*@
             @if (!userHasCar)
             {
@@ -72,7 +75,7 @@
 
             @*Service Selection*@
             <MudStep Title="Select Service" Completed="stepCompletionStatus[1] ">
-                <MudCard Elevation="6" Style="width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; background-color: #ffffff; margin: auto;">
+                <MudCard Elevation="6" Style="width: 100%; max-width: 600px; padding: 30px; border-radius: 15px; background-color: #ffffff; margin: auto;">
                     <MudCardContent>
                         @*<MudText Typo="Typo.h5" Align="Align.Center" Style="color: #1976d2;">Select Desired Service</MudText>*@
                         <MudForm @ref="_form" Model="serviceDto">
@@ -101,18 +104,21 @@
             @* Time Appointment Selection*@
             <MudStep Title="Select Date & Time" Completed="stepCompletionStatus[2]">
 
-                <MudCard Elevation="6" Style="width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; background-color: #ffffff; margin: auto;">
-                    <MudDatePicker Variant="Variant.Text" Label="Select Date" MinDate="DateTime.Today" HelperText="@_day?.ToShortDateString()" @bind-Date="_day" FixYear="@DateTime.Today.Year"  DateFormat="dd/MM/yyyy"/>
+                <MudCard Elevation="6" Style="width: 100%; max-width: 600px; padding: 30px; border-radius: 15px; background-color: #ffffff; margin: auto;">
+                    <MudDatePicker IsDateDisabledFunc="IsDateDisabled"
+                                   AdditionalDateClassesFunc="GetDateClass"
+                                   Variant="Variant.Text" Label="Select Date" MinDate="DateTime.Today" HelperText="@_day?.ToShortDateString()" 
+                                   @bind-Date="_day" FixYear="@DateTime.Today.Year"  DateFormat="dd/MM/yyyy"/>
                     <MudCardActions>
                         <MudButton Style="width: 100%" OnClick="SubmitDate" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done" Color="Color.Primary">Confirm Date</MudButton>
                     </MudCardActions>
 
                     @*Select Time*@
                     <MudCardContent>
-                        @if (slotList.Any())
+                        @if (slotListForSelectedDate.Any())
                         {
                             <MudSelect T="int" @bind-Value="appointmentDto.SlotId" Label="Select Time" Variant="Variant.Text" Placeholder="Alege o opțiune">
-                                @foreach (var slot in slotList)
+                                @foreach (var slot in slotListForSelectedDate)
                                 {
                                     <MudSelectItem Value="slot.Id">@($"{slot.StartTime.ToString("H:mm")} - {slot.EndTime.ToString("H:mm")}")</MudSelectItem>
                                 }
@@ -123,7 +129,7 @@
                             <MudAlert Severity="Severity.Warning" NoIcon="true" Class="my-2">@($"No available time for {_day.Value.Date.ToString("d")}, choose another time!")</MudAlert>
                         }
 
-                        @if (slotList.Any())
+                        @if (slotListForSelectedDate.Any())
                         {
                             <MudButton Style="width: 100%" OnClick="SumbmitTime" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done" Color="Color.Primary">Confirm Time</MudButton>
                         }
@@ -133,7 +139,7 @@
             </MudStep>
 
             <MudStep Title="Confirm Appointment" Completed="stepCompletionStatus[3]">
-                <MudCard Elevation="5" Style="width: 300px; padding: 20px; margin: auto; border-radius: 10px;">
+                <MudCard Elevation="5" Style="width: 400px; padding: 20px; margin: auto; border-radius: 10px;">
                     <MudCardContent>
                         <MudText Typo="Typo.h6" Align="Align.Start" Style="color: #333;">Appointment Details</MudText>
                         <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 10px;">
@@ -150,7 +156,7 @@
                         
                         
                         <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 10px;">
-                            <strong>Time: </strong> @($"{slotDto.StartTime.Date.ToString("t")} - {slotDto.EndTime.Date.ToString("t")}")
+                            <strong>Time: </strong> @($"{selectedSlotDto.StartTime.ToString("t")} - {selectedSlotDto.EndTime.ToString("t")}")
                         </MudText>
                     </MudCardContent>
                     
@@ -171,16 +177,17 @@
                 </MudText>
             </MudStack>
         </CompletedContent>
-        
-    </MudStepper>
+            <ActionContent Context="stepper">
+            <MudButton Color="Color.Primary" Variant="Variant.Outlined" OnClick="@(() => stepper.ResetAsync())">Start Over</MudButton>
+            </ActionContent>
+
+        </MudStepper>
 </MudPaper>
 }
 else
 {
     <MudAlert Severity="Severity.Warning" Variant="Variant.Filled" ContentAlignment="HorizontalAlignment.Center">At the moment, we do not have any services available.</MudAlert>
 }
-
-<br/>
 
 @code
 {
@@ -193,12 +200,15 @@ else
     CarDto userCar = new();
     bool servicesExists;
     IEnumerable<ServiceDto> serviceList;
-    IEnumerable<SlotDto> slotList;
+    IEnumerable<SlotDto> slotListForSelectedDate;
     DateTime? _day { get; set; }
     CreateAppointmentDto appointmentDto = new();
-    SlotDto slotDto;
+    SlotDto selectedSlotDto = new();
     private int activeStepIndex = 0;
-    private bool[] stepCompletionStatus = new bool[4]; // Pentru 4 pași
+    private bool[] stepCompletionStatus = new bool[4];
+    
+    IEnumerable<SlotDto>? availableSlots;
+
 
     
     protected override async Task OnInitializedAsync()
@@ -227,26 +237,6 @@ else
         }
 
     }
-
-    private async Task SubmitDate()
-    {
-        if (_day.HasValue)
-        {
-            IEnumerable<SlotDto>? availableSlotList;
-            serviceDto = serviceList.Where(x => x.Id == appointmentDto.ServiceId).FirstOrDefault();
-            
-            availableSlotList = await SlotService.GetMastersAvailableSlotsForDate(serviceDto.MasterId);
-            
-            var utcDay = _day.Value.ToUniversalTime();
-            //utcDay = utcDay.AddDays();
-            if (availableSlotList != null) slotList = availableSlotList.Where((SlotDto x) => _day != null && x.StartTime.Date == utcDay.Date).ToList();
-        }
-        else
-        {
-            Snackbar.Add("Please select a date before confirming!!", Severity.Warning);
-        }
-    }
-
     private async Task SubmitCar()
     {
         if (!_form.IsValid)
@@ -267,7 +257,7 @@ else
         }
     }
 
-    private void SubimtService()
+    private async Task SubimtService()
     {
         if (appointmentDto.ServiceId == 0)
         {
@@ -275,21 +265,43 @@ else
         }
         else
         {
-            stepCompletionStatus[1] = true;
-            activeStepIndex++;
+            serviceDto = serviceList.Where(x => x.Id == appointmentDto.ServiceId).FirstOrDefault();
+            availableSlots = await SlotService.GetMastersAvailableSlotsForDate(serviceDto.MasterId);
+            if (availableSlots == null)
+            {
+                Snackbar.Add("This service is full, select another service!!", Severity.Warning);
+            }
+            else
+            {
+                stepCompletionStatus[1] = true;
+                activeStepIndex++;
+            }
         }
     }
-
+    
+    private async Task SubmitDate()
+    {
+        if (_day.HasValue)
+        {
+            var utcDay = _day.Value.ToUniversalTime();
+            //utcDay = utcDay.AddDays(1);
+            if (availableSlots != null) slotListForSelectedDate = availableSlots.Where((SlotDto x) => _day != null && x.StartTime.Date == utcDay.Date).ToList();
+        }
+        else
+        {
+            Snackbar.Add("Please select a date before confirming!!", Severity.Warning);
+        }
+    }
+    
     private void SumbmitTime()
     {
-        slotDto = slotList.Where(x => x.Id == appointmentDto.SlotId).FirstOrDefault();
         if (appointmentDto.SlotId == 0)
         {
             Snackbar.Add("Please select time before confirming!!", Severity.Warning);
         }
         else
         {
-            slotDto = slotList.Where(x => x.Id == appointmentDto.SlotId).FirstOrDefault();
+            selectedSlotDto = slotListForSelectedDate.Where(x => x.Id == appointmentDto.SlotId).FirstOrDefault();
             stepCompletionStatus[2] = true;
             activeStepIndex++;  
         }
@@ -309,12 +321,18 @@ else
             Snackbar.Add("Error creating appointment", Severity.Error);
         }
     }
-    
-    private void GoToStep(int stepIndex)
+
+    private bool IsDateDisabled(DateTime dateTime)
     {
-        activeStepIndex = stepIndex;
+        return !availableSlots.Any(x => x.StartTime.Date == dateTime.ToUniversalTime().Date);
     }
     
+    private string GetDateClass(DateTime dt)
+    {
+        return availableSlots.Any(x => x.StartTime.Date == dt.ToUniversalTime().Date) 
+            ? "green-text text-accent-4" 
+            : "";
+    }
 }
 
 
