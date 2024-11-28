@@ -3,6 +3,7 @@ using Application.Contracts.Commands.Users.LogIn;
 using Application.Contracts.Commands.Users.Logout;
 using Application.Contracts.Commands.Users.Register;
 using Application.Contracts.Queries.Users.GetLoggedUser;
+using Application.Contracts.Queries.Users.IsAuth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -73,6 +74,16 @@ public class AccountController : ControllerBase
     {
         var result = await _mediator.Send(new GetLoggedUserInfoCommand());
         if(result.IsFailed) return BadRequest(result.Errors);
+        return Ok(result.Value);
+    }
+    
+    [HttpGet("isAuthenticated")]
+    public async Task<IActionResult> IsAuthenticated()
+    {
+        var result = await _mediator.Send(new IsAuthQuery());
+
+        if (result.IsFailed) return Unauthorized();
+        
         return Ok(result.Value);
     }
 }

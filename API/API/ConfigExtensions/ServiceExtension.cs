@@ -88,20 +88,4 @@ public static class ServiceExtension
 
         return services;
     }
-
-    /*public static IServiceCollection CorsConfiguration(this IServiceCollection services)
-    {*/
-        
-        /*services.AddCors(options =>
-        {
-            options.AddPolicy("AllowBlazorClient", builder =>
-            {
-                builder.WithOrigins("http://localhost:5095") 
-                    .AllowCredentials()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-            });
-        });
-        return services;*/
-    /*/*#1#}*/
 }

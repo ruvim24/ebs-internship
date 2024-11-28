@@ -21,9 +21,9 @@ using _Imports = API.Client._Imports;
 
 var builder = WebApplication.CreateBuilder(args);
 
-    builder.Services.AddRazorComponents()   
-    .AddInteractiveWebAssemblyComponents();
+builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddMudServices(cfg =>
 {
@@ -32,6 +32,7 @@ builder.Services.AddMudServices(cfg =>
     cfg.SnackbarConfiguration.ShowTransitionDuration = 200;
 });
 builder.AddBlazrRenderStateServerServices();
+
 builder.Services.AddScoped<ISnackbar, SnackbarService>();
 
 
@@ -62,7 +63,6 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
 builder.Services.HangfireConfiguration();
 
 //Identity Configuration
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.IdentityConfiguration();
 
@@ -115,6 +115,7 @@ app.UseMiddleware<RedirectIfUnauthorizedMiddleware>(); //rederection to login pa
 */
 
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

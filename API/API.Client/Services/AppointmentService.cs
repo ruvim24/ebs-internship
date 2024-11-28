@@ -17,4 +17,9 @@ public class AppointmentService
     {
         return await _httpClient.PostAsJsonAsync("api/Appointment", createAppointmentDto);
     }
+    
+    public async Task<HttpResponseMessage> GetCarAppointments(int carId)
+    {
+        return await _httpClient.GetAsync($"api/Appointment/carId/{carId}");
+    }
 }

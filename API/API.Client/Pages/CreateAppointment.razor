@@ -1,0 +1,334 @@
+@page "/createAppointment"
+@using System.Text.Json
+@using API.Client.Services
+@using Shared.Dtos.Appointments
+@using Shared.Dtos.Cars
+@using Shared.Dtos.Services
+@using Shared.Dtos.Slots
+@using Shared.Dtos.Users
+@using Shared.Validators.Cars
+@inject AccountService AccountService
+@inject CarService CarService
+@inject ServicesService ServicesService
+@inject SlotsService SlotService
+@inject ISnackbar Snackbar
+@inject AppointmentService AppointmentService
+
+@if (servicesExists)
+{
+<MudPaper Style="width: 1200px">
+    <MudText Typo="Typo.h5" Align="Align.Center" Style="margin-bottom: 20px; " Color="Color.Error" >
+        Create Appointment
+    </MudText>
+
+    <MudStepper Vertical ShowResetButton @bind-ActiveIndex="activeStepIndex" CompletedStepColor="Color.Success" DisableActions="true" >
+        <ChildContent>
+            @*Car Registration*@
+            @if (!userHasCar)
+            {
+            <MudStep Title="Register Car" Completed="stepCompletionStatus[0]">
+                <MudCard Elevation="6" Style="width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; background-color: #ffffff; margin: auto;">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center" Style="color: #1976d2;">Register Your Car</MudText>
+                        <MudForm @ref="_form" Model="createCarModel" Validation="@(createCarValidator.ValidateValue)" ValidationDelay="0">
+                            <MudCardContent>
+                                <MudTextField @bind-Value="createCarModel.Maker"
+                                              For="@(() => createCarModel.Maker)"
+                                              Immediate="true"
+                                              Label="Car Maker"
+                                              Variant="Variant.Filled"
+                                              Margin="Margin.Dense"
+                                              Style="background-color: #f5f5f5;"/>
+
+                                <MudTextField @bind-Value="createCarModel.Model"
+                                              For="@(() => createCarModel.Model)"
+                                              Immediate="true"
+                                              Label="Car Model"
+                                              Variant="Variant.Filled"
+                                              Margin="Margin.Dense"
+                                              Style="background-color: #f5f5f5;"/>
+
+                                <MudTextField @bind-Value="createCarModel.PlateNumber"
+                                              For="@(() => createCarModel.PlateNumber)"
+                                              Immediate="true"
+                                              Label="Number Plate"
+                                              Variant="Variant.Filled"
+                                              Margin="Margin.Dense"
+                                              Style="background-color: #f5f5f5;"/>
+
+                                <MudTextField @bind-Value="createCarModel.VIN"
+                                              For="@(() => createCarModel.VIN)"
+                                              Immediate="true"
+                                              Label="VIN"
+                                              Variant="Variant.Filled"
+                                              Margin="Margin.Dense"
+                                              Style="background-color: #f5f5f5;"/>
+                            </MudCardContent>
+                        </MudForm>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Style="margin-top: 16px;" Disabled="!_form.IsValid" OnClick="SubmitCar">Submit</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudStep>
+            }
+
+            @*Service Selection*@
+            <MudStep Title="Select Service" Completed="stepCompletionStatus[1] ">
+                <MudCard Elevation="6" Style="width: 100%; max-width: 600px; padding: 30px; border-radius: 15px; background-color: #ffffff; margin: auto;">
+                    <MudCardContent>
+                        @*<MudText Typo="Typo.h5" Align="Align.Center" Style="color: #1976d2;">Select Desired Service</MudText>*@
+                        <MudForm @ref="_form" Model="serviceDto">
+                            <MudCardContent>
+                                <MudSelect @bind-Value="appointmentDto.ServiceId" Label="Choose Service" Variant="Variant.Text" Margin="Margin.Dense" Style="background-color: #f5f5f5;" Placeholder="Alege o opțiune">
+                                    <MudSelectItem Value="0" Disabled="true" Hidden="true">- - - </MudSelectItem>
+                                    @foreach (var service in serviceList)
+                                    {
+                                    <MudSelectItem Value="@service.Id">
+                                        <MudText Typo="Typo.body1">@service.Name</MudText>
+                                        <MudText Typo="Typo.body2" Color="Color.Info">@service.Description</MudText>
+                                        <MudText Typo="Typo.body2" Color="Color.Primary">@($"${service.Price}")</MudText>
+                                    </MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudCardContent>
+                        </MudForm>
+                    </MudCardContent>
+
+                    <MudCardActions>
+                        <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Style="margin-top: 16px;"  OnClick="SubimtService">Submit</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudStep>
+
+            @* Time Appointment Selection*@
+            <MudStep Title="Select Date & Time" Completed="stepCompletionStatus[2]">
+
+                <MudCard Elevation="6" Style="width: 100%; max-width: 600px; padding: 30px; border-radius: 15px; background-color: #ffffff; margin: auto;">
+                    <MudDatePicker IsDateDisabledFunc="IsDateDisabled"
+                                   AdditionalDateClassesFunc="GetDateClass"
+                                   Variant="Variant.Text" Label="Select Date" MinDate="DateTime.Today" HelperText="@_day?.ToShortDateString()"
+                                   @bind-Date="_day" FixYear="@DateTime.Today.Year"  DateFormat="dd/MM/yyyy"/>
+                    <MudCardActions>
+                        <MudButton Style="width: 100%" OnClick="SubmitDate" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done" Color="Color.Primary">Confirm Date</MudButton>
+                    </MudCardActions>
+
+                    @*Select Time*@
+                    <MudCardContent>
+                        @if (slotListForSelectedDate.Any())
+                        {
+                        <MudSelect T="int" @bind-Value="appointmentDto.SlotId" Label="Select Time" Variant="Variant.Text" Placeholder="Alege o opțiune">
+                            @foreach (var slot in slotListForSelectedDate)
+                            {
+                            <MudSelectItem Value="slot.Id">@($"{slot.StartTime.ToString("H:mm")} - {slot.EndTime.ToString("H:mm")}")</MudSelectItem>
+                            }
+                        </MudSelect>
+                        }
+                        else
+                        {
+                        <MudAlert Severity="Severity.Warning" NoIcon="true" Class="my-2">@($"No available time for {_day.Value.Date.ToString("d")}, choose another time!")</MudAlert>
+                        }
+
+                        @if (slotListForSelectedDate.Any())
+                        {
+                        <MudButton Style="width: 100%" OnClick="SumbmitTime" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done" Color="Color.Primary">Confirm Time</MudButton>
+                        }
+
+                    </MudCardContent>
+                </MudCard>
+            </MudStep>
+
+            <MudStep Title="Confirm Appointment" Completed="stepCompletionStatus[3]">
+                <MudCard Elevation="5" Style="width: 400px; padding: 20px; margin: auto; border-radius: 10px;">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6" Align="Align.Start" Style="color: #333;">Appointment Details</MudText>
+                        <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 10px;">
+                            <strong>Name:</strong> @(serviceDto.Name.ToString())
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 10px;">
+                            <strong>Price: </strong> @(serviceDto.Price.ToString())
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 10px;">
+                            <strong>Duration: </strong> @(serviceDto.Duration.ToString())
+                        </MudText>
+
+
+                        <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 10px;">
+                            <strong>Time: </strong> @($"{selectedSlotDto.StartTime.ToString("t")} - {selectedSlotDto.EndTime.ToString("t")}")
+                        </MudText>
+                    </MudCardContent>
+
+                    @if (appointmentDto != null)
+                    {
+                    <MudButton Style="width: 100%" OnClick="ConfirmAppointment" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done" Color="Color.Primary">Confirm Appointment</MudButton>
+
+                    }
+                </MudCard>
+            </MudStep>
+        </ChildContent>
+
+        <CompletedContent>
+            <MudStack Row Class="ma-3">
+                <MudIcon Icon="@Icons.Material.Filled.Done" Color="Color.Success"/>
+                <MudText>
+                    Appointmet succesefully saved!!
+                </MudText>
+            </MudStack>
+        </CompletedContent>
+        <ActionContent Context="stepper">
+            <MudButton Color="Color.Primary" Variant="Variant.Outlined" OnClick="@(() => stepper.ResetAsync())">Start Over</MudButton>
+        </ActionContent>
+
+    </MudStepper>
+</MudPaper>
+}
+else
+{
+<MudAlert Severity="Severity.Warning" Variant="Variant.Filled" ContentAlignment="HorizontalAlignment.Center">At the moment, we do not have any services available.</MudAlert>
+}
+
+
+@code
+{
+    MudForm _form;
+    CreateCarDto createCarModel = new();
+    CreateCarDtoValidator createCarValidator = new();
+    ServiceDto serviceDto = new();
+    UserDto currentUser = new();
+    bool userHasCar;
+    CarDto userCar = new();
+    bool servicesExists;
+    IEnumerable<ServiceDto> serviceList;
+    IEnumerable<SlotDto> slotListForSelectedDate;
+    DateTime? _day { get; set; }
+    CreateAppointmentDto appointmentDto = new();
+    SlotDto selectedSlotDto = new();
+    private int activeStepIndex = 0;
+    private bool[] stepCompletionStatus = new bool[4];
+    
+    IEnumerable<SlotDto>? availableSlots;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        currentUser = await AccountService.GetLoggedInUser();
+        var response = await CarService.GetCustumerCar(currentUser.Id);
+        if (response.IsSuccessStatusCode)
+        {
+            var carOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+
+            userCar = JsonSerializer.Deserialize<CarDto>(await response.Content.ReadAsStringAsync(), carOptions);
+            userHasCar = true;
+        }
+        else
+        {
+            userHasCar = false;
+        }
+        
+        var servicesResponse = await ServicesService.GetServicesAsync();
+        var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+        var services = JsonSerializer.Deserialize<IEnumerable<ServiceDto>>(await servicesResponse.Content.ReadAsStringAsync(), options);
+        if (services != null)
+        {
+            serviceList = services;
+            servicesExists = true;
+        }
+
+    }
+    private async Task SubmitCar()
+    {
+        if (!_form.IsValid)
+        {
+            Snackbar.Add("Validation error");
+        }
+        else
+        {
+            var response = await CarService.CreateCar(createCarModel);
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Car registered succesefully", Severity.Success);
+                userCar = JsonSerializer.Deserialize<CarDto>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                userHasCar = true;
+            }
+            activeStepIndex++;
+            stepCompletionStatus[0] = true;
+        }
+    }
+    private async Task SubimtService()
+    {
+        if (appointmentDto.ServiceId == 0)
+        {
+            Snackbar.Add("Please select a service before submiting!!", Severity.Warning);
+        }
+        else
+        {
+            serviceDto = serviceList.Where(x => x.Id == appointmentDto.ServiceId).FirstOrDefault();
+            availableSlots = await SlotService.GetMastersAvailableSlotsForDate(serviceDto.MasterId);
+            if (availableSlots == null)
+            {
+                Snackbar.Add("This service is full, select another service!!", Severity.Warning);
+            }
+            else
+            {
+                stepCompletionStatus[1] = true;
+                activeStepIndex++;
+            }
+        }
+    }
+    private async Task SubmitDate()
+    {
+        if (_day.HasValue)
+        {
+            var utcDay = _day.Value.ToUniversalTime();
+            //utcDay = utcDay.AddDays(1);
+            if (availableSlots != null) slotListForSelectedDate = availableSlots.Where((SlotDto x) => _day != null && x.StartTime.Date == utcDay.Date).ToList();
+        }
+        else
+        {
+            Snackbar.Add("Please select a date before confirming!!", Severity.Warning);
+        }
+    }
+    private void SumbmitTime()
+    {
+        if (appointmentDto.SlotId == 0)
+        {
+            Snackbar.Add("Please select time before confirming!!", Severity.Warning);
+        }
+        else
+        {
+            selectedSlotDto = slotListForSelectedDate.Where(x => x.Id == appointmentDto.SlotId).FirstOrDefault();
+            stepCompletionStatus[2] = true;
+            activeStepIndex++;  
+        }
+    }
+
+    private async Task ConfirmAppointment()
+    {
+        appointmentDto.CarId = userCar.Id;
+        var response = await AppointmentService.CreateAppointmentAsync(appointmentDto);
+        if (response.IsSuccessStatusCode)
+        {
+            stepCompletionStatus[3] = true;
+            activeStepIndex++;
+        }
+        else
+        {
+            Snackbar.Add("Error creating appointment", Severity.Error);
+        }
+    }
+    private bool IsDateDisabled(DateTime dateTime)
+    {
+        return !availableSlots.Any(x => x.StartTime.Date == dateTime.ToUniversalTime().Date);
+    }
+    
+    private string GetDateClass(DateTime dt)
+    {
+        return availableSlots.Any(x => x.StartTime.Date == dt.ToUniversalTime().Date) 
+            ? "green-text text-accent-4" 
+            : "";
+    }
+}
+
+
+

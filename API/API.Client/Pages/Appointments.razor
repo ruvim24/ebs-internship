@@ -1,0 +1,106 @@
+﻿@page "/appointments"
+@using System.Text.Json
+@using API.Client.Services
+@using Domain.Enums
+@using Shared.Dtos.Appointments
+@using Shared.Dtos.Cars
+@using Shared.Dtos.Services
+@using Shared.Dtos.Slots
+@using Shared.Dtos.Users
+@inject AccountService AccountService
+@inject CarService CarService
+@inject AppointmentService AppointmentService
+@inject SlotsService SlotsService
+@inject ServicesService ServicesService
+@inject ISnackbar Snackbar
+
+<PageTitle>Appointments</PageTitle>
+
+<MudGrid Justify="Justify.FlexStart" Spacing="3">
+    
+    <MudItem>
+        
+    </MudItem>
+</MudGrid>
+
+
+@if (hasAppoitnments)
+{
+    @foreach (var appointment in AppointmentList)
+    {
+        <MudCard Elevation="3" Style="width: 350px; padding: 15px; margin: auto; border-radius: 8px;">
+            <MudCardContent>
+                @*<MudText Typo="Typo.h6" Align="Align.Start" Style="color: #333; margin-bottom: 10px;">@(GetService(appointment.ServiceId).Name?? : "Loading")</MudText>
+
+                <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
+                    <strong>Time:</strong> @($"{GetSlot(appointment.SlotId).StartTime.ToString("t")} - {GetSlot(appointment.SlotId).EndTime.ToString("t")}")
+                </MudText>*@
+
+                <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
+                    <strong>Status:</strong> @(appointment.Status)
+                </MudText>
+
+                <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
+                    <strong>Created At:</strong> @appointment.CreatedAt.ToString("g")
+                </MudText>
+            </MudCardContent>
+        </MudCard>
+        
+        <br/>
+    }
+    
+}
+else
+{
+    Snackbar.Add("noappoitnmetns");
+}
+
+
+
+@code {
+
+
+    AppointmentDto AppointmentDto = new();
+    UserDto UserDto;
+    SlotDto SlotDto;
+    ServiceDto ServiceDto;
+    CarDto CarDto = new();
+    bool hasAppoitnments = true;
+
+    IEnumerable<AppointmentDto> AppointmentList;
+    
+    //userId, -> carId-> appointmetId
+    protected override async Task OnInitializedAsync()
+    {
+        var userDto = await AccountService.GetLoggedInUser();
+        var response = await CarService.GetCustumerCar(userDto.Id);
+        if (response.IsSuccessStatusCode)
+        {
+            CarDto = JsonSerializer.Deserialize<CarDto>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });;
+        }
+
+        var appointmentResponse = await AppointmentService.GetCarAppointments(CarDto.Id);
+        if (response.IsSuccessStatusCode)
+        {
+            AppointmentList = JsonSerializer.Deserialize<IEnumerable<AppointmentDto>>(await appointmentResponse.Content.ReadAsStringAsync(), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+        }
+        else
+        {
+            hasAppoitnments = false;
+        }
+        
+        
+    }
+
+
+    public async Task<SlotDto> GetSlot(int id)
+    {
+        return await SlotsService.GetSlot(id); 
+    }
+
+    public async Task<ServiceDto> GetService(int id)
+    {
+        return await ServicesService.GetServiceAsync(id);
+    }
+    
+}

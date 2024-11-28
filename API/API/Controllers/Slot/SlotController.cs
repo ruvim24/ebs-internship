@@ -1,6 +1,7 @@
 using Application.Contracts.Commands.Slots.Clean;
 using Application.Contracts.Commands.Slots.Generate;
 using Application.Contracts.Queries.Slots.GetMastersAvailableSlots;
+using Application.Contracts.Queries.Slots.GetSlot;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,14 @@ public class SlotController : ControllerBase
         _mediator = mediator;
     }
 
+    [HttpGet("{slotId:int}")]
+    public async Task<IActionResult> GetSlot([FromRoute]int slotId)
+    {
+        var result = await _mediator.Send(new GetSlotQuery(slotId));
+        if(result.IsFailed) return BadRequest(result.Errors);
+        return Ok(result.Value);
+    }
+    
     [HttpGet("masters-available/{masterId:int}")]
     public async Task<IActionResult> GetMasterAvailableSlots([FromRoute] int masterId)
     {
@@ -25,12 +34,7 @@ public class SlotController : ControllerBase
         return Ok(result.Value);
     }
 
-    /*[HttpGet]
-    public async Task<IActionResult> GetMastersAvailableSlotsForDate(DateTime date, int masterId)
-    {
-        
-    }*/
-
+    
     [HttpPost("[action]")]
     public async Task<IActionResult> Generate([FromQuery] int advanceDays)
     {

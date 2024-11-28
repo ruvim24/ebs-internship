@@ -17,4 +17,9 @@ public class SlotsService
     {
         return await _httpClient.GetFromJsonAsync<IEnumerable<SlotDto>>($"api/Slot/masters-available/{masterId}");
     }
+
+    public async Task<SlotDto> GetSlot(int id)
+    {
+        return await _httpClient.GetFromJsonAsync<SlotDto>($"api/Slot/{id}");
+    }
 }
