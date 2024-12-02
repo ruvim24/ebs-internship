@@ -11,52 +11,59 @@
 @inject UserService UserService
 @inject NavigationManager Navigation
 
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        @if (mastersExist)
+        {
+            <MudDataGrid T="UserDto" Items="@filteredMasterList" ReadOnly="@_readOnly" EditMode="DataGridEditMode.Form"
+                         CommittedItemChanges="@CommittedItemChanges"
+                         Bordered="true" Dense="true" EditTrigger="DataGridEditTrigger.Manual">
 
-@if (mastersExist)
-{
-    <MudDataGrid T="UserDto" Items="@filteredMasterList" ReadOnly="@_readOnly" EditMode="DataGridEditMode.Form" 
-             CommittedItemChanges="@CommittedItemChanges"
-             Bordered="true" Dense="true" EditTrigger="DataGridEditTrigger.Manual">
-    
-    <ToolBarContent>
-        <MudText Class="mr-4" Typo="Typo.h6" Color="Color.Default">Masters</MudText>
-        
-        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary"  Size="Size.Small" OnClick="@RegisterMaster">Register New Master </MudButton>
+                <ToolBarContent>
+                    <MudText Class="mr-4" Typo="Typo.h6" Color="Color.Default">Masters</MudText>
 
-        <MudSpacer/>
-        <MudTextField T="string" ValueChanged="OnSearch" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-        
-    </ToolBarContent>
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary" Size="Size.Small" OnClick="@RegisterMaster">Register New Master </MudButton>
 
-    <Columns>
-        <PropertyColumn Property="x => x.FullName" Title="Fullname" HeaderClass="mud-text-secondary"/>
-        <PropertyColumn Property="x => x.Email" Title="Email" HeaderClass="mud-text-secondary" />
-        <PropertyColumn Property="x => x.PhoneNumber" Title="PhoneNumber" HeaderClass="mud-text-secondary"/>
-        
-        @*<TemplateColumn StickyRight="true">
+                    <MudSpacer/>
+                    <MudTextField T="string" ValueChanged="OnSearch" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
+                </ToolBarContent>
+
+                <Columns>
+                    <PropertyColumn Property="x => x.FullName" Title="Fullname" HeaderClass="mud-text-secondary"/>
+                    <PropertyColumn Property="x => x.Email" Title="Email" HeaderClass="mud-text-secondary"/>
+                    <PropertyColumn Property="x => x.PhoneNumber" Title="PhoneNumber" HeaderClass="mud-text-secondary"/>
+
+                    @*<TemplateColumn StickyRight="true">
             <CellTemplate>
                 <MudIconButton  Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="@Size.Small" OnClick="@(async () => await context.Actions.StartEditingItemAsync())" />
             </CellTemplate>
         </TemplateColumn>*@
-        <TemplateColumn StickyRight="true">
-            
-            <CellTemplate>
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="@Size.Small" OnClick="() => DeleteMaster(context.Item)"/>
-            </CellTemplate>
-        </TemplateColumn>
-    
-    </Columns>
-    
-</MudDataGrid>
-}
-else
-{
-    <MudStack Direction="Row" Spacing="2">
-        <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">No Master was registered</MudAlert>
-        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary" Size="Size.Small" OnClick="@RegisterMaster">Register Master</MudButton>
-    </MudStack>
-}
+                    <TemplateColumn StickyRight="true">
+
+                        <CellTemplate Context="cellContext">
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="@Size.Small" OnClick="() => DeleteMaster(cellContext.Item)"/>
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                </Columns>
+
+            </MudDataGrid>
+        }
+        else
+        {
+            <MudStack Direction="Row" Spacing="2">
+                <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">No Master was registered</MudAlert>
+                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary" Size="Size.Small" OnClick="@RegisterMaster">Register Master</MudButton>
+            </MudStack>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">Autorized</MudAlert>
+    </NotAuthorized>
+
+</AuthorizeView>
 
 
 @code {

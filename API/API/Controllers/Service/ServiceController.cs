@@ -1,9 +1,10 @@
 using Application.Contracts.Commands.Services.Create;
 using Application.Contracts.Commands.Services.Delete;
 using Application.Contracts.Commands.Services.Update;
-using Application.Contracts.Queries.ServiceQueries.Get;
 using Application.Contracts.Queries.ServiceQueries.GetAll;
 using Application.Contracts.Queries.ServiceQueries.GetByType;
+using Application.Contracts.Queries.Services.Get;
+using Application.Contracts.Queries.Services.GetMastersService;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -38,6 +39,15 @@ public class ServiceController : ControllerBase
     {
         var result = await _mediator.Send(new GetAllServiceQuery());
         if (result.IsFailed) return BadRequest(result.Errors);
+        return Ok(result.Value);
+    }
+
+    [Authorize]
+    [HttpGet("by-master/{masterId:int}")]
+    public async Task<IActionResult> GetServiceByMaster([FromRoute] int masterId)
+    {
+        var result = await _mediator.Send(new GetMasterServiceQuery(masterId));
+        if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
     }
 

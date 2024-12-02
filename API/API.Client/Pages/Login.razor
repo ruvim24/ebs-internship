@@ -58,7 +58,7 @@
             if (response.IsSuccessStatusCode)
             {
                 Snackbar.Add("Succesefull Login", Severity.Success);
-                Navigation.NavigateTo("/personalCabinet");
+                Navigation.NavigateTo("/personalCabinet", forceLoad:true);
             }
             else
             {

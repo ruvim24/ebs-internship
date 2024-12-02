@@ -46,6 +46,11 @@ public class AppointmentRepository : IAppointmentRepository
         return await _applicationDb.Appointments.Where(a => a.CarId == carId).ToListAsync();
     }
 
+    public async Task<IEnumerable<Appointment>?> GetbyServiceId(int serviceId)
+    {
+        return await _applicationDb.Appointments.Where(a => a.ServiceId == serviceId).ToListAsync();
+    }
+
     public async Task<IEnumerable<Appointment>> GetByStatusAsync(AppointmentStatus status)
     {
         return await _applicationDb.Appointments.Where(a => a.Status == status).ToListAsync();
@@ -58,5 +63,29 @@ public class AppointmentRepository : IAppointmentRepository
             .ToListAsync();
         
         return expired;
+    }
+    
+    
+    public async Task<List<Appointment>> GetCustomerAppointments(int carId)
+    {
+         var appointments = await _applicationDb.Appointments
+            .Include(x => x.Slot)
+            .Include(x => x.Car)
+            .Include(x => x.Service)
+            .Where(x=>x.CarId == carId)
+            .ToListAsync();
+
+         return appointments;
+    }
+    
+    public async Task<List<Appointment>> GetMasterAppointments(int serviceId)
+    {
+        var appointments = await _applicationDb.Appointments
+            .Include(x => x.Slot)
+            .Include(x => x.Car)
+            .Where(x=>x.ServiceId == serviceId)
+            .ToListAsync();
+
+        return appointments;
     }
 }

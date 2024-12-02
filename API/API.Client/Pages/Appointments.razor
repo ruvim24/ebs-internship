@@ -1,106 +1,221 @@
 ﻿@page "/appointments"
 @using System.Text.Json
+@using API.Client.Components
 @using API.Client.Services
 @using Domain.Enums
 @using Shared.Dtos.Appointments
-@using Shared.Dtos.Cars
-@using Shared.Dtos.Services
-@using Shared.Dtos.Slots
-@using Shared.Dtos.Users
 @inject AccountService AccountService
 @inject CarService CarService
 @inject AppointmentService AppointmentService
 @inject SlotsService SlotsService
 @inject ServicesService ServicesService
 @inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
 
-<PageTitle>Appointments</PageTitle>
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <MudItem>
+            <MudText Color="Color.Primary" Typo="Typo.h4" Align="Align.Left" Style="margin-bottom: 20px;">
+                My Appointments
+            </MudText>
+            <br/>
+        </MudItem>
 
-<MudGrid Justify="Justify.FlexStart" Spacing="3">
+        <MudGrid Justify="Justify.SpaceAround" AlignItems="AlignItems.FlexStart" Spacing="3">
+
+
+            @if (isLoading)
+            {
+            <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Class="my-7"/>
+            }
+            else if (!hasAppointments)
+            {
+            <MudAlert ContentAlignment="HorizontalAlignment.Left" Variant="Variant.Outlined" Severity="Severity.Info" Class="my-3">No Appointments Exists</MudAlert>
+            }
+            else
+            {
+            @foreach (var appointment in customersAppointments)
+            {
+            <MudItem xs="12" sm="6" md="4">
+                <MudCard Elevation="3" Style="padding: 15px; margin: auto; border-radius: 8px;">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6" Align="Align.Start" Style="color: #333; margin-bottom: 10px;">
+                            @(appointment.Name)
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
+                            <strong>Date:</strong>
+                            @(appointment.StartTime.Date.ToString("d"))
+                            <strong>Time:</strong>
+                            @($"{appointment.StartTime.ToString("t")} - {appointment.EndTime.ToString("t")}")
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
+                            <strong>Price:</strong>
+                            @($"{appointment.Price}")
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
+                            <strong>Status:</strong> @(appointment.Status)
+                        </MudText>
+
+                        <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
+                            <strong>Created At:</strong> @appointment.CreatedAt.ToString("g")
+                        </MudText>
+                    </MudCardContent>
+
+                    @if (appointment.Status == AppointmentStatus.Scheduled)
+                    {
+                    <MudCardActions>
+                        <MudButton OnClick="() => CancelAppointment(appointment.Id)" Variant="Variant.Outlined" Color="Color.Secondary">Cancel</MudButton>
+                    </MudCardActions>
+                    }
+                    else if (appointment.Status == AppointmentStatus.Completed)
+                    {
+                    <MudAlert Variant="Variant.Outlined" Severity="Severity.Info" NoIcon="true" Class="my-2">Appointment completed</MudAlert>
+                    }
+                    else
+                    {
+                    <MudAlert Variant="Variant.Outlined" Severity="Severity.Error" NoIcon="true" Class="my-2">Appointment canceld</MudAlert>
+                    }
+                </MudCard>
+            </MudItem>
+            }
+            }
+        </MudGrid>
+
+    </Authorized>
     
-    <MudItem>
-        
-    </MudItem>
-</MudGrid>
+    <NotAuthorized>
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Class="my-3">
+            Not Autorized
+        </MudAlert>
+    </NotAuthorized>
+</AuthorizeView>
 
-
-@if (hasAppoitnments)
-{
-    @foreach (var appointment in AppointmentList)
-    {
-        <MudCard Elevation="3" Style="width: 350px; padding: 15px; margin: auto; border-radius: 8px;">
-            <MudCardContent>
-                @*<MudText Typo="Typo.h6" Align="Align.Start" Style="color: #333; margin-bottom: 10px;">@(GetService(appointment.ServiceId).Name?? : "Loading")</MudText>
-
-                <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
-                    <strong>Time:</strong> @($"{GetSlot(appointment.SlotId).StartTime.ToString("t")} - {GetSlot(appointment.SlotId).EndTime.ToString("t")}")
-                </MudText>*@
-
-                <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
-                    <strong>Status:</strong> @(appointment.Status)
-                </MudText>
-
-                <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
-                    <strong>Created At:</strong> @appointment.CreatedAt.ToString("g")
-                </MudText>
-            </MudCardContent>
-        </MudCard>
-        
-        <br/>
-    }
-    
-}
-else
-{
-    Snackbar.Add("noappoitnmetns");
-}
 
 
 
 @code {
 
+    bool isLoading;
+    bool hasAppointments;
+    List<CustumerAppointmentDto>? customersAppointments;
 
-    AppointmentDto AppointmentDto = new();
-    UserDto UserDto;
-    SlotDto SlotDto;
-    ServiceDto ServiceDto;
-    CarDto CarDto = new();
-    bool hasAppoitnments = true;
-
-    IEnumerable<AppointmentDto> AppointmentList;
-    
-    //userId, -> carId-> appointmetId
     protected override async Task OnInitializedAsync()
     {
-        var userDto = await AccountService.GetLoggedInUser();
-        var response = await CarService.GetCustumerCar(userDto.Id);
+        isLoading = true;
+        var response = await AppointmentService.GetCustomerAppointments();
         if (response.IsSuccessStatusCode)
         {
-            CarDto = JsonSerializer.Deserialize<CarDto>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });;
+            customersAppointments = JsonSerializer.Deserialize<List<CustumerAppointmentDto>>(
+                await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+            );
+            hasAppointments = true;
         }
 
-        var appointmentResponse = await AppointmentService.GetCarAppointments(CarDto.Id);
-        if (response.IsSuccessStatusCode)
+        isLoading = false;
+    }
+
+    private async Task CancelAppointment(int appointmentId)
+    {
+        var dialog = DialogService.Show<ConfirmationDialog>("Are you sure??");
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
         {
-            AppointmentList = JsonSerializer.Deserialize<IEnumerable<AppointmentDto>>(await appointmentResponse.Content.ReadAsStringAsync(), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+            var response = await AppointmentService.CancelAppointment(appointmentId);
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Appointment canceled", Severity.Info);
+                Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+            }
+            else
+            {
+                Snackbar.Add("Error to cancel Appointment", Severity.Error);
+            }
+        }
+        
+    }
+
+}
+
+
+
+
+
+ @*AppointmentDto AppointmentDto = new();
+    CarDto? CarDto = new();
+    bool isLoading = true;
+    bool hasAppointments = true;
+
+    IEnumerable<AppointmentDto>? _appointmentList = Enumerable.Empty<AppointmentDto>();
+
+    //Chache for preloaded data
+    Dictionary<int, SlotDto> SlotCache = new();
+    Dictionary<int, ServiceDto> ServiceCache = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+
+        var userDto = await AccountService.GetLoggedInUser();
+
+        var carResponse = await CarService.GetCustumerCar(userDto.Id);
+        if (carResponse.IsSuccessStatusCode)
+        {
+            CarDto = JsonSerializer.Deserialize<CarDto>(
+                await carResponse.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+        }
+
+        var appointmentResponse = await AppointmentService.GetCarAppointments(CarDto!.Id);
+        if (appointmentResponse.IsSuccessStatusCode)
+        {
+            
+                _appointmentList = JsonSerializer.Deserialize<IEnumerable<AppointmentDto>>(
+                    await appointmentResponse.Content.ReadAsStringAsync(),
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                );
+                
+                if (!_appointmentList.Any())
+                {
+                    hasAppointments = false;
+                }
+                else
+                {
+                    //Preloading services and slots
+                    await LoadSlotsAndServicesAsync(_appointmentList!);    
+                }
         }
         else
         {
-            hasAppoitnments = false;
+            hasAppointments = false;
         }
-        
-        
+
+        isLoading = false;
     }
 
-
-    public async Task<SlotDto> GetSlot(int id)
+    private async Task LoadSlotsAndServicesAsync(IEnumerable<AppointmentDto> appointments)
     {
-        return await SlotsService.GetSlot(id); 
+        var slotIds = appointments.Select(a => a.SlotId).Distinct();
+        var serviceIds = appointments.Select(a => a.ServiceId).Distinct();
+
+        foreach (var slotId in slotIds)
+        {
+            SlotCache[slotId] = await SlotsService.GetSlot(slotId);
+        }
+
+        foreach (var serviceId in serviceIds)
+        {
+            ServiceCache[serviceId] = await ServicesService.GetServiceAsync(serviceId);
+        }
     }
 
-    public async Task<ServiceDto> GetService(int id)
+    private async Task CancelAppointment(int id)
     {
-        return await ServicesService.GetServiceAsync(id);
-    }
-    
-}
+        
+    }*@

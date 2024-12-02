@@ -13,14 +13,8 @@ namespace API.Controllers.Account;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AccountController : ControllerBase
+public class AccountController(IMediator _mediator, IHttpContextAccessor httpContextAccessor) : ControllerBase
 {
-    private IMediator _mediator;
-    public AccountController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
@@ -77,6 +71,7 @@ public class AccountController : ControllerBase
         return Ok(result.Value);
     }
     
+    [Authorize]
     [HttpGet("isAuthenticated")]
     public async Task<IActionResult> IsAuthenticated()
     {

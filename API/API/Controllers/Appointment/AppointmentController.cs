@@ -4,7 +4,12 @@ using Application.Contracts.Commands.Appointments.Create;
 using Application.Contracts.Queries.Appointments.Get;
 using Application.Contracts.Queries.Appointments.GetAll;
 using Application.Contracts.Queries.Appointments.GetByCarId;
+using Application.Contracts.Queries.Appointments.GetByServiceId;
+using Application.Contracts.Queries.Appointments.GetCustomerAppointments;
+using Application.Contracts.Queries.Appointments.GetMasterAppointments;
+using FluentResults;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos.Appointments;
 
@@ -48,6 +53,25 @@ public class AppointmentController : ControllerBase
     }
 
     //[Authorize(Roles = "Customer")]
+    [HttpGet("customer-appointments")]
+    public async Task<IActionResult> GetCustomerAppointments()
+    {
+        var result = await _mediator.Send(new GetCustomerAppointmentsQuery());
+        if (result.IsFailed) return BadRequest(result.Errors);
+        return Ok(result.Value);
+    }
+    
+    //[Authorize(Roles = "Master")]
+    [HttpGet("master-appointments")]
+    public async Task<IActionResult> GetMasterAppointments()
+    {
+        var result = await _mediator.Send(new GetMasterAppointmentsQuery());
+        if (result.IsFailed) return BadRequest(result.Errors);
+        return Ok(result.Value);
+    }
+    
+    
+    //[Authorize(Roles = "Customer")]
     [HttpGet("carId/{carId:int}")]
     public async Task<IActionResult> GetByCar([FromRoute] int carId)
     {
@@ -56,6 +80,14 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
     
+    //[Authorize(Roles = "Master")]
+    [HttpGet("by-serviceId/{serviceId:int}")]
+    public async Task<IActionResult> GetByService([FromRoute] int serviceId)
+    {
+        var result = await _mediator.Send(new GetAppointmentByServiceIdQuery(serviceId));
+        if(result.IsFailed) return BadRequest(result.Errors);
+        return Ok(result.Value);
+    }
     //[Authorize(Roles = "Customer")]
     [HttpPut("cancel/{id:int}")]
     public async Task<IActionResult> Cancel([FromRoute] int id)

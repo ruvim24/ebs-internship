@@ -44,4 +44,9 @@ public class ServicesService
         var url = $"api/Service/by-type?serviceType={serviceType}";
         return await _httpClient.GetAsync(url);
     }
+
+    public async Task<HttpResponseMessage> GetServiceByMaster(int masterId)
+    {
+        return await _httpClient.GetAsync($"api/Service/by-master/{masterId}");
+    }
 }
