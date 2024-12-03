@@ -1,13 +1,16 @@
 @page "/services"
+@attribute [Authorize(Roles = "Admin")]
 @using System.Text.Json
 @using API.Client.Components
 @using API.Client.Services
 @using Domain.Enums
+@using Microsoft.AspNetCore.Authorization
 @using Shared.Dtos.Services
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject ServicesService ServicesService
 @inject NavigationManager Navigation
+@attribute [Authorize(Roles = "Admin")]
 
 
 @if (servicesExists)
@@ -16,16 +19,21 @@
              CommittedItemChanges="@CommittedItemChanges"
              Bordered="true" Dense="true" EditTrigger="DataGridEditTrigger.Manual">
     
-    <ToolBarContent>
-        <MudText Class="mr-4" Typo="Typo.h6" Color="Color.Default">Our Services</MudText>
+            <ToolBarContent>
+            <MudText 
+                Class="mr-4" Typo="Typo.h6" Color="Color.Default">Our Services
+            </MudText>
         
-        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary"  Size="Size.Small" OnClick="@CreateService">Create New Service</MudButton>
-
-        <MudSpacer/>
-        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search Service Name or Description" Adornment="Adornment.Start" Immediate="true"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudButton 
+                Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Create" Color="Color.Primary"  Size="Size.Small" OnClick="@CreateService">Create New Service
+            </MudButton>
+            
+            <MudSpacer/>
+            <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+            </MudTextField>
         
-    </ToolBarContent>
+        </ToolBarContent>
 
     <Columns>
         <PropertyColumn Property="x => x.Name" Title="Name" HeaderClass="mud-text-secondary"/>
@@ -82,8 +90,8 @@ else
     MudDataGrid<ServiceDto> dataGrid;
     string searchString = null;
     bool servicesExists = true;
-    private IEnumerable<ServiceDto> serviceList;
-    private IEnumerable<ServiceDto> filteredServiceList;
+    private IEnumerable<ServiceDto>? serviceList;
+    private IEnumerable<ServiceDto>? filteredServiceList;
 
     protected override async Task OnInitializedAsync()
     {
@@ -109,9 +117,9 @@ else
         }
         else
         {
-            filteredServiceList = serviceList.Where(service =>
-                    service.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || 
-                    service.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+            filteredServiceList = serviceList!.Where(service =>
+                    service.Name!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || 
+                    service.Description!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
             ).ToList();
         }
     }
@@ -140,7 +148,7 @@ else
         var dialog = DialogService.Show<ConfirmationDialog>("Confirm Action", parameters, options);
         var result = await dialog.Result;
         
-        if (!result.Canceled)
+        if (!result!.Canceled)
         {
             var response = await ServicesService.DeleteServiceAsync(contextItem.Id);
             if(response.IsSuccessStatusCode)
@@ -162,9 +170,9 @@ else
 
         
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (!result!.Canceled)
         {
-            var serviceCreateDto = (CreateServiceDto)result.Data;
+            var serviceCreateDto = (CreateServiceDto)result.Data!;
             var response = await ServicesService.CreateServiceAsync(serviceCreateDto);
             if (response.IsSuccessStatusCode)
             {

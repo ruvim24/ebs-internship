@@ -1,6 +1,8 @@
 @page "/createAppointment"
+@attribute [Authorize(Roles = "Customer")]
 @using System.Text.Json
 @using API.Client.Services
+@using Microsoft.AspNetCore.Authorization
 @using Shared.Dtos.Appointments
 @using Shared.Dtos.Cars
 @using Shared.Dtos.Services
@@ -13,6 +15,8 @@
 @inject SlotsService SlotService
 @inject ISnackbar Snackbar
 @inject AppointmentService AppointmentService
+@inject NavigationManager Navigation
+
 
 @if (servicesExists)
 {
@@ -35,6 +39,7 @@
                                 <MudTextField @bind-Value="createCarModel.Maker"
                                               For="@(() => createCarModel.Maker)"
                                               Immediate="true"
+                                              Required="true"
                                               Label="Car Maker"
                                               Variant="Variant.Filled"
                                               Margin="Margin.Dense"
@@ -44,6 +49,7 @@
                                               For="@(() => createCarModel.Model)"
                                               Immediate="true"
                                               Label="Car Model"
+                                              Required="true"
                                               Variant="Variant.Filled"
                                               Margin="Margin.Dense"
                                               Style="background-color: #f5f5f5;"/>
@@ -52,6 +58,7 @@
                                               For="@(() => createCarModel.PlateNumber)"
                                               Immediate="true"
                                               Label="Number Plate"
+                                              Required="true"
                                               Variant="Variant.Filled"
                                               Margin="Margin.Dense"
                                               Style="background-color: #f5f5f5;"/>
@@ -60,6 +67,7 @@
                                               For="@(() => createCarModel.VIN)"
                                               Immediate="true"
                                               Label="VIN"
+                                              Required="true"
                                               Variant="Variant.Filled"
                                               Margin="Margin.Dense"
                                               Style="background-color: #f5f5f5;"/>
@@ -151,7 +159,7 @@
                         </MudText>
 
                         <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 10px;">
-                            <strong>Duration: </strong> @(serviceDto.Duration.ToString())
+                            <strong>Duration: </strong> @($"{serviceDto.Duration.ToString()} min.")
                         </MudText>
 
 
@@ -193,18 +201,18 @@ else
 @code
 {
     MudForm _form;
-    CreateCarDto createCarModel = new();
+    CreateCarDto? createCarModel = new();
     CreateCarDtoValidator createCarValidator = new();
-    ServiceDto serviceDto = new();
-    UserDto currentUser = new();
+    ServiceDto? serviceDto = new();
+    UserDto? currentUser = new();
     bool userHasCar;
-    CarDto userCar = new();
+    CarDto? userCar = new();
     bool servicesExists;
-    IEnumerable<ServiceDto> serviceList;
-    IEnumerable<SlotDto> slotListForSelectedDate;
+    IEnumerable<ServiceDto>? serviceList;
+    List<SlotDto>? slotListForSelectedDate;
     DateTime? _day { get; set; }
-    CreateAppointmentDto appointmentDto = new();
-    SlotDto selectedSlotDto = new();
+    CreateAppointmentDto? appointmentDto = new();
+    SlotDto? selectedSlotDto = new();
     private int activeStepIndex = 0;
     private bool[] stepCompletionStatus = new bool[4];
     
@@ -240,21 +248,29 @@ else
     {
         if (!_form.IsValid)
         {
-            Snackbar.Add("Validation error");
+            var errors = _form.Errors.Select(x => x.ToString());
+            Snackbar.Add($"Validation error: {errors}", Severity.Error);
         }
         else
         {
+            createCarModel!.CustomerId = currentUser!.Id; 
             var response = await CarService.CreateCar(createCarModel);
             if (response.IsSuccessStatusCode)
             {
                 Snackbar.Add("Car registered succesefully", Severity.Success);
                 userCar = JsonSerializer.Deserialize<CarDto>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                 userHasCar = true;
+                activeStepIndex++;
+                stepCompletionStatus[0] = true;
             }
-            activeStepIndex++;
-            stepCompletionStatus[0] = true;
+            else
+            {
+                Snackbar.Add("Error registering car", Severity.Error);
+            }
+            
         }
     }
+    
     private async Task SubimtService()
     {
         if (appointmentDto.ServiceId == 0)
@@ -263,8 +279,8 @@ else
         }
         else
         {
-            serviceDto = serviceList.Where(x => x.Id == appointmentDto.ServiceId).FirstOrDefault();
-            availableSlots = await SlotService.GetMastersAvailableSlotsForDate(serviceDto.MasterId);
+            if (serviceList != null) serviceDto = serviceList.Where(x => x.Id == appointmentDto.ServiceId).FirstOrDefault();
+            availableSlots = await SlotService.GetMastersAvailableSlotsForDate(serviceDto!.MasterId);
             if (availableSlots == null)
             {
                 Snackbar.Add("This service is full, select another service!!", Severity.Warning);
@@ -276,19 +292,22 @@ else
             }
         }
     }
-    private async Task SubmitDate()
+    private void SubmitDate()
     {
         if (_day.HasValue)
         {
             var utcDay = _day.Value.ToUniversalTime();
             //utcDay = utcDay.AddDays(1);
             if (availableSlots != null) slotListForSelectedDate = availableSlots.Where((SlotDto x) => _day != null && x.StartTime.Date == utcDay.Date).ToList();
+            //sorting by time
+            slotListForSelectedDate.Sort((x, y) => x.StartTime.CompareTo(y.StartTime));
         }
         else
         {
             Snackbar.Add("Please select a date before confirming!!", Severity.Warning);
         }
     }
+    
     private void SumbmitTime()
     {
         if (appointmentDto.SlotId == 0)
@@ -312,7 +331,7 @@ else
             stepCompletionStatus[3] = true;
             activeStepIndex++;
             Snackbar.Add("Appointment created succesefully!!", Severity.Success);
-
+            Navigation.NavigateTo("/appointments");
         }
         else
         {

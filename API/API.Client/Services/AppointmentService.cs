@@ -40,6 +40,10 @@ public class AppointmentService
     public async Task<HttpResponseMessage> GetMasterAppointments()
     {
         return await _httpClient.GetAsync($"api/Appointment/master-appointments");
+    }
 
+    public async Task<HttpResponseMessage> CompleteAppointment(int appointmentId)
+    {
+        return await _httpClient.PutAsync($"api/Appointment/complete/{appointmentId}", null);
     }
 }

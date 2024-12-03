@@ -1,8 +1,9 @@
 @page "/register"
 @using API.Client.Services
+@using Microsoft.AspNetCore.Authorization
 @using Shared.Dtos.Users
-@using MudBlazor
 @using Shared.Validators.Users
+@attribute [Authorize]
 @inject AccountService AccountService
 @inject ISnackbar Snackbar
 @inject NavigationManager Navigation

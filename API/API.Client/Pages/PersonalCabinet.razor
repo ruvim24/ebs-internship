@@ -1,6 +1,8 @@
 @page "/personalCabinet"
+@attribute [Authorize]
 @using API.Client.Components
 @using API.Client.Services
+@using Microsoft.AspNetCore.Authorization
 @using Shared.Dtos.Users
 @inject IDialogService DialogService
 @inject AccountService AccountService
@@ -8,39 +10,46 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager Navigation
 
-<h3>Personal Cabinet</h3>
 
-<MudGrid Spacing="3" Justify="Justify.SpaceBetween" AlignItems="Center">
+<MudGrid Spacing="3" Justify="Justify.FlexStart" AlignItems="Center">
     <MudItem xs="12" sm="6" md="5">
-        <MudCard Elevation="6" Style="width: 100%; max-width: 400px; border-radius: 15px; text-align: left; margin: auto;">
+        <MudCard>
             <MudCardHeader>
                 <MudText Typo="Typo.h5" Align="Align.Center">Personal Information</MudText>
             </MudCardHeader>
+            
             <MudCardContent>
-                <MudStack Spacing="2">
-                    <MudText Typo="Typo.subtitle1" Color="Color.Primary">Name:</MudText>
-                    <MudText Typo="Typo.body1">@userInfo.FullName</MudText>
+                <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555;">
+                    <strong>Name:</strong>
+                    @(userInfo.FullName)
+                </MudText>
+                
+                <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555;">
+                    <strong>Email:</strong>
+                    @(userInfo.Email)
+                </MudText>
 
-                    <MudDivider />
-
-                    <MudText Typo="Typo.subtitle1" Color="Color.Primary">Email:</MudText>
-                    <MudText Typo="Typo.body1">@userInfo.Email</MudText>
-
-                    <MudDivider />
-
-                    <MudText Typo="Typo.subtitle1" Color="Color.Primary">Phone:</MudText>
-                    <MudText Typo="Typo.body1">@userInfo.PhoneNumber</MudText>
-                </MudStack>
+                <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555;">
+                    <strong>Name:</strong>
+                    @(userInfo.PhoneNumber)
+                </MudText>
             </MudCardContent>
-            <MudCardActions Style="text-align: center;">
+            
+            @*<MudCardActions Style="text-align: center;">
                 <MudButton Variant="Variant.Filled" OnClick="EditUser" Color="Color.Info">Edit</MudButton>
-            </MudCardActions>
+            </MudCardActions>*@
         </MudCard>
-    </MudItem>
 
-    <MudItem xs="12" sm="6" md="6">
-                <CarDetails CustomerId="@userInfo.Id"/>
+        <AuthorizeView Roles="Customer">
+            <Authorized>
+                @if (userInfo != null)
+                {
+                    <CarDetails CustomerId="@userInfo.Id"/>
+                }
+            </Authorized>
+        </AuthorizeView>
     </MudItem>
+    
 </MudGrid>
 
 
@@ -48,13 +57,17 @@
 
 
 @code {
-    UserDto userInfo;
-    UpdateUserDto userEdit;
+    UserDto? userInfo;
+    UpdateUserDto? userEdit;
 
     protected override async Task OnInitializedAsync()
     {
         userInfo = await AccountService.GetLoggedInUser();
+        
+    }
 
+    private async Task EditUser()
+    {
         userEdit = new UpdateUserDto()
         {
             Id = userInfo.Id,
@@ -62,18 +75,15 @@
             Password = string.Empty,
             PhoneNumber = userInfo.PhoneNumber
         };
-    }
-
-    private async Task EditUser()
-    {
+        
         var parameters = new DialogParameters { { "userEdit", userEdit } };
 
         var dialog = DialogService.Show<EditUserDialog>("Edit personal information", parameters);
         var result = await dialog.Result;
 
-        if (!result.Canceled)
+        if (!result!.Canceled)
         {
-            userEdit = (UpdateUserDto)result.Data;
+            userEdit = (UpdateUserDto)result.Data!;
             var response = await UserService.UpdateUserAsync(userEdit);
             if (response.IsSuccessStatusCode)
             {

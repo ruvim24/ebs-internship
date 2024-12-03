@@ -3,7 +3,9 @@
 @using API.Client.Components
 @using API.Client.Services
 @using Domain.Enums
+@using Microsoft.AspNetCore.Authorization
 @using Shared.Dtos.Appointments
+@attribute [Authorize(Roles = "Customer")]
 @inject AccountService AccountService
 @inject CarService CarService
 @inject AppointmentService AppointmentService
@@ -13,7 +15,7 @@
 @inject NavigationManager Navigation
 @inject IDialogService DialogService
 
-<AuthorizeView Roles="Admin">
+<AuthorizeView Roles="Customer">
     <Authorized>
         <MudItem>
             <MudText Color="Color.Primary" Typo="Typo.h4" Align="Align.Left" Style="margin-bottom: 20px;">
@@ -53,7 +55,7 @@
 
                         <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
                             <strong>Price:</strong>
-                            @($"{appointment.Price}")
+                            @($"${appointment.Price}")
                         </MudText>
 
                         <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
@@ -105,18 +107,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        isLoading = true;
-        var response = await AppointmentService.GetCustomerAppointments();
-        if (response.IsSuccessStatusCode)
-        {
-            customersAppointments = JsonSerializer.Deserialize<List<CustumerAppointmentDto>>(
-                await response.Content.ReadAsStringAsync(),
-                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
-            );
-            hasAppointments = true;
-        }
-
-        isLoading = false;
+        await LoadingData();
     }
 
     private async Task CancelAppointment(int appointmentId)
@@ -124,13 +115,13 @@
         var dialog = DialogService.Show<ConfirmationDialog>("Are you sure??");
         var result = await dialog.Result;
 
-        if (!result.Canceled)
+        if (!result!.Canceled)
         {
             var response = await AppointmentService.CancelAppointment(appointmentId);
             if (response.IsSuccessStatusCode)
             {
                 Snackbar.Add("Appointment canceled", Severity.Info);
-                Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+                await LoadingData();
             }
             else
             {
@@ -140,82 +131,26 @@
         
     }
 
-}
-
-
-
-
-
- @*AppointmentDto AppointmentDto = new();
-    CarDto? CarDto = new();
-    bool isLoading = true;
-    bool hasAppointments = true;
-
-    IEnumerable<AppointmentDto>? _appointmentList = Enumerable.Empty<AppointmentDto>();
-
-    //Chache for preloaded data
-    Dictionary<int, SlotDto> SlotCache = new();
-    Dictionary<int, ServiceDto> ServiceCache = new();
-
-    protected override async Task OnInitializedAsync()
+    private async Task LoadingData()
     {
         isLoading = true;
-
-        var userDto = await AccountService.GetLoggedInUser();
-
-        var carResponse = await CarService.GetCustumerCar(userDto.Id);
-        if (carResponse.IsSuccessStatusCode)
+        var response = await AppointmentService.GetCustomerAppointments();
+        if (response.IsSuccessStatusCode)
         {
-            CarDto = JsonSerializer.Deserialize<CarDto>(
-                await carResponse.Content.ReadAsStringAsync(),
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            customersAppointments = JsonSerializer.Deserialize<List<CustumerAppointmentDto>>(
+                await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
             );
-        }
-
-        var appointmentResponse = await AppointmentService.GetCarAppointments(CarDto!.Id);
-        if (appointmentResponse.IsSuccessStatusCode)
-        {
             
-                _appointmentList = JsonSerializer.Deserialize<IEnumerable<AppointmentDto>>(
-                    await appointmentResponse.Content.ReadAsStringAsync(),
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                );
-                
-                if (!_appointmentList.Any())
-                {
-                    hasAppointments = false;
-                }
-                else
-                {
-                    //Preloading services and slots
-                    await LoadSlotsAndServicesAsync(_appointmentList!);    
-                }
-        }
-        else
-        {
-            hasAppointments = false;
+            //sorting
+            customersAppointments = customersAppointments!
+                .OrderBy(a => a.StartTime)
+                .ToList();
+            
+            hasAppointments = true;
         }
 
         isLoading = false;
     }
 
-    private async Task LoadSlotsAndServicesAsync(IEnumerable<AppointmentDto> appointments)
-    {
-        var slotIds = appointments.Select(a => a.SlotId).Distinct();
-        var serviceIds = appointments.Select(a => a.ServiceId).Distinct();
-
-        foreach (var slotId in slotIds)
-        {
-            SlotCache[slotId] = await SlotsService.GetSlot(slotId);
-        }
-
-        foreach (var serviceId in serviceIds)
-        {
-            ServiceCache[serviceId] = await ServicesService.GetServiceAsync(serviceId);
-        }
-    }
-
-    private async Task CancelAppointment(int id)
-    {
-        
-    }*@
+}

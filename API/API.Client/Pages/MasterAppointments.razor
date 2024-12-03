@@ -1,80 +1,76 @@
-@*@page "/test"
+@page "/masterAppointments"
+@attribute [Authorize(Roles = "Master")]
 @using System.Text.Json
 @using API.Client.Services
 @using Domain.Enums
+@using Microsoft.AspNetCore.Authorization
 @using Shared.Dtos.Appointments
-@inject UserService UserService
-@inject AccountService AccountService
-@inject ServicesService ServicesService
 @inject AppointmentService AppointmentService
-@inject SlotsService SlotsService 
-
-<AuthorizeView Roles="Admin">
+@inject ISnackbar Snackbar
+<AuthorizeView Roles="Master">
     <Authorized>
         <MudItem>
             <MudText Color="Color.Primary" Typo="Typo.h4" Align="Align.Left" Style="margin-bottom: 20px;">
-                MasterAppointments
+                Master Appointments
             </MudText>
             <br/>
         </MudItem>
 
-        @if (!appointmentsExists && masterAppointments != null)
+        @if (appointmentsExists && masterAppointments != null)
         {
             <MudGrid Justify="Justify.FlexStart" Spacing="3">
-                @foreach (var appointment in masterAppointments)
-                {
-                    <MudItem xs="12" sm="6" md="4">
-                        <MudCard Elevation="4" Class="my-3">
-                            <MudCardContent>
-                                <MudText Typo="Typo.h6" Align="Align.Start" Style="color: #333;">
-                                    @($"{appointment.CarMaker} {appointment.CarModel}")
-                                </MudText>
+            @foreach (var appointment in masterAppointments)
+            {
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCard Elevation="4" Class="my-3">
+                        <MudCardContent>
+                            <MudText  Typo="Typo.h6" Align="Align.Center" Style="color: #333;">
+                                @($"{appointment.CarMaker} {appointment.CarModel}")
+                            </MudText>
 
-                                <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555;">
-                                    <strong>Date:</strong>
-                                    @($"{appointment.StartTime.ToString("d")}   ")
-                                    <strong>Time:</strong>
-                                    @($"{appointment.StartTime.ToString("t")}  -  {appointment.StartTime.ToString(\"t")}")
-                                </MudText>
+                            <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555;">
+                                <strong>Date:</strong>
+                                @($"{appointment.StartTime.ToString("d")}   ")
+                                
+                            </MudText>
 
-                                <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555;">
-                                    <strong>Status:</strong> @(appointment.Status)
-                                </MudText>
+                            <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555;">
+                                <strong>Time:</strong>
+                                @($"{appointment.StartTime.ToString("t")}  -  {appointment.StartTime.ToString("t")}")
+                            </MudText>
+                            
+                        </MudCardContent>
+                        
+                        @if (appointment.Status == AppointmentStatus.Canceled)
+                        {
+                            <MudAlert Variant="Variant.Outlined" Severity="Severity.Warning" NoIcon="true" Class="my-2">Appointment canceled</MudAlert>
 
+                        }
+                        else if (appointment.Status == AppointmentStatus.Completed)
+                        {
+                            <MudAlert Variant="Variant.Outlined" Severity="Severity.Info" NoIcon="true" Class="my-2">Appointment completed</MudAlert>
+                        }
+                        else if (appointment.Status == AppointmentStatus.Scheduled)
+                        {
+                            <MudAlert Variant="Variant.Outlined" Severity="Severity.Success" NoIcon="true" Class="my-2">Scheduled</MudAlert>
 
-                            </MudCardContent>
-                            @if (appointment.Status == AppointmentStatus.Canceled)
-                            {
-                                <MudAlert Variant="Variant.Outlined" Severity="Severity.Warning" NoIcon="true" Class="my-2">Appointment canceled</MudAlert>
-
-                            }
-                            else if (appointment.Status == AppointmentStatus.Completed)
-                            {
-                                <MudAlert Variant="Variant.Outlined" Severity="Severity.Info" NoIcon="true" Class="my-2">Appointment completed</MudAlert>
-                            }
-                            else if (appointment.Status == AppointmentStatus.Scheduled)
-                            {
-                                <MudAlert Variant="Variant.Outlined" Severity="Severity.Success" NoIcon="true" Class="my-2">Scheduled</MudAlert>
-
-                                <MudCardActions>
+                            <MudCardActions>
                                     <MudButton OnClick="() => CompleteAppointment(appointment.Id)" Variant="Variant.Filled" Color="Color.Primary">Complete</MudButton>
                                 </MudCardActions>
-                            }
-
-                        </MudCard>
-                    </MudItem>
-                }
+                        }
+                    </MudCard>
+                </MudItem>
+            }
             </MudGrid>
         }
-
-        else if (appointmentsExists)
+        else if (!appointmentsExists)
         {
-            <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Class="my-3">
-                No appointments found for your service.
-            </MudAlert>
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Class="my-3">
+            No appointments found for your service.
+        </MudAlert>
         }
     </Authorized>
-    
+
     <NotAuthorized>
         <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Class="my-3">
             Not Autorized
@@ -89,7 +85,29 @@
     bool appointmentsExists;
 
     List<MasterAppointment>? masterAppointments;
+
     protected override async Task OnInitializedAsync()
+    {
+        await LoadMasterAppointments();
+    }
+    
+
+    private async Task CompleteAppointment(int appointmentId)
+    {
+        var response = await AppointmentService.CompleteAppointment(appointmentId);
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("Appointment completed", Severity.Success);
+            await LoadMasterAppointments();
+
+        }
+        else
+        {
+            Snackbar.Add("Error to complete appointment", Severity.Error);
+        }
+    }
+
+    public async Task LoadMasterAppointments()
     {
         var response = await AppointmentService.GetMasterAppointments();
         if (response.IsSuccessStatusCode)
@@ -97,16 +115,9 @@
 
             masterAppointments = JsonSerializer.Deserialize<List<MasterAppointment>>(
                 await response.Content.ReadAsStringAsync(),
-                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
-            );
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
             appointmentsExists = true;
         }
     }
-
-    private Task CompleteAppointment(int appointmentId)
-    {
-        throw new NotImplementedException();
-    }
-
-}*@
+}

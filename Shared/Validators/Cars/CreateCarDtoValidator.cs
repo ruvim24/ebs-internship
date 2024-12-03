@@ -13,9 +13,11 @@ public class CreateCarDtoValidator : AbstractValidator<CreateCarDto>
         RuleFor(x => x.Maker)
             .NotNull().NotEmpty().WithMessage("Maker is required")
             .MaximumLength(30).WithMessage("Maker should have max 30 characters long");
+        
         RuleFor(x => x.Model)
             .NotNull().NotEmpty().WithMessage("Model is required")
             .MaximumLength(30).WithMessage("Model should have max 30 characters long");
+        
         RuleFor(x => x.PlateNumber)
             .NotNull().NotEmpty().WithMessage("PlateNumber is required")
             .MaximumLength(7).WithMessage("PlateNumber should have max 7 characters long");

@@ -14,7 +14,7 @@ public class ServicesService
         _httpClient = httpClient;
     }
     
-    public async Task<ServiceDto> GetServiceAsync(int serviceId)
+    public async Task<ServiceDto?> GetServiceAsync(int serviceId)
     {
         return await _httpClient.GetFromJsonAsync<ServiceDto>($"api/Service/{serviceId}");
     }

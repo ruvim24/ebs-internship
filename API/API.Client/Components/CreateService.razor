@@ -116,9 +116,9 @@
     {
         var dialog = DialogService.Show<RegisterMasterDialog>("Register Master");
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (!result!.Canceled)
         {
-            var master = (RegisterDto)result.Data;
+            var master = (RegisterDto)result.Data!;
             var response = await AccountService.RegisterMaster(master);
             if (response.IsSuccessStatusCode)
             {
