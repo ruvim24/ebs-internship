@@ -25,7 +25,8 @@ public class AppointmentController : ControllerBase
     {
         _mediator = mediator;
     }
-
+    
+    [Authorize(Roles = "Customer")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateAppointmentDto appointmentDto)
     {
@@ -34,7 +35,7 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
 
-    //[Authorize]
+    [Authorize]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get([FromRoute] int id)
     {   
@@ -43,7 +44,7 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
 
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -52,7 +53,7 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
 
-    //[Authorize(Roles = "Customer")]
+    [Authorize(Roles = "Customer")]
     [HttpGet("customer-appointments")]
     public async Task<IActionResult> GetCustomerAppointments()
     {
@@ -61,7 +62,7 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
     
-    //[Authorize(Roles = "Master")]
+    [Authorize(Roles = "Master")]
     [HttpGet("master-appointments")]
     public async Task<IActionResult> GetMasterAppointments()
     {
@@ -71,7 +72,7 @@ public class AppointmentController : ControllerBase
     }
     
     
-    //[Authorize(Roles = "Customer")]
+    [Authorize(Roles = "Customer")]
     [HttpGet("carId/{carId:int}")]
     public async Task<IActionResult> GetByCar([FromRoute] int carId)
     {
@@ -80,7 +81,7 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
     
-    //[Authorize(Roles = "Master")]
+    [Authorize(Roles = "Master")]
     [HttpGet("by-serviceId/{serviceId:int}")]
     public async Task<IActionResult> GetByService([FromRoute] int serviceId)
     {
@@ -88,7 +89,7 @@ public class AppointmentController : ControllerBase
         if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
     }
-    //[Authorize(Roles = "Customer")]
+    [Authorize(Roles = "Customer")]
     [HttpPut("cancel/{id:int}")]
     public async Task<IActionResult> Cancel([FromRoute] int id)
     {
@@ -97,7 +98,7 @@ public class AppointmentController : ControllerBase
         return Ok(result.Value);
     }
     
-    //[Authorize(Roles = "Master")]
+    [Authorize(Roles = "Master")]
     [HttpPut("complete/{id:int}")]
     public async Task<IActionResult> Complete([FromRoute] int id)
     {

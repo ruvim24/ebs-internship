@@ -24,9 +24,7 @@
             <br/>
         </MudItem>
 
-        <MudGrid Justify="Justify.SpaceAround" AlignItems="AlignItems.FlexStart" Spacing="3">
-
-
+        <MudGrid Justify="Justify.FlexStart"  Spacing="3">
             @if (isLoading)
             {
             <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Class="my-7"/>
@@ -40,7 +38,7 @@
             @foreach (var appointment in customersAppointments)
             {
             <MudItem xs="12" sm="6" md="4">
-                <MudCard Elevation="3" Style="padding: 15px; margin: auto; border-radius: 8px;">
+                <MudCard Elevation="4" Class="my-3">
                     <MudCardContent>
                         <MudText Typo="Typo.h6" Align="Align.Start" Style="color: #333; margin-bottom: 10px;">
                             @(appointment.Name)
@@ -57,11 +55,7 @@
                             <strong>Price:</strong>
                             @($"${appointment.Price}")
                         </MudText>
-
-                        <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
-                            <strong>Status:</strong> @(appointment.Status)
-                        </MudText>
-
+                        
                         <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 8px;">
                             <strong>Created At:</strong> @appointment.CreatedAt.ToString("g")
                         </MudText>
@@ -69,17 +63,19 @@
 
                     @if (appointment.Status == AppointmentStatus.Scheduled)
                     {
-                    <MudCardActions>
-                        <MudButton OnClick="() => CancelAppointment(appointment.Id)" Variant="Variant.Outlined" Color="Color.Secondary">Cancel</MudButton>
-                    </MudCardActions>
+                        <MudAlert Variant="Variant.Outlined" Severity="Severity.Success" NoIcon="true" Class="my-2">Scheduled</MudAlert>
+
+                        <MudCardActions>
+                        <MudButton OnClick="() => CancelAppointment(appointment.Id)" Variant="Variant.Filled" Color="Color.Secondary">Cancel</MudButton>
+                        </MudCardActions>
                     }
                     else if (appointment.Status == AppointmentStatus.Completed)
                     {
-                    <MudAlert Variant="Variant.Outlined" Severity="Severity.Info" NoIcon="true" Class="my-2">Appointment completed</MudAlert>
+                        <MudAlert Variant="Variant.Outlined" Severity="Severity.Info" NoIcon="true" Class="my-2">Completed</MudAlert>
                     }
                     else
                     {
-                    <MudAlert Variant="Variant.Outlined" Severity="Severity.Error" NoIcon="true" Class="my-2">Appointment canceld</MudAlert>
+                        <MudAlert Variant="Variant.Outlined" Severity="Severity.Error" NoIcon="true" Class="my-2">Canceld</MudAlert>
                     }
                 </MudCard>
             </MudItem>

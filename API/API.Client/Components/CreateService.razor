@@ -10,6 +10,7 @@
 @inject NavigationManager Navigation
 @inject IDialogService DialogService
 @inject AccountService AccountService
+@inject MasterService MasterService
 
 <MudDialog Style="height: 800px; width: 600px" >
     <TitleContent>
@@ -99,7 +100,23 @@
             if (mastersJson != string.Empty)
             {
                 var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                
                 _masters = JsonSerializer.Deserialize<IEnumerable<UserDto>>(mastersJson, options);
+                
+                var filteredMasters = await Task.WhenAll(
+                    _masters.Select(async x => new 
+                    {
+                        User = x,
+                        HasService = await MasterService.HasNotServiceAsync(x.Id)
+                    })
+                );
+
+                // filter master wich has not service
+                _masters = filteredMasters
+                    .Where(x => x.HasService)
+                    .Select(x => x.User)
+                    .ToList();
+
             }
             else
             {
@@ -132,4 +149,7 @@
         }
     }
 
+    
+    
 }
+

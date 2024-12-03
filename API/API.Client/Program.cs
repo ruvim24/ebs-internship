@@ -30,6 +30,7 @@ builder.Services.AddScoped<CarService>();
 builder.Services.AddScoped<ServicesService>();
 builder.Services.AddScoped<SlotsService>();
 builder.Services.AddScoped<AppointmentService>();
+builder.Services.AddScoped<MasterService>();
 
 builder.Services.AddAuthorizationCore(); 
 await builder.Build().RunAsync();       
