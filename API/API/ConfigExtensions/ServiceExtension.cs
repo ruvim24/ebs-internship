@@ -77,6 +77,7 @@ public static class ServiceExtension
         services.AddScoped<IServiceRepository, ServiceRepository>();
         services.AddScoped<IDayScheduleRepository, DayScheduleRepository>();
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+        services.AddScoped<SlotService>();
 
         //---Service
         services.AddScoped<IAppointmentService, AppointmentService>();

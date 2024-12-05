@@ -221,6 +221,21 @@ else
     protected override async Task OnInitializedAsync()
     {
         currentUser = await AccountService.GetLoggedInUser();
+        await LoadCar();
+        
+        var servicesResponse = await ServicesService.GetServicesAsync();
+        var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+        var services = JsonSerializer.Deserialize<IEnumerable<ServiceDto>>(await servicesResponse.Content.ReadAsStringAsync(), options);
+        if (services != null)
+        {
+            serviceList = services;
+            servicesExists = true;
+        }
+
+    }
+
+    public async Task LoadCar()
+    {
         var response = await CarService.GetCustumerCar(currentUser.Id);
         if (response.IsSuccessStatusCode)
         {
@@ -233,16 +248,6 @@ else
         {
             userHasCar = false;
         }
-        
-        var servicesResponse = await ServicesService.GetServicesAsync();
-        var options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-        var services = JsonSerializer.Deserialize<IEnumerable<ServiceDto>>(await servicesResponse.Content.ReadAsStringAsync(), options);
-        if (services != null)
-        {
-            serviceList = services;
-            servicesExists = true;
-        }
-
     }
     private async Task SubmitCar()
     {
@@ -260,6 +265,7 @@ else
                 Snackbar.Add("Car registered succesefully", Severity.Success);
                 userCar = JsonSerializer.Deserialize<CarDto>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                 userHasCar = true;
+                
                 activeStepIndex++;
                 stepCompletionStatus[0] = true;
             }
@@ -292,21 +298,78 @@ else
             }
         }
     }
-    private void SubmitDate()
-    {
+    
+    private async Task SubmitDate()
+    {   
         if (_day.HasValue)
         {
             var utcDay = _day.Value.ToUniversalTime();
-            //utcDay = utcDay.AddDays(1);
-            if (availableSlots != null) slotListForSelectedDate = availableSlots.Where((SlotDto x) => _day != null && x.StartTime.Date == utcDay.Date).ToList();
-            //sorting by time
+            Console.WriteLine($"Selected UTC Day: {utcDay}");
+
+            if (availableSlots != null)
+            {
+                slotListForSelectedDate = availableSlots
+                    .Where((SlotDto x) => _day != null && x.StartTime.Date == utcDay.Date)
+                    .ToList();
+            
+                Console.WriteLine("Available Slots for Selected Date:");
+                foreach (var slot in slotListForSelectedDate)
+                {
+                    Console.WriteLine($"Available Slot: {slot.StartTime} - {slot.EndTime}");
+                }
+            }
+
+            await FilterData(utcDay);
+
+            // Sorting by time
             slotListForSelectedDate.Sort((x, y) => x.StartTime.CompareTo(y.StartTime));
+            Console.WriteLine("Sorted Slots for Selected Date:");
         }
         else
         {
             Snackbar.Add("Please select a date before confirming!!", Severity.Warning);
         }
     }
+    
+    
+    //select just the slots wich does not overlapse with existing users appointmnents
+    public async Task FilterData(DateTime utcDay)
+    {
+        var aptResponse = await AppointmentService.GetCustomerAppointments();
+        List<AppointmentDto>? userApt;
+        List<SlotDto> usersTakenSlots = new();
+        if (aptResponse.IsSuccessStatusCode)
+        {
+            // Getting user appointments
+            userApt = JsonSerializer.Deserialize<List<AppointmentDto>>(await aptResponse.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+            if (userApt.Any())
+            {
+                int i = 1;
+                var a = i;
+                foreach (var apt in userApt)
+                {
+                    var slot = await SlotService.GetSlot(apt.SlotId);
+                    if (slot is null) continue;
+                    usersTakenSlots.Add(slot);
+                }
+            }
+        }
+
+        slotListForSelectedDate = availableSlots
+            .Where(x => x.StartTime.Date == utcDay.Date) 
+            .Where(x => !usersTakenSlots.Any(t => 
+               
+                    (x.StartTime >= t.StartTime && x.StartTime < t.EndTime) || // StartTime overlaps
+                    (x.EndTime > t.StartTime && x.EndTime <= t.EndTime) ||     // EndTime overlaps
+                    (t.StartTime >= x.StartTime && t.StartTime < x.EndTime) || // Taken slot starts within available slot
+                    (t.EndTime > x.StartTime && t.EndTime <= x.EndTime)        // Taken slot ends within available slot
+            ))
+            .ToList();
+
+    }
+
     
     private void SumbmitTime()
     {

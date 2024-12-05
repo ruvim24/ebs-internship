@@ -1,3 +1,4 @@
+using Domain.DomainServices.SlotGeneratorService;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
@@ -15,13 +16,15 @@ public class CreateServiceCommandHandler : IRequestHandler<CreateServiceCommand,
     private readonly IValidator<CreateServiceDto> _validator;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
+    private readonly SlotService _slotService;
 
-    public CreateServiceCommandHandler(IServiceRepository serviceRepository, IValidator<CreateServiceDto> validator, IMapper mapper, UserManager<User> userManager)
+    public CreateServiceCommandHandler(IServiceRepository serviceRepository, IValidator<CreateServiceDto> validator, IMapper mapper, UserManager<User> userManager, SlotService slotService)
     {
         _serviceRepository = serviceRepository;
         _validator = validator;
         _mapper = mapper;
         _userManager = userManager;
+        _slotService = slotService;
     }
     public async Task<Result<ServiceDto>> Handle(CreateServiceCommand request, CancellationToken cancellationToken)
     {
@@ -44,6 +47,11 @@ public class CreateServiceCommandHandler : IRequestHandler<CreateServiceCommand,
         var service = _mapper.Map<Service>(request.Model);
         var serviceCreate = Service.Create(service.MasterId, service.Name, service.Description, service.ServiceType, service.Price, service.Duration);
         await _serviceRepository.AddAsync(serviceCreate.Value);
+        
+        //generate slots for the new service
+        int advanceDays = 7;
+        await _slotService.Generate(advanceDays);
+        
         return Result.Ok(_mapper.Map<ServiceDto>(serviceCreate.Value));
     }
 }

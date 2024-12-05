@@ -39,7 +39,7 @@
 
                             <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555;">
                                 <strong>Time:</strong>
-                                @($"{appointment.StartTime.ToString("t")}  -  {appointment.StartTime.ToString("t")}")
+                                @($"{appointment.StartTime.ToString("t")}  -  {appointment.EndTime.ToString("t")}")
                             </MudText>
                             
                         </MudCardContent>
@@ -126,7 +126,10 @@
                 await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-            appointmentsExists = true;
+            if (masterAppointments.Any())
+            {
+                appointmentsExists = true;
+            }
         }
     }
 }

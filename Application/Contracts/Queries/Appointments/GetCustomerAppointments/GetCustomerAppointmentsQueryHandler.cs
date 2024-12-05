@@ -39,6 +39,7 @@ public class GetCustomerAppointmentsQueryHandler : IRequestHandler<GetCustomerAp
         var customerAppointments = appointments.Select(x => new CustumerAppointmentDto
         {
             Id = x.Id,
+            SlotId = x.SlotId,
             Name = x.Service.Name,
             Price = x.Service.Price,
             StartTime = x.Slot.StartTime,

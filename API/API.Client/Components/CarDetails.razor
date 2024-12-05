@@ -133,9 +133,15 @@ else
                 Snackbar.Add("Car was registred", Severity.Success);
                 await LoadData();
             }
-            Snackbar.Add("Registration error", Severity.Error);
+            else
+            {
+                Snackbar.Add("Registration error", Severity.Error);
+            }
         }
-        Snackbar.Add("Car registration canceled", Severity.Info);
+        else
+        {
+            Snackbar.Add("Car registration canceled", Severity.Info);
+        }
     }
 
     

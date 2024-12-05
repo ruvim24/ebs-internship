@@ -137,13 +137,16 @@
                 await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
             );
+
+            if (customersAppointments.Any())
+            {
+                //sorting
+                customersAppointments = customersAppointments!
+                    .OrderBy(a => a.StartTime)
+                    .ToList();
             
-            //sorting
-            customersAppointments = customersAppointments!
-                .OrderBy(a => a.StartTime)
-                .ToList();
-            
-            hasAppointments = true;
+                hasAppointments = true;
+            }            
         }
 
         isLoading = false;

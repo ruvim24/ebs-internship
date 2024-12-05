@@ -95,6 +95,11 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadData();
+    }
+
+    public async Task LoadData()
+    {
         var response = await ServicesService.GetServicesAsync();
         if (response.IsSuccessStatusCode)
         {
@@ -131,7 +136,7 @@ else
         if (response.IsSuccessStatusCode)
         {
             Snackbar.Add("Service edited succesefully", Severity.Success);
-            Navigation.NavigateTo(Navigation.Uri, forceLoad: true); 
+            await LoadData();
         }
         else
         {
@@ -154,7 +159,7 @@ else
             if(response.IsSuccessStatusCode)
             {
                 Snackbar.Add($"Service: \"{contextItem.Name}\" was delted", Severity.Info);
-                Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+                await LoadData();
             }
             else
             {
@@ -177,7 +182,7 @@ else
             if (response.IsSuccessStatusCode)
             {
                 Snackbar.Add("Service created succesefully", Severity.Success);
-                Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+                await LoadData();
             }
             else
             {

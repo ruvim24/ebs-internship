@@ -30,7 +30,7 @@ public class SlotService : ISlotService
         return Result.Ok();
     }
 
-    public async Task<Result> Generate(int nDays)
+    /*public async Task<Result> Generate(int nDays)
     {
         var services = await _serviceRepository.GetAllAsync();
         if (services == null || !services.Any()) return Result.Fail("No service available");
@@ -44,7 +44,7 @@ public class SlotService : ISlotService
         
         var startDate = DateOnly.FromDateTime(lastDate.Date.AddDays(1));
         var endDate  = startDate.AddDays(daysToGenerate);
-        
+            
         
         for (var date = startDate; date < endDate; date = date.AddDays(1))
         {
@@ -54,7 +54,37 @@ public class SlotService : ISlotService
             }
         }
         return Result.Ok();
+    }*/
+    
+    
+    public async Task<Result> Generate(int nDays)
+    {
+        var services = await _serviceRepository.GetAllAsync();
+        if (services == null || !services.Any()) return Result.Fail("No service available");
+
+        foreach (var service in services)
+        {
+            // Obține ultima dată de generare a sloturilor pentru fiecare serviciu
+            DateTime lastDate = await _slotRepository.GetLastSlotGenerationDateForService(service.MasterId);
+            
+        
+            // Perioada pentru care trebuie generate sloturi
+            var periodGenerated = lastDate.Date - DateTime.UtcNow.Date;
+            // Câte zile mai trebuie generate
+            var daysToGenerate = nDays - periodGenerated.Days;
+        
+            var startDate = DateOnly.FromDateTime(lastDate.Date.AddDays(1));
+            var endDate  = startDate.AddDays(daysToGenerate);
+        
+            for (var date = startDate; date < endDate; date = date.AddDays(1))
+            {
+                // Generează sloturi pentru fiecare serviciu la data respectivă
+                await GenerateSlotsForServiceAndDate(service.MasterId, service.Duration, date);
+            }
+        }
+        return Result.Ok();
     }
+
     
     private async Task GenerateSlotsForServiceAndDate(int masterId, int duration, DateOnly date)
     {

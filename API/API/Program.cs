@@ -81,6 +81,14 @@ builder.Services.AddCascadingAuthenticationState();
 
 var app = builder.Build();
 
+//appling al migrations
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+}
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

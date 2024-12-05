@@ -53,19 +53,20 @@
 </MudGrid>
 
 
-
-
-
 @code {
     UserDto? userInfo;
     UpdateUserDto? userEdit;
 
     protected override async Task OnInitializedAsync()
     {
-        userInfo = await AccountService.GetLoggedInUser();
-        
+        await LoadData();
     }
 
+    public async Task LoadData()
+    {
+        userInfo = await AccountService.GetLoggedInUser();
+    }
+    
     private async Task EditUser()
     {
         userEdit = new UpdateUserDto()
@@ -88,7 +89,7 @@
             if (response.IsSuccessStatusCode)
             {
                 Snackbar.Add("Saved", Severity.Success);           
-                Navigation.NavigateTo(Navigation.Uri, forceLoad:true);
+                await LoadData();
             }
             else
             {

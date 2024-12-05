@@ -76,6 +76,11 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadData();
+    }
+    
+    public async Task LoadData()
+    {
         var response = await UserService.GetMastersAsync();
         if (response.IsSuccessStatusCode)
         {
@@ -106,7 +111,7 @@
             if (response.IsSuccessStatusCode)
             {
                 Snackbar.Add($"Master: {master.FullName} registered succesefully", Severity.Success);
-                Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+                await LoadData();
             }
             else
             {
@@ -143,7 +148,7 @@
             if (response.IsSuccessStatusCode)
             {
                 Snackbar.Add("Master deleted succesefully", Severity.Error);
-                Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+                await LoadData();
             }
             else
             {
