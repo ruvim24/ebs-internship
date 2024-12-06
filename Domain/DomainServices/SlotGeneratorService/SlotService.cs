@@ -29,33 +29,6 @@ public class SlotService : ISlotService
         await _slotRepository.DeleteRangeAsync(unreservedSlots);
         return Result.Ok();
     }
-
-    /*public async Task<Result> Generate(int nDays)
-    {
-        var services = await _serviceRepository.GetAllAsync();
-        if (services == null || !services.Any()) return Result.Fail("No service available");
-
-        //last day for wich slots was generated, if no slots exists will return DateTime.Now
-        var lastDate = await _slotRepository.GetLastSlotGenerationDate();
-        //period for wich we have generated slots
-        var periodGenerated = lastDate.Date - DateTime.UtcNow.Date;
-        //for how many day are missing slots forward
-        var daysToGenerate = nDays - periodGenerated.Days;
-        
-        var startDate = DateOnly.FromDateTime(lastDate.Date.AddDays(1));
-        var endDate  = startDate.AddDays(daysToGenerate);
-            
-        
-        for (var date = startDate; date < endDate; date = date.AddDays(1))
-        {
-            foreach (var service in services)
-            {
-                await GenerateSlotsForServiceAndDate(service.MasterId, service.Duration, date );
-            }
-        }
-        return Result.Ok();
-    }*/
-    
     
     public async Task<Result> Generate(int nDays)
     {
@@ -64,13 +37,12 @@ public class SlotService : ISlotService
 
         foreach (var service in services)
         {
-            // Obține ultima dată de generare a sloturilor pentru fiecare serviciu
+            //obtain last generated date slots for enery service
             DateTime lastDate = await _slotRepository.GetLastSlotGenerationDateForService(service.MasterId);
-            
-        
-            // Perioada pentru care trebuie generate sloturi
+
+            //period for wich need to generate slots
             var periodGenerated = lastDate.Date - DateTime.UtcNow.Date;
-            // Câte zile mai trebuie generate
+            //number day to generate
             var daysToGenerate = nDays - periodGenerated.Days;
         
             var startDate = DateOnly.FromDateTime(lastDate.Date.AddDays(1));
@@ -78,7 +50,7 @@ public class SlotService : ISlotService
         
             for (var date = startDate; date < endDate; date = date.AddDays(1))
             {
-                // Generează sloturi pentru fiecare serviciu la data respectivă
+                //generate slots for every service for the date
                 await GenerateSlotsForServiceAndDate(service.MasterId, service.Duration, date);
             }
         }
