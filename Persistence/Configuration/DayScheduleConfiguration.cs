@@ -10,6 +10,9 @@ namespace Persistence.Configuration
         {
             builder.ToTable("DaySchedule");
             builder.HasKey(x => x.Id);
+            
+            //indexing
+            builder.HasIndex(x => x.DayOfWeek);
         }
     }
 }

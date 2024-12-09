@@ -26,6 +26,10 @@ namespace Persistence.Configuration
                 .WithMany()
                 .HasForeignKey(x => x.MasterId)
                 .IsRequired();
+            
+            //indexing
+            builder.HasIndex(x=> new{x.MasterId, x.EndTime});
+            builder.HasIndex(x=> new{x.Availability, x.EndTime});
         }
     }
 }

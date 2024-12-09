@@ -20,6 +20,8 @@ namespace Persistence.Configuration
                 .HasForeignKey(x => x.CarId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
+            
+            
 
             // one to one: appointment with slot
             builder.HasOne(x => x.Slot)
@@ -35,6 +37,11 @@ namespace Persistence.Configuration
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
+            //indexing
+            builder.HasIndex(x => x.ServiceId);
+            builder.HasIndex(x => x.CarId);
+            builder.HasIndex(x => x.SlotId);
+            builder.HasIndex(x => new{x.Id, x.Status});
 
         }
     }

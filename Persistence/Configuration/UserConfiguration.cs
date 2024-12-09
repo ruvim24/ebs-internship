@@ -16,12 +16,6 @@ namespace Persistence.Configuration
             .IsRequired() 
             .HasMaxLength(30); 
 
-            /*
-            builder.Property(u => u.Password)
-                .IsRequired() 
-                .HasMaxLength(30);
-                */
-            
             builder.Property(u => u.Email)
                 .IsRequired()
                 .HasMaxLength(30);

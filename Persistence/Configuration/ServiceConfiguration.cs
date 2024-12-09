@@ -32,6 +32,10 @@ namespace Persistence.Configuration
             builder.HasOne(x => x.Master)
                 .WithOne()
                 .HasForeignKey<Service>(x => x.MasterId);
+            
+            //indexing
+            builder.HasIndex(x => x.MasterId);
+            builder.HasIndex(x => x.ServiceType);
         }
     }
 }

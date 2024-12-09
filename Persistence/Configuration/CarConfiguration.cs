@@ -34,6 +34,9 @@ namespace Persistence.Configuration
                 .WithOne()
                 .HasForeignKey<Car>(x => x.CustomerId)
                 .IsRequired();
+            
+            //indexing
+            builder.HasIndex(x => x.CustomerId);
         }
     }
 }
