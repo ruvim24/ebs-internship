@@ -1,5 +1,4 @@
 using System.Windows.Input;
-using Application.DTOs.Users;
 using Domain.Entities;
 using FluentResults;
 using FluentValidation;
@@ -36,7 +35,6 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result>
         {
             return Result.Fail(result.Errors.ToString());
         }
-        
         return Result.Ok();
     }
 }

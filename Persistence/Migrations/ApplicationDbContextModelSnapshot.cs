@@ -186,7 +186,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("Availability", "EndTime");
 
-                    b.HasIndex("MasterId", "EndTime");
+                    b.HasIndex("MasterId", "Availability");
 
                     b.ToTable("Slot", (string)null);
                 });
@@ -251,6 +251,9 @@ namespace Persistence.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("User", (string)null);
                 });

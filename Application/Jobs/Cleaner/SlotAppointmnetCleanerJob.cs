@@ -1,8 +1,6 @@
-
 using Application.Contracts.Commands.Appointments.Expire;
 using Application.Contracts.Commands.Slots.Clean;
 using MediatR;
-using Quartz;
 
 namespace Application.Jobs.Cleaner;
 

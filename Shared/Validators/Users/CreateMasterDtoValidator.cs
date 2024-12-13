@@ -1,5 +1,5 @@
-using Application.DTOs.Users;
 using FluentValidation;
+using Shared.Dtos.Users;
 
 namespace Shared.Validators.Users;
 
@@ -23,10 +23,6 @@ public class CreateMasterDtoValidator : AbstractValidator<CreateMasterDto>
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password cannot be empty")
             .MinimumLength(10).WithMessage("Password cannot be less than 10 characters");
-        
-        /*RuleFor(x => x.Role)
-            .NotEmpty().WithMessage("Role cannot be empty")
-            .Must(role => role == Role.Master).WithMessage("Role must be Master");*/
     }
     
 }

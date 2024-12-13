@@ -15,13 +15,8 @@ namespace Persistence.DBContext
         public DbSet<Appointment> Appointments { get; set; }
         
         public DbSet<DaySchedule> DaySchedules { get; set; }
-        public ApplicationDbContext()
-        {
-            
-        }
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-        }
+        public ApplicationDbContext() {}
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,7 +27,6 @@ namespace Persistence.DBContext
                 entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
             });
             
-            
             modelBuilder.Entity<IdentityUserRole<int>>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.RoleId }); 
@@ -40,16 +34,8 @@ namespace Persistence.DBContext
             
             modelBuilder.Entity<IdentityUserToken<int>>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name }); // Definirea cheii primare
+                entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
             });
-            
-            /*modelBuilder.ApplyConfiguration(new UserConfiguration());
-            modelBuilder.ApplyConfiguration(new SlotConfiguration());
-            modelBuilder.ApplyConfiguration(new ServiceConfiguration());
-            modelBuilder.ApplyConfiguration(new CarConfiguration());
-            modelBuilder.ApplyConfiguration(new AppointmentConfiguration());
-            modelBuilder.ApplyConfiguration(new DayScheduleConfiguration());*/
-
         }
     }
 }

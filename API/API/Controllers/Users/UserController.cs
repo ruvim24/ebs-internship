@@ -4,8 +4,8 @@ using Application.Contracts.Commands.Users.Update;
 using Application.Contracts.Queries.Users.Get;
 using Application.Contracts.Queries.Users.GetAll;
 using Application.Contracts.Queries.Users.GetMasters;
-using Application.DTOs.Users;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Dtos.Users;
 
@@ -13,6 +13,7 @@ namespace API.Controllers.Users
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;

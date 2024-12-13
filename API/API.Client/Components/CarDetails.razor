@@ -118,7 +118,7 @@ else
 
     public async Task CarRegistration()
     {
-        var dialog = DialogService.Show<CreateCar>("Car registration");
+        var dialog = DialogService.Show<CreateCarDialog>("Car registration");
         var result = await dialog.Result;
 
         if (!result!.Canceled)

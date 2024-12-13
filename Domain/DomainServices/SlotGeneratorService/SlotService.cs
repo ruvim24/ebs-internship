@@ -37,12 +37,12 @@ public class SlotService : ISlotService
 
         foreach (var service in services)
         {
-            //obtain last generated date slots for enery service
+            //Obtain last generated date slots for enery service
             DateTime lastDate = await _slotRepository.GetLastSlotGenerationDateForService(service.MasterId);
 
-            //period for wich need to generate slots
+            //Period for wich should generate slots
             var periodGenerated = lastDate.Date - DateTime.UtcNow.Date;
-            //number day to generate
+            //Numbers of day to be generated
             var daysToGenerate = nDays - periodGenerated.Days;
         
             var startDate = DateOnly.FromDateTime(lastDate.Date.AddDays(1));
@@ -50,7 +50,7 @@ public class SlotService : ISlotService
         
             for (var date = startDate; date < endDate; date = date.AddDays(1))
             {
-                //generate slots for every service for the date
+                //Generate slots for every service for the date
                 await GenerateSlotsForServiceAndDate(service.MasterId, service.Duration, date);
             }
         }
@@ -64,13 +64,13 @@ public class SlotService : ISlotService
         var daySchedule = await _dayScheduleRepository.GetByDayOfWeekAsync(dayOfWeek);
         if (daySchedule == null) return;
 
-        //variables for start and end to create sltos
+        //Variables for start and end to create sltos
         var startDateTime = DateTime.SpecifyKind(date.ToDateTime(daySchedule.StartTime), DateTimeKind.Utc);
         var endDateTime = DateTime.SpecifyKind(startDateTime.AddMinutes(duration), DateTimeKind.Utc);
-        //time limit to create a slot
+        //Time limit to create a slot
         var endTime = DateTime.SpecifyKind(date.ToDateTime(daySchedule.EndTime), DateTimeKind.Utc);
         
-        //slot creation for curent date
+        //Slot creation for curent date
         while (startDateTime <= endTime)
         {
             var slotResult = Slot.Create(masterId, startDateTime, endDateTime);
@@ -84,7 +84,7 @@ public class SlotService : ISlotService
             var slot = slotResult.Value;
             await _slotRepository.AddAsync(slot);
 
-            // update for next slot
+            //Update variables for next slot
             startDateTime = endDateTime;
             endDateTime = startDateTime.AddMinutes(duration);
         }

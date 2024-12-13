@@ -1,12 +1,10 @@
-using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
 using Shared.Dtos.DaySchedules;
 
-namespace Application.Contracts.Queries.DayScheduleQueries.GetAll;
-
+namespace Application.Contracts.Queries.DaySchedules.GetAll;
 public record GetAllDayScheduleQuery() : IRequest<Result<IEnumerable<DayScheduleDto>>>;
 public class GetAllDayScheduleQueryHandler : IRequestHandler<GetAllDayScheduleQuery, Result<IEnumerable<DayScheduleDto>>>
 {

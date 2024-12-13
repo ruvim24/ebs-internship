@@ -46,12 +46,6 @@ public class SlotRepository : ISlotRepository
     {
         return await _applicationDb.Slots.Where(x => x.MasterId == masterId && x.Availability == true).ToListAsync();
     }
-
-    public async Task<IEnumerable<Slot>> GetMastersAvailableSlotsForDate(DateTime date, int masterId)
-    {
-        var slots = await _applicationDb.Slots.Where(x => x.MasterId == masterId && x.Availability == true && x.StartTime.Date == date).ToListAsync();
-        return slots;
-    }
     
     public Task<List<Slot>> GetUnReservedSlots()
     {
@@ -63,20 +57,6 @@ public class SlotRepository : ISlotRepository
     {
         _applicationDb.Slots.RemoveRange(slots);
         await _applicationDb.SaveChangesAsync();
-    }
-
-    public async Task<bool> ExistsSlotsForDateAsync(int masterId, DateOnly date)
-    {
-        DateTime dateTimeStartUtc = DateTime.SpecifyKind(date.ToDateTime(new TimeOnly(0, 0)), DateTimeKind.Utc);
-
-        return await _applicationDb.Slots
-            .AnyAsync(x => x.StartTime.ToUniversalTime().Date == dateTimeStartUtc.Date && x.MasterId == masterId);
-    }
-
-    public async Task<DateTime> GetLastSlotGenerationDate()
-    {
-        var maxDate = await _applicationDb.Slots.MaxAsync(x => (DateTime?)x.EndTime);
-        return maxDate ??= DateTime.UtcNow;
     }
 
     public async Task<DateTime> GetLastSlotGenerationDateForService(int masterId)

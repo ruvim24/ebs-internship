@@ -11,7 +11,7 @@ public static class Jobs
         
         var backgroundJobClient = app.ApplicationServices.GetRequiredService<IBackgroundJobClient>();
 
-        backgroundJobClient.Enqueue(() => Console.WriteLine("Job executat"));
+        //backgroundJobClient.Enqueue(() => Console.WriteLine("Job executed"));
         backgroundJobClient.Enqueue<SlotAppointmentCleanerJob>(job => job.Execute());
         backgroundJobClient.Enqueue<SlotGeneratorJob>(job => job.Execute());
 

@@ -18,25 +18,6 @@ public class IsAuthQueryCommand : IRequestHandler<IsAuthQuery, Result<IEnumerabl
         _userManager = userManager;
         _httpContextAccessor = httpContextAccessor;
     }
-
-    /*public async Task<Result<IEnumerable<Claim>>> Handle(IsAuthQuery request, CancellationToken cancellationToken)
-    {
-        var claimsPrincipal = _httpContextAccessor.HttpContext.User;
-        if (claimsPrincipal.Identity.IsAuthenticated)
-        {
-            var user = await _userManager.GetUserAsync(claimsPrincipal);
-            IEnumerable<Claim> claims = await _userManager.GetClaimsAsync(user);
-        
-            return Result.Ok(claims);  
-        }
-        else
-        {
-            return Result.Fail("not authenticated");
-
-        }
-    }*/
-    
-    
     public async Task<Result<IEnumerable<Claim>>> Handle(IsAuthQuery request, CancellationToken cancellationToken)
     {
         var claimsPrincipal = _httpContextAccessor.HttpContext.User;
@@ -44,7 +25,10 @@ public class IsAuthQueryCommand : IRequestHandler<IsAuthQuery, Result<IEnumerabl
         {
             var user = await _userManager.GetUserAsync(claimsPrincipal);
             var claims = await _userManager.GetClaimsAsync(user);
-        
+
+            //Include User's Id
+            claims = claims.Append(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())).ToList();
+
             // Include role claims
             var roles = await _userManager.GetRolesAsync(user);
             var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role));

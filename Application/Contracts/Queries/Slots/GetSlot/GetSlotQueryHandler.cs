@@ -24,7 +24,6 @@ public class GetSlotQueryHandler : IRequestHandler<GetSlotQuery, Result<SlotDto>
         {
             return Result.Fail("Slot not found");
         }
-        
         return Result.Ok(_mapper.Map<SlotDto>(result));
     }
 }

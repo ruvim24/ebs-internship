@@ -1,15 +1,12 @@
-using Domain.Entities;
 using Domain.Enums;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
 using Shared.Dtos.Services;
-
-namespace Application.Contracts.Queries.ServiceQueries.GetByType;
+namespace Application.Contracts.Queries.Services.GetByType;
 
 public record GetServiceByTypeQuery(ServiceType Type) : IRequest<Result<IEnumerable<ServiceDto>>>;
-
 public class GetServiceByTypeCommandHandler : IRequestHandler<GetServiceByTypeQuery, Result<IEnumerable<ServiceDto>>>
 {
     private readonly IServiceRepository _serviceRepository;
@@ -20,7 +17,6 @@ public class GetServiceByTypeCommandHandler : IRequestHandler<GetServiceByTypeQu
         _serviceRepository = serviceRepository;
         _mapper = mapper;
     }
-
     public async Task<Result<IEnumerable<ServiceDto>>> Handle(GetServiceByTypeQuery request, CancellationToken cancellationToken)
     {
         var services = await _serviceRepository.GetByTypeAsync(request.Type);

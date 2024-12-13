@@ -11,7 +11,6 @@ public class GetMasterServiceQueryHandler : IRequestHandler<GetMasterServiceQuer
 {
     private readonly IServiceRepository _serviceRepository;
     private readonly IMapper _mapper;
-
     public GetMasterServiceQueryHandler(IServiceRepository serviceRepository, IMapper mapper)
     {
         _serviceRepository = serviceRepository;
@@ -24,7 +23,6 @@ public class GetMasterServiceQueryHandler : IRequestHandler<GetMasterServiceQuer
         {
             return Result.Fail("Service not found");
         }
-        
         return Result.Ok(_mapper.Map<ServiceDto>(result));
     }
 }

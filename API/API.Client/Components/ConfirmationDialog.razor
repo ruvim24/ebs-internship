@@ -3,13 +3,13 @@
         <MudText Typo="Typo.h6">@Message</MudText>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="() => MudDialog.Cancel()" Color="Color.Secondary">Cancel</MudButton>
-        <MudButton OnClick="() => MudDialog.Close(DialogResult.Ok(true))" Color="Color.Primary">OK</MudButton>
+        <MudButton OnClick="() => MudDialog?.Cancel()" Color="Color.Secondary">Cancel</MudButton>
+        <MudButton OnClick="() => MudDialog?.Close(DialogResult.Ok(true))" Color="Color.Primary">OK</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
-    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
-    [Parameter] public string Message { get; set; }
+    [CascadingParameter] private MudDialogInstance? MudDialog { get; set; }
+    [Parameter] public string? Message { get; set; }
     
 }   

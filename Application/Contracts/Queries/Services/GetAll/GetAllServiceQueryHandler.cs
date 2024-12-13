@@ -1,11 +1,10 @@
-using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
 using MapsterMapper;
 using MediatR;
 using Shared.Dtos.Services;
 
-namespace Application.Contracts.Queries.ServiceQueries.GetAll;
+namespace Application.Contracts.Queries.Services.GetAll;
 
 public record GetAllServiceQuery() : IRequest<Result<IEnumerable<ServiceDto>>>;
 

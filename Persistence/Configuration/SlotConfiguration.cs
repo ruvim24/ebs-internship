@@ -28,7 +28,7 @@ namespace Persistence.Configuration
                 .IsRequired();
             
             //indexing
-            builder.HasIndex(x=> new{x.MasterId, x.EndTime});
+            builder.HasIndex(x=> new{x.MasterId, x.Availability});
             builder.HasIndex(x=> new{x.Availability, x.EndTime});
         }
     }

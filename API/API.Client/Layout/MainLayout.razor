@@ -1,6 +1,9 @@
-﻿@using MudBlazor
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using MudBlazor
 @inherits LayoutComponentBase
-
+@inject ISnackbar Snackbar
+@implements IAsyncDisposable
+@inject HubConnection HubConnection
 @* Required *@
 <MudThemeProvider/>
 
@@ -29,3 +32,26 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        
+        HubConnection.On<string>("ReceiveNotification", message =>
+        {
+            Snackbar.Add($"Notification: {message}", Severity.Info);
+            //InvokeAsync(StateHasChanged);
+        });
+        
+        await HubConnection.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (HubConnection is not null)
+        {
+            await HubConnection.DisposeAsync();
+        }
+    }
+}

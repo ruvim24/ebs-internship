@@ -15,7 +15,7 @@ public class SlotGeneratorJob
 
     public async Task Execute()
     {
-        int advanceDays = 7;
+        int advanceDays = 14;
         await _slotService.Generate(advanceDays); 
     }
 }

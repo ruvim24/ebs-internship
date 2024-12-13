@@ -28,7 +28,6 @@ public class CarController : ControllerBase
         return Ok(result.Value);
     }
     
-    
     [HttpGet("getCustumer/{customerId}")]
     public async Task<IActionResult> GetCarByCustomerId([FromRoute] int customerId)
     {
@@ -37,9 +36,7 @@ public class CarController : ControllerBase
         return Ok(result.Value);
     }
 
-    /*
     [Authorize(Roles = "Customer")]
-    */
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateCarDto createCarDto)
     {
@@ -48,9 +45,7 @@ public class CarController : ControllerBase
         return Ok(result.Value);
     }
 
-    /*
     [Authorize(Roles = "Customer")]
-    */
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateCarDto updateCarDto)
     {
@@ -58,5 +53,4 @@ public class CarController : ControllerBase
         if (result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
     }
-
 }

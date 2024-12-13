@@ -49,6 +49,7 @@
 
     LoginDtoValidator loginValidator = new LoginDtoValidator();
     
+    
     private async Task HandleLogin()
     {
         await form.Validate();
@@ -76,6 +77,10 @@
     {
         Navigation.NavigateTo("/register");
     }
-    
+
+    public void AnounceConnection(string message)
+    {
+        Snackbar.Add($"Message{message}", Severity.Info);
+    }
    
 }

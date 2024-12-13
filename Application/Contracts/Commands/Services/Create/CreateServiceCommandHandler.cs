@@ -49,7 +49,7 @@ public class CreateServiceCommandHandler : IRequestHandler<CreateServiceCommand,
         await _serviceRepository.AddAsync(serviceCreate.Value);
         
         //generate slots for the new service
-        int advanceDays = 7;
+        int advanceDays = 14;
         await _slotService.Generate(advanceDays);
         
         return Result.Ok(_mapper.Map<ServiceDto>(serviceCreate.Value));

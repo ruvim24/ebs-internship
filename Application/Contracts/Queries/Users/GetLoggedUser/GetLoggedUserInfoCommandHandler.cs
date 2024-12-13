@@ -15,8 +15,6 @@ public class GetLoggedUserInfoCommandHandler : IRequestHandler<GetLoggedUserInfo
     IHttpContextAccessor _httpContextAccessor;
     UserManager<User> _userManager;
     IMapper _mapper;
-    
-
     public GetLoggedUserInfoCommandHandler(IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, IMapper mapper)
     {
         _httpContextAccessor = httpContextAccessor;

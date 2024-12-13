@@ -12,8 +12,7 @@ namespace Persistence.Configuration
 
             builder.Property(a => a.Status)
             .IsRequired(); 
-
-
+            
             //one-to-many: Car with Appointment
             builder.HasOne(x => x.Car)
                 .WithMany()
@@ -21,8 +20,6 @@ namespace Persistence.Configuration
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
             
-            
-
             // one to one: appointment with slot
             builder.HasOne(x => x.Slot)
                 .WithOne()

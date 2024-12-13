@@ -94,7 +94,6 @@
         await LoadMasterAppointments();
     }
     
-
     private async Task CompleteAppointment(int appointmentId)
     {
         var dialog = DialogService.Show<ConfirmationDialog>("Are you sure?");
@@ -106,6 +105,7 @@
             if (response.IsSuccessStatusCode)
             {
                 Snackbar.Add("Appointment completed", Severity.Success);
+                
                 await LoadMasterAppointments();
 
             }

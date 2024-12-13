@@ -16,8 +16,6 @@ public class GetMasterAppointmentsQueryHandler : IRequestHandler<GetMasterAppoin
     private IMediator _mediator;
     private IMapper _mapper;
     private IAppointmentRepository _appointmentRepository;
-    
-
     public GetMasterAppointmentsQueryHandler(IMediator mediator, IMapper mapper, IAppointmentRepository appointmentRepository)
     {
         _mediator = mediator;

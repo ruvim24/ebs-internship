@@ -15,8 +15,6 @@ public class SlotGeneratorCommandHandler : IRequestHandler<SlotGeneratorCommand,
     {
         _slotService = slotService;
     }
-
-
     public async Task<Result> Handle(SlotGeneratorCommand request, CancellationToken cancellationToken)
     {
         if(request.Days <= 0 || request.Days >= 30) return Result.Fail("Days must be between 0 and 30");

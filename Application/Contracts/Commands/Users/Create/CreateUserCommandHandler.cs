@@ -1,4 +1,3 @@
-using Application.DTOs.Users;
 using Domain.Entities;
 using Domain.IRepositories;
 using FluentResults;
@@ -24,7 +23,6 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
     
     public async Task<Result<UserDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        
         var validationResult = _validator.Validate(request.Model);
 
         if (!validationResult.IsValid)

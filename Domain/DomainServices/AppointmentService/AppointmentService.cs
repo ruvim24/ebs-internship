@@ -11,8 +11,7 @@ public class AppointmentService : IAppointmentService
     private ICarRepository _carRepository;
     private ISlotRepository _slotRepository;
     private IServiceRepository _serviceRepository;
-
-
+    
     public AppointmentService(IUserRepository userRepository, 
         IAppointmentRepository appointmentRepository,
         ICarRepository carRepository,
@@ -25,7 +24,6 @@ public class AppointmentService : IAppointmentService
         _slotRepository = slotRepository;
         _serviceRepository = serviceRepository;
     }
-
     public async Task<Result<Appointment>> Create(int carId, int serviceId, int slotId)
     {
         var car = await  _carRepository.GetByIdAsync(carId);
@@ -34,7 +32,7 @@ public class AppointmentService : IAppointmentService
 
         if (car != null && service != null && slot != null && slot.Availability == true)
         {
-            //set slot as unavailable
+            //Set slot as unavailable
             slot.SetNotAvailable();
             await _slotRepository.UpdateAsync(slot);
             

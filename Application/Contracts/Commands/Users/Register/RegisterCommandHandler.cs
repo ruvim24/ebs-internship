@@ -1,4 +1,3 @@
-using Application.DTOs.Users;
 using Domain.Entities;
 using FluentResults;
 using FluentValidation;
@@ -22,7 +21,6 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result>
         _registerValidator = registerValidator;
     }
     
-    
     public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var result = await _registerValidator.ValidateAsync(request.Model);
@@ -32,7 +30,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result>
             return Result.Fail(errors);
         }
         
-        var user = Domain.Entities.User.Create(request.Model.FullName, request.Model.Email, request.Model.PhoneNumber, request.Model.Username);
+        var user = User.Create(request.Model.FullName, request.Model.Email, request.Model.PhoneNumber, request.Model.Username);
         if (user.IsFailed)
         {
             var errors = string.Join(", ", user.Errors);

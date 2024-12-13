@@ -1,4 +1,3 @@
-using Application.DTOs.Users;
 using Domain.Entities;
 using FluentResults;
 using FluentValidation;
@@ -9,7 +8,6 @@ using Shared.Dtos.Users;
 namespace Application.Contracts.Commands.Users.SeedAdmin
 {
     public record SeedAdminCommand(AdminCreateDto Model) : IRequest<Result>;
-
     public class SeedAdminCommandHandler : IRequestHandler<SeedAdminCommand, Result>
     {
         private readonly UserManager<User> _userManager;

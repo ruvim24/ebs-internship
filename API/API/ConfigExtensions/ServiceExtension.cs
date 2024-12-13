@@ -16,7 +16,6 @@ public static class ServiceExtension
 {
     public static IServiceCollection IdentityConfiguration(this IServiceCollection services)
     {
-            
             services.AddIdentity<User, IdentityRole<int>>(options =>
                 {
                     options.Password.RequireDigit = true;
@@ -34,7 +33,6 @@ public static class ServiceExtension
 
     public static IServiceCollection AutentificationCookiesConfiguration(this IServiceCollection services)
     {
-        
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
@@ -51,7 +49,6 @@ public static class ServiceExtension
     
     public static IServiceCollection HangfireConfiguration(this IServiceCollection services)
     {
-        
         services.AddHangfire(config =>
         {
             var connectionString = services.BuildServiceProvider().GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection");
@@ -69,8 +66,7 @@ public static class ServiceExtension
 
     public static IServiceCollection DIConfiguration(this IServiceCollection services)
     {
-        
-        //---Repositories
+        //Repositories
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICarRepository, CarRepository>();
         services.AddScoped<ISlotRepository, SlotRepository>();
@@ -78,15 +74,13 @@ public static class ServiceExtension
         services.AddScoped<IDayScheduleRepository, DayScheduleRepository>();
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
         services.AddScoped<SlotService>();
-
-        //---Service
+        
+        //Service
         services.AddScoped<IAppointmentService, AppointmentService>();
         services.AddScoped<ISlotService, SlotService>();
         
-        
-        //---DayScheduleSeeder
+        //DayScheduleSeeder
         services.AddTransient<DayScheduleSeeder>();
-
         return services;
     }
 }

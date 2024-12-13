@@ -40,7 +40,6 @@ namespace Domain.Entities
             {
                 Status = AppointmentStatus.Completed;
                 UpdatedAt = DateTime.UtcNow;
-                //rasing a domain event??
             }
         }
         public void Cancel()
@@ -49,7 +48,6 @@ namespace Domain.Entities
             {
                 Status = AppointmentStatus.Canceled;
                 UpdatedAt = DateTime.UtcNow;
-                //rasing a domain event??
             }
         }
 

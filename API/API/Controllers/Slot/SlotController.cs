@@ -3,12 +3,15 @@ using Application.Contracts.Commands.Slots.Generate;
 using Application.Contracts.Queries.Slots.GetMastersAvailableSlots;
 using Application.Contracts.Queries.Slots.GetSlot;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Slot;
 
+
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class SlotController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -33,7 +36,6 @@ public class SlotController : ControllerBase
         if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
     }
-
     
     [HttpPost("[action]")]
     public async Task<IActionResult> Generate([FromQuery] int advanceDays)

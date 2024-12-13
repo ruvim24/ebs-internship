@@ -20,7 +20,6 @@ public static class Seeder
 
     public static async Task RoleSeeder(this IApplicationBuilder app)
     {
-        
         using (var scope = app.ApplicationServices.CreateScope())
         {
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
@@ -38,12 +37,10 @@ public static class Seeder
 
     public static async Task AdminSeeder(this IApplicationBuilder app)
     {
-        
         using (var scope = app.ApplicationServices.CreateScope())
         {
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-
-  
+            
             var command = new SeedAdminCommand(new AdminCreateDto
             {
                 FullName = "Admin",

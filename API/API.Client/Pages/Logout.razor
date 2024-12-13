@@ -16,7 +16,6 @@
         var dialog = DialogService.Show<ConfirmationDialog>("Are you sure?");
         var result = await dialog.Result;
         
-        
         if (!result!.Canceled)
         {
             var response = await AccountService.Logout();
@@ -31,5 +30,4 @@
             }
         }
     }
-
 }

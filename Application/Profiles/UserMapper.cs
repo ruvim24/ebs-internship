@@ -1,4 +1,3 @@
-using Application.DTOs.Users;
 using Domain.Entities;
 using Domain.Enums;
 using Mapster;

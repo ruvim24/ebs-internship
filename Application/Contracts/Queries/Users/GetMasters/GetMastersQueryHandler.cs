@@ -14,7 +14,6 @@ public class GetMastersQueryHandler : IRequestHandler<GetMastersQuery, Result<IE
     IHttpContextAccessor _httpContextAccessor;
     UserManager<User> _userManager;
     IMapper _mapper;
-
     public GetMastersQueryHandler(IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, IMapper mapper)
     {
         _httpContextAccessor = httpContextAccessor;

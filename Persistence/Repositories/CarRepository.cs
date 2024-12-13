@@ -45,5 +45,4 @@ public class CarRepository : ICarRepository
     {
         return await _applicationDb.Cars.FirstOrDefaultAsync(x => x.CustomerId == customerId);
     }
-    
 }

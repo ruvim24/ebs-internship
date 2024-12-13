@@ -1,3 +1,4 @@
+using API.SignalR;
 using Application.Contracts.Commands.Users;
 using Application.Contracts.Commands.Users.LogIn;
 using Application.Contracts.Commands.Users.Logout;

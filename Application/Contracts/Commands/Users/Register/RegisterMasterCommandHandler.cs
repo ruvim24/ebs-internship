@@ -32,7 +32,7 @@ public class RegisterMasterCommandHandler : IRequestHandler<RegisterMasterComman
             return Result.Fail(errors);
         }
         
-        var user = Domain.Entities.User.Create(request.Model.FullName, request.Model.Email, request.Model.PhoneNumber, request.Model.Username);
+        var user = User.Create(request.Model.FullName, request.Model.Email, request.Model.PhoneNumber, request.Model.Username);
         if (user.IsFailed)
         {
             var errors = string.Join(", ", user.Errors);
@@ -49,6 +49,5 @@ public class RegisterMasterCommandHandler : IRequestHandler<RegisterMasterComman
             return Result.Fail("Failed to asign role");
         
         return Result.Ok();
-
     }
 }

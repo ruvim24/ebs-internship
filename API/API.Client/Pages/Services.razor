@@ -171,7 +171,7 @@ else
     private async Task CreateService()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        var dialog =  DialogService.Show<CreateService>("Create Service", options);
+        var dialog =  DialogService.Show<CreateServiceDialog>("Create Service", options);
 
         
         var result = await dialog.Result;

@@ -3,11 +3,9 @@ using FluentResults;
 using MapsterMapper;
 using MediatR;
 using Shared.Dtos.Slots;
-
 namespace Application.Contracts.Queries.Slots.GetMastersAvailableSlots;
 
 public record GetMasterAvailableSlotsQuery(int MasterId) : IRequest<Result<IEnumerable<SlotDto>>>;
-
 public class GetMasterAvailableSlotsQueryHandler : IRequestHandler<GetMasterAvailableSlotsQuery, Result<IEnumerable<SlotDto>>>
 {
     private readonly ISlotRepository _slotRepository;

@@ -23,10 +23,5 @@ public class CreateUserDtoValidator : AbstractValidator<CreateUserDto>
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password cannot be empty")
             .MinimumLength(10).WithMessage("Password cannot be less than 10 characters");
-        
-        /*RuleFor(x => x.Role)
-            .NotEmpty().WithMessage("Role cannot be empty")
-            .Must(role => role == Role.Customer).WithMessage("Role must be Master");*/
-
     }
 }

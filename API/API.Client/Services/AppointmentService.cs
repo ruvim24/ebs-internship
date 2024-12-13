@@ -37,6 +37,13 @@ public class AppointmentService
         return await _httpClient.GetAsync($"api/Appointment/customer-appointments");
     }
 
+    public async Task<HttpResponseMessage> GetCustomerTakenSlotsDate(DateTime date)
+    {
+        string formattedDate = date.ToString("yyyy-MM-ddTHH:mm:ss");
+        return await _httpClient.GetAsync($"api/Appointment/customer-taken-slots-date?date={formattedDate}");
+
+    }
+
     public async Task<HttpResponseMessage> GetMasterAppointments()
     {
         return await _httpClient.GetAsync($"api/Appointment/master-appointments");

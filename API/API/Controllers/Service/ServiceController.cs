@@ -1,9 +1,9 @@
 using Application.Contracts.Commands.Services.Create;
 using Application.Contracts.Commands.Services.Delete;
 using Application.Contracts.Commands.Services.Update;
-using Application.Contracts.Queries.ServiceQueries.GetAll;
-using Application.Contracts.Queries.ServiceQueries.GetByType;
 using Application.Contracts.Queries.Services.Get;
+using Application.Contracts.Queries.Services.GetAll;
+using Application.Contracts.Queries.Services.GetByType;
 using Application.Contracts.Queries.Services.GetMastersService;
 using Domain.Enums;
 using MediatR;
@@ -86,6 +86,4 @@ public class ServiceController : ControllerBase
         if(result.IsFailed) return BadRequest(result.Errors);
         return Ok();
     }
-    
-    
 }

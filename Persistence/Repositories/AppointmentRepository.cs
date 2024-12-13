@@ -65,7 +65,6 @@ public class AppointmentRepository : IAppointmentRepository
         return expired;
     }
     
-    
     public async Task<List<Appointment>> GetCustomerAppointments(int carId)
     {
          var appointments = await _applicationDb.Appointments

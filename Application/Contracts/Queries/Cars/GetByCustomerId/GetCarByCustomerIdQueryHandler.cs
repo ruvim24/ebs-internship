@@ -5,8 +5,6 @@ using MediatR;
 using Shared.Dtos.Cars;
 
 namespace Application.Contracts.Queries.Cars.GetByCustomerId;
-
-
 public record GetCarByCustomerIdQuery(int Id) : IRequest<Result<CarDto>>;
 public class GetCarByCustomerIdQueryHandler : IRequestHandler<GetCarByCustomerIdQuery, Result<CarDto>>
 {

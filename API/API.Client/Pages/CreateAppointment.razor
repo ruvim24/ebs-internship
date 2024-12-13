@@ -1,5 +1,4 @@
 @page "/createAppointment"
-@attribute [Authorize(Roles = "Customer")]
 @using System.Text.Json
 @using API.Client.Services
 @using Microsoft.AspNetCore.Authorization
@@ -9,6 +8,8 @@
 @using Shared.Dtos.Slots
 @using Shared.Dtos.Users
 @using Shared.Validators.Cars
+@using Microsoft.AspNetCore.SignalR.Client
+@attribute [Authorize(Roles = "Customer")]
 @inject AccountService AccountService
 @inject CarService CarService
 @inject ServicesService ServicesService
@@ -16,6 +17,7 @@
 @inject ISnackbar Snackbar
 @inject AppointmentService AppointmentService
 @inject NavigationManager Navigation
+@inject HubConnection HubConnection
 
 
 @if (servicesExists)
@@ -85,7 +87,6 @@
             <MudStep Title="Select Service" Completed="stepCompletionStatus[1] ">
                 <MudCard Elevation="6" Style="width: 100%; max-width: 600px; padding: 30px; border-radius: 15px; background-color: #ffffff; margin: auto;">
                     <MudCardContent>
-                        @*<MudText Typo="Typo.h5" Align="Align.Center" Style="color: #1976d2;">Select Desired Service</MudText>*@
                         <MudForm @ref="_form" Model="serviceDto">
                             <MudCardContent>
                                 <MudSelect @bind-Value="appointmentDto.ServiceId" Label="Choose Service" Variant="Variant.Text" Margin="Margin.Dense" Style="background-color: #f5f5f5;" Placeholder="Alege o opțiune">
@@ -109,7 +110,7 @@
                 </MudCard>
             </MudStep>
 
-            @* Time Appointment Selection*@
+            @*Appointment Time Selection*@
             <MudStep Title="Select Date & Time" Completed="stepCompletionStatus[2]">
 
                 <MudCard Elevation="6" Style="width: 100%; max-width: 600px; padding: 30px; border-radius: 15px; background-color: #ffffff; margin: auto;">
@@ -151,7 +152,7 @@
                     <MudCardContent>
                         <MudText Typo="Typo.h6" Align="Align.Start" Style="color: #333;">Appointment Details</MudText>
                         <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 10px;">
-                            <strong>Name:</strong> @(serviceDto.Name.ToString())
+                            <strong>Name:</strong> @(serviceDto.Name)
                         </MudText>
 
                         <MudText Typo="Typo.body2" Align="Align.Start" Style="color: #555; margin-top: 10px;">
@@ -171,7 +172,6 @@
                     @if (appointmentDto != null)
                     {
                     <MudButton Style="width: 100%" OnClick="ConfirmAppointment" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done" Color="Color.Primary">Confirm Appointment</MudButton>
-
                     }
                 </MudCard>
             </MudStep>
@@ -181,7 +181,7 @@
             <MudStack Row Class="ma-3">
                 <MudIcon Icon="@Icons.Material.Filled.Done" Color="Color.Success"/>
                 <MudText>
-                    Appointmet succesefully saved!!
+                    Appointment succesefully saved!!
                 </MudText>
             </MudStack>
         </CompletedContent>
@@ -231,7 +231,6 @@ else
             serviceList = services;
             servicesExists = true;
         }
-
     }
 
     public async Task LoadCar()
@@ -249,6 +248,7 @@ else
             userHasCar = false;
         }
     }
+    
     private async Task SubmitCar()
     {
         if (!_form.IsValid)
@@ -311,15 +311,10 @@ else
                 slotListForSelectedDate = availableSlots
                     .Where((SlotDto x) => _day != null && x.StartTime.Date == utcDay.Date)
                     .ToList();
-            
-                Console.WriteLine("Available Slots for Selected Date:");
-                foreach (var slot in slotListForSelectedDate)
-                {
-                    Console.WriteLine($"Available Slot: {slot.StartTime} - {slot.EndTime}");
-                }
+                
             }
 
-            await FilterData(utcDay);
+            await FilterSlots(utcDay);
 
             // Sorting by time
             slotListForSelectedDate.Sort((x, y) => x.StartTime.CompareTo(y.StartTime));
@@ -331,45 +326,33 @@ else
         }
     }
     
-    
     //select just the slots wich does not overlapse with existing users appointmnents
-    public async Task FilterData(DateTime utcDay)
+    public async Task FilterSlots(DateTime utcDay)
     {
-        var aptResponse = await AppointmentService.GetCustomerAppointments();
-        List<AppointmentDto>? userApt;
-        List<SlotDto> usersTakenSlots = new();
-        if (aptResponse.IsSuccessStatusCode)
+        var response = await AppointmentService.GetCustomerTakenSlotsDate(utcDay);
+        var takenSlotsDate = new List<SlotAppointmnentTime>();
+        if (response.IsSuccessStatusCode)
         {
-            // Getting user appointments
-            userApt = JsonSerializer.Deserialize<List<AppointmentDto>>(await aptResponse.Content.ReadAsStringAsync(),
+            takenSlotsDate = JsonSerializer.Deserialize<List<SlotAppointmnentTime>>(
+                await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-
-            if (userApt.Any())
-            {
-                int i = 1;
-                var a = i;
-                foreach (var apt in userApt)
-                {
-                    var slot = await SlotService.GetSlot(apt.SlotId);
-                    if (slot is null) continue;
-                    usersTakenSlots.Add(slot);
-                }
-            }
         }
 
-        slotListForSelectedDate = availableSlots
-            .Where(x => x.StartTime.Date == utcDay.Date) 
-            .Where(x => !usersTakenSlots.Any(t => 
+        if (takenSlotsDate.Any())
+        {
+            slotListForSelectedDate = availableSlots
+                .Where(x => x.StartTime.Date == utcDay.Date) 
+                .Where(x => !takenSlotsDate.Any(t => 
                
-                    (x.StartTime >= t.StartTime && x.StartTime < t.EndTime) || // StartTime overlaps
-                    (x.EndTime > t.StartTime && x.EndTime <= t.EndTime) ||     // EndTime overlaps
-                    (t.StartTime >= x.StartTime && t.StartTime < x.EndTime) || // Taken slot starts within available slot
-                    (t.EndTime > x.StartTime && t.EndTime <= x.EndTime)        // Taken slot ends within available slot
-            ))
-            .ToList();
-
+                        (x.StartTime >= t.StartTime && x.StartTime < t.EndTime) || // StartTime overlaps
+                        (x.EndTime > t.StartTime && x.EndTime <= t.EndTime) ||     // EndTime overlaps
+                        (t.StartTime >= x.StartTime && t.StartTime < x.EndTime) || // Taken slot starts within available slot
+                        (t.EndTime > x.StartTime && t.EndTime <= x.EndTime)        // Taken slot ends within available slot
+                ))
+                .ToList();
+        }
+        
     }
-
     
     private void SumbmitTime()
     {
@@ -384,13 +367,31 @@ else
             activeStepIndex++;  
         }
     }
-
+    
     private async Task ConfirmAppointment()
     {
         appointmentDto.CarId = userCar.Id;
         var response = await AppointmentService.CreateAppointmentAsync(appointmentDto);
+        
         if (response.IsSuccessStatusCode)
         {
+            if (HubConnection.State == HubConnectionState.Connected)
+            {
+                try
+                {
+                    await HubConnection.SendAsync("SendNotificationToUser", serviceDto.MasterId, $"New appointment: {selectedSlotDto.StartTime.ToString("g")}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error sending notification: {e.Message}");
+                    throw;
+                }
+            }
+            else
+            {
+                Console.WriteLine("SignalR connection is not established.");
+            }
+            
             stepCompletionStatus[3] = true;
             activeStepIndex++;
             Snackbar.Add("Appointment created succesefully!!", Severity.Success);
@@ -401,6 +402,11 @@ else
             Snackbar.Add("Error creating appointment", Severity.Error);
         }
     }
+    void SignalRServiceOnOnMesageReceived(string message)
+    {
+        Snackbar.Add($"{message}", Severity.Info);
+    }
+    
     private bool IsDateDisabled(DateTime dateTime)
     {
         return !availableSlots.Any(x => x.StartTime.Date == dateTime.ToUniversalTime().Date);
@@ -409,7 +415,7 @@ else
     private string GetDateClass(DateTime dt)
     {
         return availableSlots.Any(x => x.StartTime.Date == dt.ToUniversalTime().Date) 
-            ? "green-text text-accent-4" 
+            ? "black-text" 
             : "";
     }
 }

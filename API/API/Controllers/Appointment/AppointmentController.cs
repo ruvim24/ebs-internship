@@ -1,13 +1,13 @@
 using Application.Contracts.Commands.Appointments.Cancel;
 using Application.Contracts.Commands.Appointments.Complete;
 using Application.Contracts.Commands.Appointments.Create;
+using Application.Contracts.Queries.Appointments;
 using Application.Contracts.Queries.Appointments.Get;
 using Application.Contracts.Queries.Appointments.GetAll;
 using Application.Contracts.Queries.Appointments.GetByCarId;
 using Application.Contracts.Queries.Appointments.GetByServiceId;
 using Application.Contracts.Queries.Appointments.GetCustomerAppointments;
 using Application.Contracts.Queries.Appointments.GetMasterAppointments;
-using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +20,7 @@ namespace API.Controllers.Appointment;
 public class AppointmentController : ControllerBase
 {
     private readonly IMediator _mediator;
-
+    
     public AppointmentController(IMediator mediator)
     {
         _mediator = mediator;
@@ -59,6 +59,15 @@ public class AppointmentController : ControllerBase
     {
         var result = await _mediator.Send(new GetCustomerAppointmentsQuery());
         if (result.IsFailed) return BadRequest(result.Errors);
+        return Ok(result.Value);
+    }
+
+    [Authorize]
+    [HttpGet("customer-taken-slots-date")]
+    public async Task<IActionResult> GetCutomerTakenSlotsDate([FromQuery] DateTime date)
+    {
+        var result = await _mediator.Send(new GetCustomersTakenSlotsDateQuery(date));
+        if(result.IsFailed) return BadRequest(result.Errors);
         return Ok(result.Value);
     }
     

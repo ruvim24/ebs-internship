@@ -3,11 +3,11 @@ using API.Client.Services.Auth;
 using Blazr.RenderState.WASM;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
 using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-
 
 builder.Services.AddMudServices(cfg =>
 {
@@ -23,7 +23,6 @@ builder.Services.AddHttpClient("API", client => client.BaseAddress = new Uri(bui
 
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
-
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CarService>();
@@ -32,5 +31,11 @@ builder.Services.AddScoped<SlotsService>();
 builder.Services.AddScoped<AppointmentService>();
 builder.Services.AddScoped<MasterService>();
 
-builder.Services.AddAuthorizationCore(); 
+builder.Services.AddAuthorizationCore();
+
+builder.Services.AddSingleton<HubConnection>(x =>
+    new HubConnectionBuilder()
+        .WithUrl("https://localhost:7277/notificationHub")
+        .Build());
+
 await builder.Build().RunAsync();       
