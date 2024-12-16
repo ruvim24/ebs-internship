@@ -379,7 +379,7 @@ else
             {
                 try
                 {
-                    await HubConnection.SendAsync("SendNotificationToUser", serviceDto.MasterId, $"New appointment: {selectedSlotDto.StartTime.ToString("g")}");
+                    await HubConnection.SendAsync("SendNotificationToUser", serviceDto.MasterId, $"New appointment {selectedSlotDto.StartTime.ToString("g")}");
                 }
                 catch (Exception e)
                 {

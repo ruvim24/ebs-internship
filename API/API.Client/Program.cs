@@ -33,9 +33,9 @@ builder.Services.AddScoped<MasterService>();
 
 builder.Services.AddAuthorizationCore();
 
-builder.Services.AddSingleton<HubConnection>(x =>
-    new HubConnectionBuilder()
-        .WithUrl("https://localhost:7277/notificationHub")
-        .Build());
+    builder.Services.AddSingleton<HubConnection>(x =>
+        new HubConnectionBuilder()
+            .WithUrl("http://localhost:5001/notificationHub") 
+            .Build());
 
 await builder.Build().RunAsync();       

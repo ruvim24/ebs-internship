@@ -23,8 +23,6 @@ namespace Persistence.Configuration
             builder.Property(u => u.PhoneNumber)
                 .IsRequired()
                 .HasMaxLength(30);
-            
-            builder.HasIndex(x=>x.Email).IsUnique();
         }
     }
 }

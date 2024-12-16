@@ -23,7 +23,18 @@
             </MudText>
             <br/>
         </MudItem>
-
+        
+        <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" NoIcon="true" ContentAlignment="HorizontalAlignment.Left"><strong>Filter</strong></MudAlert>
+            <MudButton>@buttonText</MudButton>
+            <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Style="align-self: auto;">
+                <MudMenuItem OnClick="ApplayScheduledFilter">Scheduled</MudMenuItem>
+                <MudMenuItem OnClick="ApplayCancelFilter">Canceled</MudMenuItem>
+                <MudMenuItem OnClick="ApplayCompletedFilter">Completed</MudMenuItem>
+                <MudMenuItem OnClick="ApplayAllFilter">All</MudMenuItem>
+            </MudMenu>
+        </MudButtonGroup>
+        
         <MudGrid Justify="Justify.FlexStart"  Spacing="3">
             @if (isLoading)
             {
@@ -35,7 +46,7 @@
             }
             else
             {
-            @foreach (var appointment in customersAppointments)
+            @foreach (var appointment in displyAppointments)
             {
             <MudItem xs="12" sm="6" md="4">
                 <MudCard Elevation="4" Class="my-3">
@@ -100,12 +111,42 @@
     bool isLoading;
     bool hasAppointments;
     List<CustumerAppointmentDto>? customersAppointments;
-
+    List<CustumerAppointmentDto> displyAppointments;
+    
+    string buttonText;
+    
+    
     protected override async Task OnInitializedAsync()
     {
         await LoadingData();
     }
 
+    public void ApplayScheduledFilter()
+    {
+        buttonText = "Scheduled";
+        displyAppointments = customersAppointments.FindAll(x => x.Status == AppointmentStatus.Scheduled);
+        StateHasChanged();
+    }
+    public void ApplayCancelFilter()
+    {
+        buttonText = "Canceled";
+        displyAppointments = customersAppointments.FindAll(x => x.Status == AppointmentStatus.Canceled);
+        StateHasChanged();
+    }
+    public void ApplayCompletedFilter()
+    {
+        buttonText = "Completed";
+        displyAppointments = customersAppointments.FindAll(x => x.Status == AppointmentStatus.Completed);
+        StateHasChanged();
+    }
+
+    public void ApplayAllFilter()
+    {
+        buttonText = "All";
+        displyAppointments = customersAppointments;
+        StateHasChanged();
+    }
+    
     private async Task CancelAppointment(int appointmentId)
     {
         var dialog = DialogService.Show<ConfirmationDialog>("Are you sure??");
@@ -146,6 +187,7 @@
                     .ToList();
             
                 hasAppointments = true;
+                ApplayScheduledFilter();
             }            
         }
 
